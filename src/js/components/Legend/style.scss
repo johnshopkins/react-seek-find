@@ -1,0 +1,24 @@
+$size: 75px;
+
+.legend {
+  display: flex;
+  gap: 5px;
+
+  .thumbnail {
+    background: #000;
+    height: $size;
+    width: $size;
+
+    img {
+      width: 100%;
+    }
+
+    svg {
+      background: #fff;
+      fill: green;
+      height: calc($size / 4);
+      width: calc($size / 4);
+      position: absolute;
+    }
+  }
+}
