@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Illustration from './Illustration';
@@ -51,8 +51,6 @@ class Game extends Component {
       hint: null,
       hintActive: false,
     };
-
-    this.canvas = createRef();
 
     this.onFind = this.onFind.bind(this);
     this.showHint - this.showHint.bind(this);
@@ -121,7 +119,6 @@ class Game extends Component {
           onClick={() => this.showHint()}
         >Give me a hint</button>
         <Illustration
-          reference={this.canvas}
           imageSrc={this.props.image}
           objects={Object.values(this.state.objects)}
           height={this.props.height}

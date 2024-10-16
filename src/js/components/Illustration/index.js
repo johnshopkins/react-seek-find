@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Hint from '../Hint';
 import Sights from '../Sights';
 
 import './style.scss';
 
-export default ({ height, hint, imageSrc, objects, reference, width, onFind }) => {
+export default ({ height, hint, imageSrc, objects, width, onFind }) => {
 
   // testing click+drag to pan image within smaller container
   const containerWidth = 300;
@@ -13,6 +13,8 @@ export default ({ height, hint, imageSrc, objects, reference, width, onFind }) =
   // const containerWidth = width;
   // const containerHeight = height;
 
+  // canvas
+  const canvasRef = useRef(null);
   const [context, setContext] = useState(null);
   const [isClick, setIsClick] = useState(null);
   const [isKeyboardFocused, setIsKeyboardFocused] = useState(false);
@@ -42,7 +44,7 @@ export default ({ height, hint, imageSrc, objects, reference, width, onFind }) =
       setMouseDown(false);
     });
 
-    const context = reference.current.getContext('2d');
+    const context = canvasRef.current.getContext('2d');
     setContext(context);
 
     const image = new Image();
@@ -245,10 +247,9 @@ export default ({ height, hint, imageSrc, objects, reference, width, onFind }) =
         <canvas
           aria-label="Seek and Find image"
           role="region"
-          ref={reference}
+          ref={canvasRef}
           height={height}
           width={width}
-          
         />
       </div>
     </div>
