@@ -2,44 +2,39 @@
 
 $iconRatio: 0.4;
 
-.legend {
-  display: flex;
-  gap: 5px;
+.container {
+  .legend {
+    display: flex;
+    gap: 5px;
+    
+    .thumbnail {
+      background: #000;
+      height: #{$legendHeight_mobile}px;
+      width: #{$legendHeight_mobile}px;
 
-  .thumbnail {
-    background: #000;
-    height: #{$legendHeight_mobile}px;
-    width: #{$legendHeight_mobile}px;
-
-    @include breakpoint_tablet() {
-      height: #{$legendHeight_tablet}px;
-      width: #{$legendHeight_tablet}px;
-    }
-
-    @include breakpoint_desktop() {
-      height: #{$legendHeight_desktop}px;
-      width: #{$legendHeight_desktop}px;
-    }
-
-    img {
-      width: 100%;
-    }
-
-    svg {
-      background: #fff;
-      fill: green;
-      height: calc(#{$legendHeight_mobile}px * $iconRatio);
-      width: calc(#{$legendHeight_mobile}px * $iconRatio);
-      position: absolute;
-
-      @include breakpoint_tablet() {
-        height: calc(#{$legendHeight_tablet}px * $iconRatio);
-        width: calc(#{$legendHeight_tablet}px * $iconRatio);
+      img {
+        width: 100%;
       }
 
-      @include breakpoint_desktop() {
-        height: calc(#{$legendHeight_desktop}px * $iconRatio);
-        width: calc(#{$legendHeight_desktop}px * $iconRatio);
+      svg {
+        background: #fff;
+        fill: green;
+        height: calc(#{$legendHeight_mobile}px * $iconRatio);
+        width: calc(#{$legendHeight_mobile}px * $iconRatio);
+        position: absolute;
+      }
+    }
+  }
+
+  &.desktop {
+    .legend {
+      .thumbnail {
+        height: #{$legendHeight_desktop}px;
+        width: #{$legendHeight_desktop}px;
+        svg {
+          height: calc(#{$legendHeight_desktop}px * $iconRatio);
+          width: calc(#{$legendHeight_desktop}px * $iconRatio);
+        }
       }
     }
   }

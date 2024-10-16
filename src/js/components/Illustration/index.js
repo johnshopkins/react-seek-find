@@ -4,7 +4,7 @@ import Sights from '../Sights';
 
 import './style.scss';
 
-export default ({ containerHeight, containerWidth, height, hint, imageSrc, objects, width, onFind }) => {
+export default ({ containerHeight, containerWidth, height, hint, imageSrc, objects, scale, width, onFind }) => {
 
   // canvas
   const canvasRef = useRef(null);
@@ -58,6 +58,8 @@ export default ({ containerHeight, containerWidth, height, hint, imageSrc, objec
       object.plotted = object.create.call(this, context, object.found);
       return object;
     })
+
+    context.scale(scale, scale);
 
   }, [objects]);
 

@@ -1,33 +1,54 @@
 @use '../../../css/main' as *;
 
-.utilties {
-  line-height: 0; // EW, but it gets rid of extra space in div
-  padding: 5px 0;
+.container {
+  .utilities {
+    display: flex;
+    gap: 5px;
+    // line-height: 0; // EW, but it gets rid of extra space in div
+    padding: 5px 0;
 
-  button {
-    border: none;
-    background: transparent;
-    padding: 0;
+    button {
+      border: none;
+      background: transparent;
+      padding: 5px;
+      padding: 0;
 
-    svg {
-      color: var(--jhu-brand-gold);
-      height: #{$utilitiesHeight_mobile}px;
-      width: #{$utilitiesHeight_mobile}px;
+      svg {
+        height: #{$utilitiesHeight_mobile}px;
+        width: #{$utilitiesHeight_mobile}px;
 
-      @include breakpoint_tablet() {
-        height: #{$utilitiesHeight_tablet}px;
-        width: #{$utilitiesHeight_tablet}px;
+        &.lightbulb {
+          color: var(--jhu-gold-30);
+          
+          &:hover {
+            color: var(--jhu-gold-40);
+          }
+        }
+
+        &.zoom-in,
+        &.zoom-out {
+          color: var(--jhu-grayscale-40);
+
+          &:hover {
+            color: var(--jhu-grayscale-50);
+          }
+        }
       }
 
-      @include breakpoint_desktop() {
-        height: #{$utilitiesHeight_desktop}px;
-        width: #{$utilitiesHeight_desktop}px;
+      &:hover {
+        cursor: pointer;
       }
     }
+  }
 
-    &:hover {
-      cursor: pointer;
+  &.desktop {
+    .utilities {
+      button {
+        svg {
+          height: #{$utilitiesHeight_desktop}px;
+          width: #{$utilitiesHeight_desktop}px;
+        }
+      }
     }
   }
 }
-

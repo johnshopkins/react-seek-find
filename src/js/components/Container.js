@@ -8,7 +8,6 @@ import Utilities from './Utilities';
 import ResizeWatcher from '@johnshopkins/jhu-wds/src/shared/js/utils/watch-window-resize'
 
 import settings from '../../settings';
-import findBreakpoint from '../lib/findBreakpoint';
 
 import {
   clearGameState,
@@ -25,7 +24,7 @@ class Game extends Component {
     // this.saveGame = data => saveGameState(data);
     // this.onGameComplete = this.props.onGameComplete;
 
-    // clearGameState();
+    clearGameState();
 
     // fetch any stored data from localStorage
     const storedData = loadGameState();
@@ -48,15 +47,20 @@ class Game extends Component {
       }
     });
 
+
+    const { scale, view } = this.determineView();
+
     // combine stored and default state
     this.state = {
       userData,
       objects,
       hint: null,
       hintActive: false,
-      breakpoint: findBreakpoint(document.body.clientWidth),
+      scale,
+      view,
     };
 
+    this.determineView = this.determineView.bind(this);
     this.onFind = this.onFind.bind(this);
     this.showHint - this.showHint.bind(this);
   }
@@ -66,8 +70,32 @@ class Game extends Component {
     ResizeWatcher.startWatching();
 
     window.addEventListener('jhu:winresize:done', e => {
-      this.setState({ breakpoint: findBreakpoint(document.body.clientWidth) });
+      const { scale, view  } = this.determineView();
+      this.setState({ scale, view });
     })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.props.roomId !== prevProps.roomId ||
+      this.state.serverUrl !== prevState.serverUrl
+    ) {
+      this.destroyConnection();
+      this.setupConnection();
+    }
+  }
+
+  determineView() {
+
+    const width = document.body.clientWidth
+    const view = width < this.props.width ? 'mobile' : 'desktop';
+    const scale = view === 'desktop' ? 1 : width / this.props.width;
+
+    return { view, scale };
+  }
+
+  determineScale() {
+
   }
 
   onFind(found) {
@@ -118,8 +146,11 @@ class Game extends Component {
 
   render() {
 
+    console.log('rerender');
+
     // const containerWidth = this.props.width; // illustration width
-    const containerWidth = (document.body.clientWidth / 2);
+    // const containerWidth = (document.body.clientWidth / 2);
+    const containerWidth = this.state.view === 'desktop' ? this.props.width : (this.props.width * this.state.scale);
 
     // find height
     const widthRatio = containerWidth / this.props.width;
@@ -138,7 +169,7 @@ class Game extends Component {
     };
 
     return (
-      <div className="container" style={styles}>
+      <div className={`container ${this.state.view}`} style={styles}>
         <Legend
           objects={Object.values(this.state.objects)}
         />
@@ -155,6 +186,7 @@ class Game extends Component {
           width={this.props.width}
           onFind={this.onFind}
           hint={this.state.objects[this.state.hint]}
+          scale={this.state.scale}
         />
       </div>
     );
