@@ -63,6 +63,8 @@ class Game extends Component {
     this.determineView = this.determineView.bind(this);
     this.onFind = this.onFind.bind(this);
     this.showHint - this.showHint.bind(this);
+    this.zoomIn = this.zoomIn.bind(this);
+    this.zoomOut = this.zoomOut.bind(this);
   }
 
   componentDidMount() {
@@ -144,9 +146,19 @@ class Game extends Component {
     });
   }
 
-  render() {
+  zoomIn() {
 
-    console.log('rerender');
+    console.log('zoom in');
+
+  }
+
+  zoomOut() {
+
+    console.log('zoom out');
+
+  }
+
+  render() {
 
     // const containerWidth = this.props.width; // illustration width
     // const containerWidth = (document.body.clientWidth / 2);
@@ -176,6 +188,8 @@ class Game extends Component {
         <Utilities
           hintActive={this.state.hintActive}
           showHint={() => this.showHint()}
+          zoomIn={this.zoomIn}
+          zoomOut={this.zoomOut}
         />
         <Illustration
           imageSrc={this.props.image}

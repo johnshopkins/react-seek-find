@@ -15,7 +15,6 @@ export default ({ containerHeight, containerWidth, height, hint, imageSrc, objec
   const [isClick, setIsClick] = useState(null);
   const [isKeyboardFocused, setIsKeyboardFocused] = useState(false);
 
-
   // sights
   const iconSize = 36;
   const iconOffset = iconSize / 2;
@@ -36,6 +35,7 @@ export default ({ containerHeight, containerWidth, height, hint, imageSrc, objec
 
   useEffect(() => {
 
+    // THIS SHOULD ONLY BE ADDED ONCE.
     window.addEventListener('mouseup', e => {
       setDragging(false)
       setMouseDown(false);
@@ -43,6 +43,9 @@ export default ({ containerHeight, containerWidth, height, hint, imageSrc, objec
 
     const context = canvasRef.current.getContext('2d');
     setContext(context);
+
+    // // clear canvas
+    // context.clearRect(0, 0, width, height);
 
     const image = new Image();
     image.src = imageSrc;
@@ -59,7 +62,8 @@ export default ({ containerHeight, containerWidth, height, hint, imageSrc, objec
       return object;
     })
 
-    context.scale(scale, scale);
+    // // only do this if the scale has changed
+    // context.scale(scale, scale);
 
   }, [objects]);
 
