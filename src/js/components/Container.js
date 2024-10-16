@@ -118,6 +118,7 @@ class Game extends Component {
 
   render() {
 
+    // const containerWidth = this.props.width; // illustration width
     const containerWidth = (document.body.clientWidth / 2);
 
     // find height
@@ -127,12 +128,9 @@ class Game extends Component {
     const utilitiesHeight = settings[`utilitiesHeight_${this.state.breakpoint}`];
 
     const containerHeight = (this.props.height * widthRatio) + legendHeight + utilitiesHeight;
-    console.log('widthRatio', widthRatio);
-    console.log('containerHeight', containerHeight);
 
-    // const containerHeight = 500;
-    // const containerWidth = this.props.width;
-    // const containerHeight = this.props.height;
+    const illustrationContainerWidth = containerWidth;
+    const illustrtionContainerHeight = this.props.height * widthRatio;
 
     const styles = {
       height: `${containerHeight}px`,
@@ -151,6 +149,8 @@ class Game extends Component {
         <Illustration
           imageSrc={this.props.image}
           objects={Object.values(this.state.objects)}
+          containerHeight={illustrtionContainerHeight}
+          containerWidth={illustrationContainerWidth}
           height={this.props.height}
           width={this.props.width}
           onFind={this.onFind}

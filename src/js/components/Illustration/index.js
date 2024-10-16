@@ -4,14 +4,7 @@ import Sights from '../Sights';
 
 import './style.scss';
 
-export default ({ height, hint, imageSrc, objects, width, onFind }) => {
-
-  // // testing click+drag to pan image within smaller container
-  // const containerWidth = 300;
-  // const containerHeight = 500;
-
-  const containerWidth = width;
-  const containerHeight = height;
+export default ({ containerHeight, containerWidth, height, hint, imageSrc, objects, width, onFind }) => {
 
   // canvas
   const canvasRef = useRef(null);
@@ -209,7 +202,7 @@ export default ({ height, hint, imageSrc, objects, width, onFind }) => {
     width: `${containerWidth}px`,
   };
 
-  const styles = {
+  const gameStyles = {
     height: `${height}px`,
     width: `${width}px`,
     left: canvasX,
@@ -217,14 +210,14 @@ export default ({ height, hint, imageSrc, objects, width, onFind }) => {
   };
 
   if (dragging) {
-    styles.cursor = 'grabbing';
+    gameStyles.cursor = 'grabbing';
   }
 
   return (
     <div className="game-container" role="region" aria-label="Seek and Find" style={containerStyles}>
       <div
         className="game"
-        style={styles}
+        style={gameStyles}
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
@@ -234,14 +227,14 @@ export default ({ height, hint, imageSrc, objects, width, onFind }) => {
         onBlur={onBlur}
         tabIndex="0" // makes keyboard focusable
       >
-        {/* {isKeyboardFocused && */}
+        {isKeyboardFocused &&
           <Sights
             positionX={sightsX}
             positionY={sightsY}
             height={iconSize}
             width={iconSize}
           />
-        {/* } */}
+        }
         <Hint
           height={height}
           width={width}
