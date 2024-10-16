@@ -6,12 +6,12 @@ import './style.scss';
 
 export default ({ height, hint, imageSrc, objects, width, onFind }) => {
 
-  // testing click+drag to pan image within smaller container
-  const containerWidth = 300;
-  const containerHeight = 500;
+  // // testing click+drag to pan image within smaller container
+  // const containerWidth = 300;
+  // const containerHeight = 500;
 
-  // const containerWidth = width;
-  // const containerHeight = height;
+  const containerWidth = width;
+  const containerHeight = height;
 
   // canvas
   const canvasRef = useRef(null);

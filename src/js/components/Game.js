@@ -104,9 +104,14 @@ class Game extends Component {
 
   render() {
 
+    // const containerWidth = 300;
+    // const containerHeight = 500;
+    const containerWidth = this.props.width;
+    const containerHeight = this.props.height;
+
     const styles = {
-      height: `${this.props.height}px`,
-      width: `${this.props.width}px`,
+      height: `${containerHeight}px`,
+      width: `${containerWidth}px`,
     };
 
     return (
