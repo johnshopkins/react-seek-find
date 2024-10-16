@@ -22,7 +22,7 @@ class Game extends Component {
     // this.saveGame = data => saveGameState(data);
     // this.onGameComplete = this.props.onGameComplete;
 
-    clearGameState();
+    // clearGameState();
 
     // fetch any stored data from localStorage
     const storedData = loadGameState();
