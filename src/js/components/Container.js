@@ -35,15 +35,14 @@ class Game extends Component {
       ...storedData
     }
 
-    const objects = {};
+    this.objects = {};
     this.props.objects.forEach(object => {
-      objects[object.id] = {
+      this.objects[object.id] = {
         id: object.id,
         create: object.create,
         hint: object.hint,
         thumbnail: object.thumbnail,
         alt_text: object.alt_text,
-        found: userData.found.includes(object.id),
       }
     });
 
@@ -52,12 +51,12 @@ class Game extends Component {
 
     // combine stored and default state
     this.state = {
-      userData,
-      objects,
+      // objects,
       hint: null,
       hintActive: false,
       scale,
       view,
+      ...userData,
     };
 
     this.determineView = this.determineView.bind(this);
@@ -75,6 +74,29 @@ class Game extends Component {
       const { scale, view  } = this.determineView();
       this.setState({ scale, view });
     })
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+
+    console.log('---');
+    console.log('should container update?');
+    console.log('---');
+
+    for (const stateVar of Object.keys(nextState)) {
+      if (nextState[stateVar] !== this.state[stateVar]) {
+        console.log(`state.${stateVar} changed`);
+      }
+    }
+
+    for (const propVar of Object.keys(nextProps)) {
+      if (nextProps[propVar] !== this.props[propVar]) {
+        console.log(`props.${propVar} changed`);
+      }
+    }
+
+    console.log('---');
+
+    return true;
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -100,26 +122,26 @@ class Game extends Component {
 
   }
 
-  onFind(found) {
+  onFind(foundObject) {
 
-    this.setState((state) => {
+    this.setState(state => {
 
-      const foundObjectId = found.id;
+      const found = [...state.found]; // handle immutably to prevent bugs
 
-      console.log(`${foundObjectId} found!`);
-
-      const objects = state.objects;
-      const userData = state.userData;
-
-      objects[foundObjectId].found = true,
-      userData.found.push(foundObjectId);
-
-      return {
-        userData,
-        objects,
+      if (found.includes(foundObject.id)) {
+        return;
       }
+
+      found.push(foundObject.id)
+
+      return { found }
+
     }, () => {
-      saveGameState(this.state.userData)
+
+      saveGameState({
+        found: this.state.found,
+        time: this.state.timer,
+      })
 
       // if (found.id === this.state.hint) {
         this.removeHint();
@@ -130,7 +152,7 @@ class Game extends Component {
 
   showHint() {
 
-    const notFound = Object.values(this.state.objects).filter(object => !object.found);
+    const notFound = Object.values(this.objects).filter(object => !this.state.found.includes(object.id));
 
     const random = Math.floor(Math.random() * notFound.length);
 
@@ -140,7 +162,6 @@ class Game extends Component {
   }
 
   removeHint() {
-    console.log('remove hint');
     this.setState({ hint: null }, () => {
       setTimeout(() => this.setState({ hintActive: false }), settings.hintFadeOut);
     });
@@ -160,6 +181,9 @@ class Game extends Component {
 
   render() {
 
+    console.log('container render');
+    console.log('---');
+
     // const containerWidth = this.props.width; // illustration width
     // const containerWidth = (document.body.clientWidth / 2);
     const containerWidth = this.state.view === 'desktop' ? this.props.width : (this.props.width * this.state.scale);
@@ -173,7 +197,7 @@ class Game extends Component {
     const containerHeight = (this.props.height * widthRatio) + legendHeight + utilitiesHeight;
 
     const illustrationContainerWidth = containerWidth;
-    const illustrtionContainerHeight = this.props.height * widthRatio;
+    const illustrationContainerHeight = this.props.height * widthRatio;
 
     const styles = {
       height: `${containerHeight}px`,
@@ -183,7 +207,8 @@ class Game extends Component {
     return (
       <div className={`container ${this.state.view}`} style={styles}>
         <Legend
-          objects={Object.values(this.state.objects)}
+          found={this.state.found}
+          objects={Object.values(this.objects)}
         />
         <Utilities
           hintActive={this.state.hintActive}
@@ -192,14 +217,15 @@ class Game extends Component {
           zoomOut={this.zoomOut}
         />
         <Illustration
+          found={this.state.found}
           imageSrc={this.props.image}
-          objects={Object.values(this.state.objects)}
-          containerHeight={illustrtionContainerHeight}
+          objects={Object.values(this.objects)}
+          containerHeight={illustrationContainerHeight}
           containerWidth={illustrationContainerWidth}
           height={this.props.height}
           width={this.props.width}
           onFind={this.onFind}
-          hint={this.state.objects[this.state.hint]}
+          hint={this.objects[this.state.hint]}
           scale={this.state.scale}
         />
       </div>

@@ -14,6 +14,7 @@ export default ({ height, object, onShowHint, width }) => {
 
     if (object) {
       const context = ref.current.getContext('2d');
+      
       // clear canvas
       context.clearRect(0, 0, width, height);
 

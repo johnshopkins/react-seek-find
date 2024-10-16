@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 import SightsIcon from '../Icons/Sights';
 
 import './style.scss';
 
-export default ({ height, positionX = 0, positionY = 0, width }) => {
+export default forwardRef(({ height, positionX = 0, positionY = 0, width }, ref) => {
+
+  // const [sightsX, setSightsX] = useState(-Math.abs(iconOffset));
+
+  // useImperativeHandle(ref, () => ({
+  //   doSomething: (e) => {
+  //     console.log('test', e.key);
+  //   }
+  // }), []);
 
   const style = {
     height: `${height}px`,
@@ -14,4 +22,4 @@ export default ({ height, positionX = 0, positionY = 0, width }) => {
   };
 
   return <SightsIcon style={style} />
-}
+});
