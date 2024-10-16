@@ -5,7 +5,10 @@ import Illustration from './Illustration';
 import Legend from './Legend';
 import Utilities from './Utilities';
 
+import ResizeWatcher from '@johnshopkins/jhu-wds/src/shared/js/utils/watch-window-resize'
+
 import settings from '../../settings';
+import findBreakpoint from '../lib/findBreakpoint';
 
 import {
   clearGameState,
@@ -51,10 +54,20 @@ class Game extends Component {
       objects,
       hint: null,
       hintActive: false,
+      breakpoint: findBreakpoint(document.body.clientWidth),
     };
 
     this.onFind = this.onFind.bind(this);
     this.showHint - this.showHint.bind(this);
+  }
+
+  componentDidMount() {
+
+    ResizeWatcher.startWatching();
+
+    window.addEventListener('jhu:winresize:done', e => {
+      this.setState({ breakpoint: findBreakpoint(document.body.clientWidth) });
+    })
   }
 
   onFind(found) {
@@ -92,23 +105,34 @@ class Game extends Component {
     const random = Math.floor(Math.random() * notFound.length);
 
     this.setState({ hint: notFound[random].id, hintActive: true }, () => {
-      setTimeout(() => this.removeHint(), animations.hintFadeIn + this.props.hintKeepAlive);
+      setTimeout(() => this.removeHint(), settings.hintFadeIn + this.props.hintKeepAlive);
     });
   }
 
   removeHint() {
     console.log('remove hint');
     this.setState({ hint: null }, () => {
-      setTimeout(() => this.setState({ hintActive: false }), animations.hintFadeOut);
+      setTimeout(() => this.setState({ hintActive: false }), settings.hintFadeOut);
     });
   }
 
   render() {
 
-    // const containerWidth = 300;
+    const containerWidth = (document.body.clientWidth / 2);
+
+    // find height
+    const widthRatio = containerWidth / this.props.width;
+
+    const legendHeight = settings[`legendHeight_${this.state.breakpoint}`];
+    const utilitiesHeight = 30;
+
+    const containerHeight = (this.props.height * widthRatio) + legendHeight + utilitiesHeight;
+    console.log('widthRatio', widthRatio);
+    console.log('containerHeight', containerHeight);
+
     // const containerHeight = 500;
-    const containerWidth = this.props.width;
-    const containerHeight = this.props.height;
+    // const containerWidth = this.props.width;
+    // const containerHeight = this.props.height;
 
     const styles = {
       height: `${containerHeight}px`,
@@ -118,6 +142,7 @@ class Game extends Component {
     return (
       <div className="container" style={styles}>
         <Legend
+          height={legendHeight}
           objects={Object.values(this.state.objects)}
         />
         <Utilities

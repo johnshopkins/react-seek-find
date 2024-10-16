@@ -1,4 +1,4 @@
-@forward '../../../css/variables';
+@use '../../../css/main' as *;
 
 .utilties {
   padding: 5px 0;

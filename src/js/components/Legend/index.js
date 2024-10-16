@@ -15,7 +15,10 @@ export default ({ objects }) => {
         return (
           <div className={classes.join(' ')} key={i}>
             {object.found && <CheckIcon />}
-            <img src={object.thumbnail} alt={`Image to find: ${object.alt_text}; Status: ${status}`} />
+            <img
+              src={object.thumbnail}
+              alt={`Image to find: ${object.alt_text}; Status: ${status}`}
+            />
           </div>
         )
       })}

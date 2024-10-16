@@ -1,6 +1,6 @@
-@forward '../../../css/variables';
+@use '../../../css/main' as *;
 
-$size: 75px;
+$iconRatio: 0.4;
 
 .legend {
   display: flex;
@@ -8,8 +8,19 @@ $size: 75px;
 
   .thumbnail {
     background: #000;
-    height: $size;
-    width: $size;
+    height: #{$legendHeight_mobile}px;
+    width: #{$legendHeight_mobile}px;
+
+    @include breakpoint_tablet() {
+      height: #{$legendHeight_tablet}px;
+      width: #{$legendHeight_tablet}px;
+    }
+
+    @include breakpoint_desktop() {
+      height: #{$legendHeight_desktop}px;
+      width: #{$legendHeight_desktop}px;
+    }
+    
 
     img {
       width: 100%;
@@ -18,9 +29,19 @@ $size: 75px;
     svg {
       background: #fff;
       fill: green;
-      height: calc($size / 4);
-      width: calc($size / 4);
+      height: calc(#{$legendHeight_mobile}px * $iconRatio);
+      width: calc(#{$legendHeight_mobile}px * $iconRatio);
       position: absolute;
+
+      @include breakpoint_tablet() {
+        height: calc(#{$legendHeight_tablet}px * $iconRatio);
+        width: calc(#{$legendHeight_tablet}px * $iconRatio);
+      }
+
+      @include breakpoint_desktop() {
+        height: calc(#{$legendHeight_desktop}px * $iconRatio);
+        width: calc(#{$legendHeight_desktop}px * $iconRatio);
+      }
     }
   }
 }
