@@ -234,14 +234,14 @@ export default ({ height, hint, imageSrc, objects, width, onFind }) => {
         onBlur={onBlur}
         tabIndex="0" // makes keyboard focusable
       >
-        {isKeyboardFocused &&
+        {/* {isKeyboardFocused && */}
           <Sights
             positionX={sightsX}
             positionY={sightsY}
             height={iconSize}
             width={iconSize}
           />
-        }
+        {/* } */}
         <Hint
           height={height}
           width={width}

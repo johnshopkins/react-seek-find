@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Illustration from './Illustration';
 import Legend from './Legend';
+import Utilities from './Utilities';
 
 import { animations } from '../../settings';
 
@@ -119,10 +120,10 @@ class Game extends Component {
         <Legend
           objects={Object.values(this.state.objects)}
         />
-        <button
-          disabled={this.state.hintActive}
-          onClick={() => this.showHint()}
-        >Give me a hint</button>
+        <Utilities
+          hintActive={this.state.hintActive}
+          showHint={() => this.showHint()}
+        />
         <Illustration
           imageSrc={this.props.image}
           objects={Object.values(this.state.objects)}
