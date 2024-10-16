@@ -32,8 +32,8 @@ module.exports = {
 
                 let add = '';
 
-                for (const prop in settings.animations) {
-                  add += `$${prop}: ${settings.animations[prop]};`;
+                for (const prop in settings) {
+                  add += `$${prop}: ${settings[prop]};`;
                 }
 
                 return add + content;

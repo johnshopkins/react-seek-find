@@ -5,7 +5,7 @@ import Illustration from './Illustration';
 import Legend from './Legend';
 import Utilities from './Utilities';
 
-import { animations } from '../../settings';
+import settings from '../../settings';
 
 import {
   clearGameState,
