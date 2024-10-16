@@ -4,7 +4,7 @@ import './style.scss';
 
 export default ({ activated, height, positionX = 0, positionY = 0, width }) => {
 
-  console.log('sights location', positionX, positionY);
+  // console.log('sights location', positionX, positionY);
 
   const style = {
     display: activated ? 'block' : 'none',

@@ -113,6 +113,9 @@ class Game extends Component {
 
     return (
       <div className="container" style={styles}>
+        <Legend
+          objects={Object.values(this.state.objects)}
+        />
         <button
           disabled={this.state.hintActive}
           onClick={() => this.showHint()}
@@ -125,9 +128,6 @@ class Game extends Component {
           width={this.props.width}
           onFind={this.onFind}
           hint={this.state.objects[this.state.hint]}
-        />
-        <Legend
-          objects={Object.values(this.state.objects)}
         />
       </div>
     );

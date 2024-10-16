@@ -6,11 +6,16 @@ import './style.scss';
 
 export default ({ height, hint, imageSrc, objects, reference, width, onFind }) => {
 
-  console.log('canvas render', hint);
+  // testing click+drag to pan image within smaller container
+  const containerWidth = 300;
+  const containerHeight = 500;
+
+  // const containerWidth = width;
+  // const containerHeight = height;
 
   const [context, setContext] = useState(null);
   const [isClick, setIsClick] = useState(null);
-  const [isFocused, setIsFocused] = useState(false);
+  const [isKeyboardFocused, setIsKeyboardFocused] = useState(false);
 
   const iconSize = 36;
   const iconOffset = iconSize / 2;
@@ -22,7 +27,20 @@ export default ({ height, hint, imageSrc, objects, reference, width, onFind }) =
   const [sightsX, setSightsX] = useState(-Math.abs(iconOffset));
   const [sightsY, setSightsY] = useState(-Math.abs(iconOffset));
 
+  const [canvasX, setCanvasX] = useState(0);
+  const [canvasY, setCanvasY] = useState(0);
+
+  const [mouseDown, setMouseDown] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [dragStartX, setDragStartX] = useState(false);
+  const [dragStartY, setDragStartY] = useState(false);
+
   useEffect(() => {
+
+    window.addEventListener('mouseup', e => {
+      setDragging(false)
+      setMouseDown(false);
+    });
 
     const context = reference.current.getContext('2d');
     setContext(context);
@@ -45,6 +63,12 @@ export default ({ height, hint, imageSrc, objects, reference, width, onFind }) =
   }, [objects]);
 
   const onMouseUp = e => {
+
+    if (dragging) {
+      setDragging(false);
+      return;
+    }
+
     checkGuess(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
   }
 
@@ -55,10 +79,6 @@ export default ({ height, hint, imageSrc, objects, reference, width, onFind }) =
       }
     });
   }
-  
-  if (hint) {
-    console.log('move sights to top left of hint area');
-  }
 
   const onKeyDown = e => {
 
@@ -66,9 +86,7 @@ export default ({ height, hint, imageSrc, objects, reference, width, onFind }) =
     
     setIsClick(false);
 
-    console.log(e);
-
-    if (isFocused) {
+    if (isKeyboardFocused) {
 
       if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) {
         return;
@@ -120,65 +138,119 @@ export default ({ height, hint, imageSrc, objects, reference, width, onFind }) =
   }
 
   const onFocus = e => {
-    console.log('isClick', isClick);
-    if (!isClick) {
-      // activate keyboard navigation
-      console.log('keyboard activated');
-      setIsFocused(true);
-    } else {
-      console.log('keyboard deactivated');
-      setIsFocused(false);
-    }
+    setIsKeyboardFocused(!isClick);
   }
 
   const onBlur = e => {
-    setIsFocused(false);
+    setIsKeyboardFocused(false);
   }
 
   const moveSights = ({ x, y }) => {
 
-    console.log('move sights', x, y, typeof x);
+    // console.log('move sights', x, y, typeof x);
     setSightsX(x - iconOffset);
     setSightsY(y - iconOffset);
   }
 
+  const onMouseDown = e => {
+
+    // https://javascript.info/mouse-drag-and-drop
+
+    setMouseDown(true);
+    setIsClick(true)
+
+    setDragStartX(e.nativeEvent.offsetX)
+    setDragStartY(e.nativeEvent.offsetY);
+  }
+
+  const onMouseMove = e => {
+
+    if (mouseDown) {
+      setDragging(true);
+    }
+
+    if (!dragging) {
+      return;
+    }
+
+    const diffX = dragStartX - e.nativeEvent.offsetX;
+    const diffY = dragStartY - e.nativeEvent.offsetY;
+
+    // set min/max drag values
+
+    let newX = canvasX - diffX;
+    let newY = canvasY - diffY;
+    
+    if (newX > 0) {
+      newX = 0
+    } else if (newX < -Math.abs(width - containerWidth)) {
+      newX = -Math.abs(width - containerWidth);
+    }
+
+    if (newY > 0) {
+      newY = 0
+    } else if (newY < -Math.abs(height - containerHeight)) {
+      newY = -Math.abs(height - containerHeight);
+    }
+
+    setCanvasX(newX);
+    setCanvasY(newY);
+
+  }
+
+  const containerStyles = {
+    height: `${containerHeight}px`,
+    width: `${containerWidth}px`,
+  };
+
   const styles = {
     height: `${height}px`,
     width: `${width}px`,
+    left: canvasX,
+    top: canvasY,
   };
 
+  if (dragging) {
+    styles.cursor = 'grabbing';
+  }
+
   return (
-    <div className="game" style={styles} role="region" aria-label="Seek and Find">
-      <Sights
-        activated={isFocused}
-        reference={reference}
-        positionX={sightsX}
-        positionY={sightsY}
-        height={iconSize}
-        width={iconSize}
-      />
-      <Hint
-        height={height}
-        width={width}
-        object={hint}
-        onShowHint={moveSights}
-      />
-      <canvas
-        aria-label="Seek and Find image"
-        role="region"
-        ref={reference}
-        height={height}
-        width={width}
-        onFocus={onFocus}
+    <div className="game-container" role="region" aria-label="Seek and Find" style={containerStyles}>
+      <div
+        className="game"
+        style={styles}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
+        onDragStart={() => false}
+        onFocus={onFocus}
         onKeyDown={onKeyDown}
-        onMouseDown={() => {
-          console.log('set clicked');
-          setIsClick(true)
-        }}
         onBlur={onBlur}
         tabIndex="0" // makes keyboard focusable
-      />
+      >
+        <Sights
+          activated={isKeyboardFocused}
+          reference={reference}
+          positionX={sightsX}
+          positionY={sightsY}
+          height={iconSize}
+          width={iconSize}
+        />
+        <Hint
+          height={height}
+          width={width}
+          object={hint}
+          onShowHint={moveSights}
+        />
+        <canvas
+          aria-label="Seek and Find image"
+          role="region"
+          ref={reference}
+          height={height}
+          width={width}
+          
+        />
+      </div>
     </div>
   );
 
