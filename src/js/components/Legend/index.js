@@ -1,4 +1,4 @@
-import CheckIcon from './check';
+import CheckIcon from '../Icons/Check';
 
 import './style.scss';
 
