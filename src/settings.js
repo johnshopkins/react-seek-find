@@ -10,6 +10,10 @@ module.exports = {
   legendHeight_tablet: 50,
   legendHeight_desktop: 75,
 
+  utilitiesHeight_mobile: 30,
+  utilitiesHeight_tablet: 40,
+  utilitiesHeight_desktop: 30,
+
   // breakpoints (pixels) -- these ARE NOT FINAL. just for testing phase
   breakpoint_tablet: 768,
   breakpoint_desktop: 1040,

@@ -124,7 +124,7 @@ class Game extends Component {
     const widthRatio = containerWidth / this.props.width;
 
     const legendHeight = settings[`legendHeight_${this.state.breakpoint}`];
-    const utilitiesHeight = 30;
+    const utilitiesHeight = settings[`utilitiesHeight_${this.state.breakpoint}`];
 
     const containerHeight = (this.props.height * widthRatio) + legendHeight + utilitiesHeight;
     console.log('widthRatio', widthRatio);
@@ -142,7 +142,6 @@ class Game extends Component {
     return (
       <div className="container" style={styles}>
         <Legend
-          height={legendHeight}
           objects={Object.values(this.state.objects)}
         />
         <Utilities

@@ -1,6 +1,7 @@
 @use '../../../css/main' as *;
 
 .utilties {
+  line-height: 0; // EW, but it gets rid of extra space in div
   padding: 5px 0;
 
   button {
@@ -10,6 +11,18 @@
 
     svg {
       color: var(--jhu-brand-gold);
+      height: #{$utilitiesHeight_mobile}px;
+      width: #{$utilitiesHeight_mobile}px;
+
+      @include breakpoint_tablet() {
+        height: #{$utilitiesHeight_tablet}px;
+        width: #{$utilitiesHeight_tablet}px;
+      }
+
+      @include breakpoint_desktop() {
+        height: #{$utilitiesHeight_desktop}px;
+        width: #{$utilitiesHeight_desktop}px;
+      }
     }
 
     &:hover {
