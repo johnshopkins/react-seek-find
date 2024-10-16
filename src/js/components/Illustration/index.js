@@ -72,11 +72,14 @@ export default ({ containerHeight, containerWidth, height, hint, imageSrc, objec
   }
 
   const checkGuess = (positionX, positionY) => {
-    objects.forEach(object => {
+    for (const object of objects) {
       if (context.isPointInPath(object.plotted, positionX, positionY)) {
-        onFind(object);
+        if (!object.found) {
+          onFind(object);
+        }
+        break;
       }
-    });
+    }
   }
 
   const onKeyDown = e => {
