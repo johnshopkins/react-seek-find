@@ -2,14 +2,11 @@ import React from 'react';
 
 import './style.scss';
 
-export default ({ activated, height, positionX = 0, positionY = 0, width }) => {
-
-  // console.log('sights location', positionX, positionY);
+export default ({ height, positionX = 0, positionY = 0, width }) => {
 
   const style = {
-    display: activated ? 'block' : 'none',
-    left: `${positionX}px`,
     height: `${height}px`,
+    left: `${positionX}px`,
     top: `${positionY}px`,
     width: `${width}px`,
   };

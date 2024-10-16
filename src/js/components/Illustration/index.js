@@ -16,22 +16,26 @@ export default ({ height, hint, imageSrc, objects, width, onFind }) => {
   // canvas
   const canvasRef = useRef(null);
   const [context, setContext] = useState(null);
+
+
+  // determines if keyboard nav should be activated
   const [isClick, setIsClick] = useState(null);
   const [isKeyboardFocused, setIsKeyboardFocused] = useState(false);
 
+
+  // sights
   const iconSize = 36;
   const iconOffset = iconSize / 2;
   const minX = 0 - iconOffset;
   const maxX = width - iconOffset;
   const minY = 0 - iconOffset;
   const maxY = height - iconOffset;
-
   const [sightsX, setSightsX] = useState(-Math.abs(iconOffset));
   const [sightsY, setSightsY] = useState(-Math.abs(iconOffset));
 
+  // click + drag
   const [canvasX, setCanvasX] = useState(0);
   const [canvasY, setCanvasY] = useState(0);
-
   const [mouseDown, setMouseDown] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(false);
@@ -230,14 +234,14 @@ export default ({ height, hint, imageSrc, objects, width, onFind }) => {
         onBlur={onBlur}
         tabIndex="0" // makes keyboard focusable
       >
-        <Sights
-          activated={isKeyboardFocused}
-          reference={reference}
-          positionX={sightsX}
-          positionY={sightsY}
-          height={iconSize}
-          width={iconSize}
-        />
+        {isKeyboardFocused &&
+          <Sights
+            positionX={sightsX}
+            positionY={sightsY}
+            height={iconSize}
+            width={iconSize}
+          />
+        }
         <Hint
           height={height}
           width={width}
