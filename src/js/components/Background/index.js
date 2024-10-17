@@ -2,13 +2,17 @@ import React, { useEffect, useRef } from 'react';
 
 import './style.scss';
 
-export default ({ height, imageSrc, width }) => {
+export default ({ height, imageSrc, scale, width }) => {
 
   const ref = useRef(null);
 
   useEffect(() => {
 
     const context = ref.current.getContext('2d');
+
+    context.clearRect(0, 0, width, height);
+    context.resetTransform();
+    context.scale(scale, scale);
 
     const image = new Image();
     image.src = imageSrc;
@@ -19,7 +23,7 @@ export default ({ height, imageSrc, width }) => {
       context.globalCompositeOperation = 'source-over';
     };
 
-  });
+  }, [scale]);
 
   return (
     <canvas

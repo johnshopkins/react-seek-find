@@ -52,16 +52,14 @@ class Illustration extends Component {
 
   drawObjects() {
 
-    // clear canvas
     this.state.context.clearRect(0, 0, this.props.width, this.props.height);
+    this.state.context.resetTransform();
+    this.state.context.scale(this.props.scale, this.props.scale);
 
     this.objects = this.props.objects.map(object => {
       object.plotted = object.create.call(this, this.state.context, this.props.found.includes(object.id));
       return object;
     });
-
-    // // only do this if the scale has changed
-    // context.scale(scale, scale);
   }
 
   componentDidMount() {
@@ -311,6 +309,7 @@ class Illustration extends Component {
             width={this.props.width}
             object={this.props.hint}
             onShowHint={this.moveSights}
+            scale={this.props.scale}
           />
           <canvas
             ref={this.canvas}
@@ -321,6 +320,7 @@ class Illustration extends Component {
             imageSrc={this.props.imageSrc}
             height={this.props.height}
             width={this.props.width}
+            scale={this.props.scale}
           />
         </div>
       </div>

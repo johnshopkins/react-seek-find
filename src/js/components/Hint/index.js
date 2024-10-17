@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 import './style.scss';
 
-export default ({ height, object, onShowHint, width }) => {
+export default ({ height, object, onShowHint, scale, width }) => {
 
   const ref = useRef(null);
   let classes = ['hint'];
@@ -14,9 +14,10 @@ export default ({ height, object, onShowHint, width }) => {
 
     if (object) {
       const context = ref.current.getContext('2d');
-      
-      // clear canvas
+
       context.clearRect(0, 0, width, height);
+      context.resetTransform();
+      context.scale(scale, scale);
 
       // draw hint
       const hintStart = object.hint.call(this, context, width, height);
@@ -29,7 +30,7 @@ export default ({ height, object, onShowHint, width }) => {
       };
     }
 
-  }, [object]);
+  }, [object, scale]);
 
   return (
     <canvas
