@@ -1,4 +1,4 @@
-@use '../../../css/main' as *;
+@forward '../../../css/main';
 
 svg.sights {
   color: #fff;
