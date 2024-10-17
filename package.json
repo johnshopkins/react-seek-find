@@ -1,7 +1,7 @@
 {
   "name": "@johnshopkins/react-seek-find",
   "version": "0.0.0",
-  "main": "index.js",
+  "main": "dist/main.js",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage",
