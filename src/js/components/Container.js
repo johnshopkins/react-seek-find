@@ -49,20 +49,21 @@ class Game extends Component {
       }
     });
 
-
-    const { scale, view } = this.determineView();
+    const { mode, scale } = this.determineScaleAndMode();
 
     // combine stored and default state
     this.state = {
       // objects,
       hint: null,
       hintActive: false,
+      mode,
       scale,
-      view,
       ...userData,
     };
 
-    this.determineView = this.determineView.bind(this);
+    this.enterFullScreen = this.enterFullScreen.bind(this);
+    this.exitFullScreen = this.exitFullScreen.bind(this);
+    this.determineScaleAndMode = this.determineScaleAndMode.bind(this);
     this.onFind = this.onFind.bind(this);
     this.showHint - this.showHint.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
@@ -74,8 +75,8 @@ class Game extends Component {
     ResizeWatcher.startWatching();
 
     window.addEventListener('jhu:winresize:done', e => {
-      const { scale, view  } = this.determineView();
-      this.setState({ scale, view });
+      const { mode, scale  } = this.determineScaleAndMode();
+      this.setState({ mode, scale });
     })
   }
 
@@ -112,18 +113,25 @@ class Game extends Component {
     }
   }
 
-  determineView() {
+  /**
+   * Determines the scale and mode (normal or fullscreen) of the application
+   * @returns object
+   */
+  determineScaleAndMode() {
 
-    const view = width < this.props.width ? 'mobile' : 'desktop';
-    const scale = view === 'desktop' ? 1 : width / this.props.width;
     const styles = window.getComputedStyle(this.container);
     const width = this.container.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
 
-    return { view, scale };
-  }
+    const scale = width >= this.props.width ? 1 : width / this.props.width;
 
-  determineScale() {
+    let mode = typeof this.state !== 'undefined' ? this.state.mode : 'normal';
 
+    // switch back to normal mode if going from scaled->unscaled view
+    if (typeof this.state !== 'undefined' && this.state.scale < 1 && mode === 'fullscreen') {
+      mode = 'normal';
+    }
+
+    return { mode, scale };
   }
 
   onFind(foundObject) {
@@ -183,6 +191,16 @@ class Game extends Component {
 
   }
 
+  enterFullScreen() {
+    console.log('enter full screen');
+    this.setState({ mode: 'fullscreen' });
+  }
+
+  exitFullScreen() {
+    console.log('exit full screen');
+    this.setState({ mode: 'normal' });
+  }
+
   render() {
 
     console.log('container render');
@@ -190,7 +208,7 @@ class Game extends Component {
 
     // const containerWidth = this.props.width; // illustration width
     // const containerWidth = (document.body.clientWidth / 2);
-    const containerWidth = this.state.view === 'desktop' ? this.props.width : (this.props.width * this.state.scale);
+    const containerWidth = this.state.scale === 1 ? this.props.width : (this.props.width * this.state.scale);
 
     // find height
     const widthRatio = containerWidth / this.props.width;
@@ -209,13 +227,17 @@ class Game extends Component {
     };
 
     return (
-      <div className={`container ${this.state.view}`} style={styles}>
+      <div className="container" style={styles}>
         <Legend
           found={this.state.found}
           objects={Object.values(this.objects)}
         />
         <Utilities
           hintActive={this.state.hintActive}
+          enterFullScreen={this.enterFullScreen}
+          exitFullScreen={this.exitFullScreen}
+          mode={this.state.mode}
+          scale={this.state.scale}
           showHint={() => this.showHint()}
           zoomIn={this.zoomIn}
           zoomOut={this.zoomOut}
