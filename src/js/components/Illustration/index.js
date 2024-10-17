@@ -15,13 +15,6 @@ class Illustration extends Component {
     this.canvas = createRef();
     this.sights = createRef();
 
-    this.iconSize = 36;
-    this.iconOffset = this.iconSize / 2;
-    this.minX = 0 - this.iconOffset;
-    this.maxX = this.props.width - this.iconOffset;
-    this.minY = 0 - this.iconOffset;
-    this.maxY = this.props.height - this.iconOffset;
-
     this.state = {
       canvasX: 0,
       canvasY: 0,
@@ -32,9 +25,6 @@ class Illustration extends Component {
       dragStartX: null,
       dragStartY: null,
       isMouseDown: false,
-      objects: [],
-      sightsX: -Math.abs(this.iconOffset),
-      sightsY: -Math.abs(this.iconOffset),
     };
 
     this.objects = [];
@@ -47,7 +37,7 @@ class Illustration extends Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
-    this.moveSights = this.moveSights.bind(this);
+    this.onShowHint = this.onShowHint.bind(this);
   }
 
   drawObjects() {
@@ -127,77 +117,23 @@ class Illustration extends Component {
   }
 
   onKeyDown(e) {
-
-    this.setState({ isClicked: false }, () => {
-
+    this.setState({ isClick: false }, () => {
       if (this.state.isKeyboardFocused) {
-
-        // this.sights.current.doSomething(e);
-
-        if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) {
-          return;
-        }
-
-        e.stopPropagation();
-        e.preventDefault();
-
-        const increment = e.shiftKey ? 20 : 2;
-
-        if (e.key === ' ') {
-          
-          // spacebar
-          this.checkGuess(this.state.sightsX + this.iconOffset, this.state.sightsY + this.iconOffset);
-
-        } else if (e.key === 'ArrowRight') {
-
-          let newValue = this.state.sightsX + increment;
-          if (newValue > this.maxX) {
-            newValue = this.maxX;
-          }
-          this.setState({ sightsX: newValue });
-
-        } else if (e.key === 'ArrowLeft') {
-
-          let newValue = this.state.sightsX - increment;
-          if (newValue < this.minX) {
-            newValue = this.minX;
-          }
-          this.setState({ sightsX: newValue });
-
-        } else if (e.key === 'ArrowUp') {
-          
-          let newValue = this.state.sightsY - increment;
-          if (newValue < this.minY) {
-            newValue = this.minY;
-          }
-          this.setState({ sightsY: newValue });
-
-        } else if (e.key === 'ArrowDown') {
-          
-          let newValue = this.state.sightsY + increment;
-          if (newValue > this.maxY) {
-            newValue = this.maxY;
-          }
-          this.setState({ sightsY: newValue });
-        }
+        this.sights.current.moveSights(e);
       }
-
-    })
+    });
   }
 
-  onFocus(e) {
+  onShowHint({ x, y }) {
+    this.sights.current.moveSightsTo(x, y);
+  }
+
+  onFocus() {
     this.setState({ isKeyboardFocused: !this.state.isClick });
   }
 
-  onBlur(e) {
+  onBlur() {
     this.setState({ isKeyboardFocused: false });
-  }
-
-  moveSights({ x, y }) {
-    this.setState({
-      sightsX: x - this.iconOffset,
-      sightsY: y - this.iconOffset,
-    });
   }
 
   onMouseUp(e) {
@@ -298,17 +234,17 @@ class Illustration extends Component {
           {this.state.isKeyboardFocused &&
             <Sights
               ref={this.sights}
-              positionX={this.state.sightsX}
-              positionY={this.state.sightsY}
-              height={this.iconSize}
-              width={this.iconSize}
+              checkGuess={this.checkGuess}
+              height={this.props.height}
+              width={this.props.width}
+              scale={this.props.scale}
             />
           }
           <Hint
             height={this.props.height}
             width={this.props.width}
             object={this.props.hint}
-            onShowHint={this.moveSights}
+            onShowHint={this.onShowHint}
             scale={this.props.scale}
           />
           <canvas

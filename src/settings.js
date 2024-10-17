@@ -8,7 +8,6 @@ module.exports = {
   // sizing (pixels)
   legendHeight_mobile: 50,
   legendHeight_desktop: 75,
-
   utilitiesHeight_mobile: 30,
   utilitiesHeight_desktop: 50,
 }
