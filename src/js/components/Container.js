@@ -24,6 +24,9 @@ class Game extends Component {
     // this.saveGame = data => saveGameState(data);
     // this.onGameComplete = this.props.onGameComplete;
 
+    // the DOM element the game is contained in. helps determine view
+    this.container = props.container;
+
     clearGameState();
 
     // fetch any stored data from localStorage
@@ -111,9 +114,10 @@ class Game extends Component {
 
   determineView() {
 
-    const width = document.body.clientWidth
     const view = width < this.props.width ? 'mobile' : 'desktop';
     const scale = view === 'desktop' ? 1 : width / this.props.width;
+    const styles = window.getComputedStyle(this.container);
+    const width = this.container.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
 
     return { view, scale };
   }
