@@ -11,8 +11,8 @@ const root = createRoot(elem);
 root.render(
   <Game
     image={image}
-    height={1224}
-    width={792}
+    height={2448}
+    width={1584}
     objects={[Beanie, Football]}
   />
 );

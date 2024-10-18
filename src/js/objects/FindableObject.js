@@ -1,4 +1,12 @@
 export default class {
+  /**
+   * Create a findable object
+   * @param {*} id             Unique name
+   * @param {*} alt_text       Legend label
+   * @param {*} thumbnail      Thumbnail URL
+   * @param {*} createFunction Function that creates the path
+   * @param {*} hintCoords     Top-left coordinate of hint area { x: 123, y: 123 }
+   */
   constructor(id, alt_text, thumbnail, createFunction = () => {}, hintCoords = {}) {
     this.id = id;
     this.alt_text = alt_text;
@@ -38,8 +46,8 @@ export default class {
     // add hint area
     const hintStart = this.hintCoords;
 
-    const bottom = hintStart.x + 370;
-    const right = hintStart.y + 370
+    const bottom = hintStart.x + 746;
+    const right = hintStart.y + 746;
 
     path.moveTo(hintStart.x, hintStart.y);
     path.lineTo(bottom, hintStart.y);
