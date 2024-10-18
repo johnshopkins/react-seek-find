@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Illustration from './Illustration';
-import Legend from './Legend';
-import Utilities from './Utilities';
+import Illustration from '../Illustration';
+import Legend from '../Legend';
+import Utilities from '../Utilities';
 
 import ResizeWatcher from '@johnshopkins/jhu-wds/src/shared/js/utils/watch-window-resize'
 
-import settings from '../../settings';
+import settings from '../../../settings';
 
 import {
   clearGameState,
   loadGameState,
   saveGameState
-} from '../lib/persistance';
+} from '../../lib/persistance';
 
 class Game extends Component {
 
