@@ -47,8 +47,6 @@ class Illustration extends Component {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.showHint - this.showHint.bind(this);
-    this.zoomIn = this.zoomIn.bind(this);
-    this.zoomOut = this.zoomOut.bind(this);
   }
 
   drawObjects() {
@@ -154,9 +152,6 @@ class Illustration extends Component {
   }
 
   onMouseUp(e) {
-
-    // console.log('MOUSEUP');
-
     if (this.state.isDragging) {
       this.setState({ isDragging: false });
       return;
@@ -166,7 +161,6 @@ class Illustration extends Component {
   }
 
   onMouseDown(e) {
-    // console.log('MOUSEDOWN');
     this.setState({
       isMouseDown: true,
       isClick: true,
@@ -225,8 +219,6 @@ class Illustration extends Component {
 
   showHint() {
 
-    console.log('show hint');
-
     const notFound = Object.values(this.objects).filter(object => !this.props.found.includes(object.id));
     const random = Math.floor(Math.random() * notFound.length);
 
@@ -239,18 +231,6 @@ class Illustration extends Component {
     this.setState({ hint: null }, () => {
       setTimeout(() => this.setState({ hintActive: false }), settings.hintFadeOut);
     });
-  }
-
-  zoomIn() {
-
-    console.log('zoom in');
-
-  }
-
-  zoomOut() {
-
-    console.log('zoom out');
-
   }
 
   render() {
@@ -285,13 +265,17 @@ class Illustration extends Component {
               imageWidth={this.props.width * this.props.scale}
             />
             
-            <button onClick={this.zoomIn}>
+            <button onClick={this.props.zoomIn}>
               <ZoomInIcon tooltip="Zoom in" />
             </button>
 
-            <button onClick={this.zoomOut}>
+            <button onClick={this.props.zoomOut}>
               <ZoomOutIcon tooltip="Zoom out" />
             </button>
+
+            <div style={{ background: '#fff', padding: '5px' }}>
+              {this.props.scale * 100}%
+            </div>
           </div>
 
         </div>

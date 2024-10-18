@@ -7,16 +7,22 @@ export default ({ canvasX, canvasY, containerHeight, containerWidth, imageHeight
 
   const sizeDown = settings.miniMap / imageWidth;
 
+  const mapHeight = imageHeight * sizeDown
+  const mapWidth = settings.miniMap;
+
   const mapStyle = {
-    height: `${imageHeight * sizeDown}px`,
-    width: `${settings.miniMap}px`,
+    height: `${mapHeight}px`,
+    width: `${mapWidth}px`,
   }
+
+  const shownHeight = sizeDown * containerHeight;
+  const shownWidth = sizeDown * containerWidth;
 
   const shownStyle = {
     left: `${Math.abs(canvasX) * sizeDown}px`,
-    height: `${sizeDown * containerHeight}px`,
+    height: `${shownHeight <= mapHeight ? shownHeight : mapHeight}px`,
     top: `${Math.abs(canvasY) * sizeDown}px`,
-    width: `${sizeDown * containerWidth}px`,
+    width: `${shownWidth <= mapWidth ? shownWidth : mapWidth}px`,
   }
 
   return (

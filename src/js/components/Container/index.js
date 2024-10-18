@@ -65,6 +65,8 @@ class Game extends Component {
 
     this.determineView = this.determineView.bind(this);
     this.onFind = this.onFind.bind(this);
+    this.zoomIn = this.zoomIn.bind(this);
+    this.zoomOut = this.zoomOut.bind(this);
   }
 
   componentDidMount() {
@@ -110,6 +112,15 @@ class Game extends Component {
     }
   }
 
+  /**
+   * Why? See: https://stackoverflow.com/questions/588004/is-floating-point-math-broken
+   * @param {number} num 
+   * @returns 
+   */
+  roundUp(num) {
+    return Math.ceil(num * 10) / 10;
+  }
+
   determineView() {
 
     const breakpoint = document.documentElement.clientWidth > settings.breakpoint_desktop ? 'desktop' : 'mobile';
@@ -121,14 +132,16 @@ class Game extends Component {
     // 50 pixel buffer on top/bottom of user's screen
     const height = document.documentElement.clientHeight - 100;
 
-    let scale = width >= this.props.imageWidth ? 1 : width / this.props.imageWidth;
+    // store as integer. why? see: https://stackoverflow.com/questions/588004/is-floating-point-math-broken
+    let scale = (width >= this.props.imageWidth ? 1 : width / this.props.imageWidth) * 100;
+
+    // round to nearest 10
+    scale = Math.ceil(scale / 10) * 10;
 
     // don't show the imag TOO small on first load
-    if (scale < 0.5) {
-      scale = 0.5;
+    if (scale < 40) {
+      scale = 40;
     }
-
-    console.log({ height, scale, width, breakpoint });
 
     return { height, scale, width, breakpoint };
   }
@@ -152,6 +165,34 @@ class Game extends Component {
         found: this.state.found,
         time: this.state.timer,
       })
+    });
+  }
+
+  zoomIn() {
+    this.setState(state => {
+
+      if (state.scale === 100) {
+        return;
+      }
+
+      const newZoom = this.roundUp(state.scale + 10);
+
+      return { scale: newZoom }
+
+    });
+  }
+
+  zoomOut() {
+    this.setState(state => {
+
+      if (state.scale === 10) {
+        return;
+      }
+
+      const newZoom = state.scale - 10;
+
+      return { scale: newZoom }
+
     });
   }
 
@@ -194,8 +235,10 @@ class Game extends Component {
             height={this.props.imageHeight}
             width={this.props.imageWidth}
             onFind={this.onFind}
-            scale={this.state.scale}
+            scale={this.state.scale / 100}
             hintKeepAlive={this.props.hintKeepAlive}
+            zoomIn={this.zoomIn}
+            zoomOut={this.zoomOut}
           />
         </div>
         
