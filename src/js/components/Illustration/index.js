@@ -84,6 +84,7 @@ class Illustration extends Component {
       'canvasY',
       'hint',
       'hintActive',
+      'isDragging',
       'isKeyboardFocused',
       'sightsX',
       'sightsY',
