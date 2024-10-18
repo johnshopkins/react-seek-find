@@ -12,8 +12,8 @@ root.render(
   <Game
     container={elem} // image should always be wider than this element
     image={image}
-    height={2448}
-    width={1584}
+    imageHeight={2448}
+    imageWidth={1584}
     objects={[Beanie, Football]}
   />
 );

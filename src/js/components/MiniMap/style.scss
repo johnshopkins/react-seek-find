@@ -1,5 +1,9 @@
 .mini-map {
   background: var(--jhu-brand-gold);
-  height: 100px;
-  width: 75px;
+  position: relative;
+
+  .shown {
+    background: var(--jhu-grayscale-100);
+    position: absolute;
+  }
 }

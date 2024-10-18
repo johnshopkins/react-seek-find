@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 
 import Background from '../Background';
 import Hint from '../Hint';
+import MiniMap from '../MiniMap';
 import Sights from '../Sights';
-import Utilities from '../Utilities';
+import QuestionIcon from '../Icons/Question';
+import ZoomInIcon from '../Icons/ZoomIn';
+import ZoomOutIcon from '../Icons/ZoomOut';
 
 import settings from '../../../settings';
 
@@ -265,13 +268,33 @@ class Illustration extends Component {
 
     return (
       <>
-        <Utilities
-          gameStyles={this.props.gameStyles}
-          hintActive={this.state.hintActive}
-          showHint={() => this.showHint()}
-          zoomIn={this.zoomIn}
-          zoomOut={this.zoomOut}
-        />
+        <div className="utilities" style={this.props.containerStyles}>
+
+          <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()}>
+            <QuestionIcon tooltip="Give me a hint" />
+          </button>
+
+          <div className="navigation">
+            
+            <MiniMap
+              canvasX={this.state.canvasX}
+              canvasY={this.state.canvasY}
+              containerHeight={this.props.containerHeight}
+              containerWidth={this.props.containerWidth}
+              imageHeight={this.props.height * this.props.scale}
+              imageWidth={this.props.width * this.props.scale}
+            />
+            
+            <button onClick={this.zoomIn}>
+              <ZoomInIcon tooltip="Zoom in" />
+            </button>
+
+            <button onClick={this.zoomOut}>
+              <ZoomOutIcon tooltip="Zoom out" />
+            </button>
+          </div>
+
+        </div>
         <div className="game" style={gameStyles}>
           <Sights
             ref={this.sights}
@@ -325,7 +348,7 @@ Illustration.propTypes = {
   objects: PropTypes.array,
   containerHeight: PropTypes.number.isRequired,
   containerWidth: PropTypes.number.isRequired,
-  gameStyles: PropTypes.object.isRequired,
+  containerStyles: PropTypes.object.isRequired,
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   onFind: PropTypes.func.isRequired,

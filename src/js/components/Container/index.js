@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import Illustration from '../Illustration';
 import Legend from '../Legend';
-import Utilities from '../Utilities';
 
 import ResizeWatcher from '@johnshopkins/jhu-wds/src/shared/js/utils/watch-window-resize'
 
@@ -122,7 +121,7 @@ class Game extends Component {
     // 50 pixel buffer on top/bottom of user's screen
     const height = document.documentElement.clientHeight - 100;
 
-    let scale = width >= this.props.width ? 1 : width / this.props.width;
+    let scale = width >= this.props.imageWidth ? 1 : width / this.props.imageWidth;
 
     // don't show the imag TOO small on first load
     if (scale < 0.5) {
@@ -158,10 +157,7 @@ class Game extends Component {
 
   render() {
 
-    // 50 pixel buffer on top/bottom of user's screen
-    const containerHeight = this.state.height
-
-    // scale should always be < 1 (illustration is larger than container)
+    const containerHeight = this.state.height;
     const containerWidth = this.state.width;
 
     const legendHeight = settings[`legendThumbnailHeight_${this.state.breakpoint}`];
@@ -190,13 +186,13 @@ class Game extends Component {
         <div className="game-container" role="region" aria-label="Seek and Find" style={gameStyles}>
           <Illustration
             found={this.state.found}
-            gameStyles={gameStyles}
+            containerStyles={gameStyles}
             imageSrc={this.props.image}
             objects={Object.values(this.objects)}
             containerHeight={illustrationContainerHeight}
             containerWidth={illustrationContainerWidth}
-            height={this.props.height}
-            width={this.props.width}
+            height={this.props.imageHeight}
+            width={this.props.imageWidth}
             onFind={this.onFind}
             scale={this.state.scale}
             hintKeepAlive={this.props.hintKeepAlive}

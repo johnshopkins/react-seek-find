@@ -14,6 +14,8 @@ module.exports = {
 
   legendBackgroundGap: 5,
 
+  miniMap: 75,
+
   utilitiesIconHeight_mobile: 30,
   utilitiesIconHeight_desktop: 50,
 }
