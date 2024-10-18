@@ -16,16 +16,12 @@
 
     canvas {
       position: absolute;
-      z-index: 2;
-
-      &.background {
-        z-index: 1;
-      }
+      z-index: var(--stack-findable);
 
       &.hint {
         opacity: 0;
         transition: opacity #{$hintFadeOut}ms;
-        z-index: 3;
+        z-index: var(--stack-hint);
 
         &.show {
           opacity: 1;

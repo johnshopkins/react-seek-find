@@ -1,1 +1,6 @@
 @forward '../../../css/main';
+
+img.game-background {
+  position: relative;
+  z-index: var(--stack-background);
+}

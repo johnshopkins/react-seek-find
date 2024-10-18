@@ -1,5 +1,8 @@
 @forward '../../../node_modules/@johnshopkins/jhu-wds/src/shared/scss/variables/colors';
 
 :root {
-
+  --stack-background: 1;
+  --stack-findable: 2;
+  --stack-hint: 3;
+  --stack-utilities: 4;
 }

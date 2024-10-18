@@ -7,6 +7,6 @@ export default ({ height, imageSrc, scale, width }) => {
   const scaledWidth = width * scale;
   const scaledHeight = height * scale;
 
-  return <img src={imageSrc} width={scaledWidth} height={scaledHeight} />
+  return <img className="game-background" src={imageSrc} width={scaledWidth} height={scaledHeight} />
 
 };
