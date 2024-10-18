@@ -2,6 +2,7 @@ import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 
 import Background from '../Background';
+import Findable from '../Findable';
 import Hint from '../Hint';
 import MiniMap from '../MiniMap';
 import Sights from '../Sights';
@@ -20,6 +21,7 @@ class Illustration extends Component {
 
     this.canvas = createRef();
     this.sights = createRef();
+    this.findable = createRef();
 
     this.state = {
       canvasX: 0,
@@ -35,12 +37,9 @@ class Illustration extends Component {
       hintActive: false,
     };
 
-    this.objects = [];
-
-    this.checkGuess = this.checkGuess.bind(this);
-    this.drawObjects = this.drawObjects.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
     this.onBlur = this.onBlur.bind(this);
+    this.onFind = this.onFind.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -49,30 +48,13 @@ class Illustration extends Component {
     this.showHint - this.showHint.bind(this);
   }
 
-  drawObjects() {
-
-    this.state.context.clearRect(0, 0, this.props.width, this.props.height);
-    this.state.context.resetTransform();
-    this.state.context.scale(this.props.scale, this.props.scale);
-
-    this.objects = this.props.objects.map(object => {
-      object.plotted = object.create.call(this, this.state.context, this.props.found.includes(object.id));
-      return object;
-    });
-  }
-
   componentDidMount() {
-
     window.addEventListener('mouseup', e => {
       this.setState({
         isDragging: false,
         isMouseDown: false,
       })
     });
-
-    const context = this.canvas.current.getContext('2d');
-    this.setState({ context: context }, () => this.drawObjects());
-    
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -115,8 +97,6 @@ class Illustration extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    this.drawObjects();
-
     if (this.props.containerWidth !== prevProps.containerWidth || this.props.containerHeight !== prevProps.containerHeight) {
 
       const newX = this.state.canvasX * this.props.scale;
@@ -126,14 +106,9 @@ class Illustration extends Component {
     }
   }
 
-  checkGuess(positionX, positionY) {
-    for (const object of this.objects) {
-      if (this.state.context.isPointInPath(object.plotted, positionX, positionY)) {
-        this.props.onFind(object);
-        this.removeHint();
-        break;
-      }
-    }
+  onFind(object) {
+    this.props.onFind(object);
+    this.removeHint();
   }
 
   onKeyDown(e) {
@@ -158,7 +133,7 @@ class Illustration extends Component {
       return;
     }
 
-    this.checkGuess(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.findable.current.checkGuess(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
   }
 
   onMouseDown(e) {
@@ -171,8 +146,6 @@ class Illustration extends Component {
   }
 
   onMouseMove(e) {
-
-    // this needs to take into account scale
 
     if (this.state.isMouseDown) {
       this.setState({ isDragging: true}, () => {
@@ -220,7 +193,7 @@ class Illustration extends Component {
 
   showHint() {
 
-    const notFound = Object.values(this.objects).filter(object => !this.props.found.includes(object.id));
+    const notFound = Object.values(this.props.objects).filter(object => !this.props.found.includes(object.id));
     const random = Math.floor(Math.random() * notFound.length);
 
     this.setState({ hint: notFound[random], hintActive: true }, () => {
@@ -283,7 +256,7 @@ class Illustration extends Component {
         <div className="game" style={gameStyles}>
           <Sights
             ref={this.sights}
-            checkGuess={this.checkGuess}
+            checkGuess={(x, y) => this.findable.current.checkGuess(x, y)}
             height={this.props.height}
             width={this.props.width}
             scale={this.props.scale}
@@ -296,18 +269,23 @@ class Illustration extends Component {
             onShowHint={coords => this.sights.current.moveSightsTo(coords)}
             scale={this.props.scale}
           />
-          <canvas
-            ref={this.canvas}
+          <Findable
+            onFind={this.onFind}
+            found={this.props.found}
+            objects={this.props.objects}
+            ref={this.findable}
+            scale={this.props.scale}
             height={this.props.height}
             width={this.props.width}
             onMouseDown={this.onMouseDown}
             onMouseMove={this.onMouseMove}
             onMouseUp={this.onMouseUp}
+            onTouchMove={this.onTouchMove}
+            onTouchStart={this.onTouchStart}
             onDragStart={() => false}
             onFocus={this.onFocus}
             onKeyDown={this.onKeyDown}
             onBlur={this.onBlur}
-            tabIndex="0" // makes keyboard focusable
           />
           <Background
             imageSrc={this.props.imageSrc}
