@@ -1,20 +1,23 @@
-import LightbulbIcon from '../Icons/Lightbulb';
+import MiniMap from '../MiniMap';
+import QuestionIcon from '../Icons/Question';
 import ZoomInIcon from '../Icons/ZoomIn';
 import ZoomOutIcon from '../Icons/ZoomOut';
-import MaximizeIcon from '../Icons/Maximize';
-import MinimizeIcon from '../Icons/Minimize';
 
 import './style.scss';
 
-export default ({ enterFullScreen, exitFullScreen, hintActive, mode, scale, showHint, zoomIn, zoomOut }) => {
+export default ({ gameStyles, hintActive, showHint, zoomIn, zoomOut }) => 
+  <div className="utilities" style={gameStyles}>
 
-  return (
-    <div className="utilities">
+    <button className="hint" disabled={hintActive} onClick={showHint}>
+      <QuestionIcon tooltip="Give me a hint" />
+    </button>
 
-      <button disabled={hintActive} onClick={showHint}>
-        <LightbulbIcon tooltip="Give me a hint" />
-      </button>
-
+    <div className="navigation">
+      
+      <MiniMap
+      
+      />
+      
       <button onClick={zoomIn}>
         <ZoomInIcon tooltip="Zoom in" />
       </button>
@@ -22,19 +25,6 @@ export default ({ enterFullScreen, exitFullScreen, hintActive, mode, scale, show
       <button onClick={zoomOut}>
         <ZoomOutIcon tooltip="Zoom out" />
       </button>
-
-      {mode === 'normal' && scale < 1 &&
-        <button onClick={enterFullScreen}>
-          <MaximizeIcon tooltip="Enter full screen" />
-        </button>
-      }
-
-      {mode === 'fullscreen' &&
-        <button onClick={exitFullScreen}>
-          <MinimizeIcon tooltip="Exit full screen" />
-        </button>
-      }
-
     </div>
-  )
-}
+
+  </div>

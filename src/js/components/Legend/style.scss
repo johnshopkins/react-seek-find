@@ -9,8 +9,8 @@ $iconRatio: 0.4;
     
     .thumbnail {
       background: #000;
-      height: #{$legendHeight_mobile}px;
-      width: #{$legendHeight_mobile}px;
+      height: #{$legendThumbnailHeight_mobile}px;
+      width: #{$legendThumbnailHeight_mobile}px;
 
       img {
         width: 100%;
@@ -19,8 +19,8 @@ $iconRatio: 0.4;
       svg {
         background: #fff;
         fill: green;
-        height: calc(#{$legendHeight_mobile}px * $iconRatio);
-        width: calc(#{$legendHeight_mobile}px * $iconRatio);
+        height: calc(#{$legendThumbnailHeight_mobile}px * $iconRatio);
+        width: calc(#{$legendThumbnailHeight_mobile}px * $iconRatio);
         position: absolute;
       }
     }
@@ -29,11 +29,11 @@ $iconRatio: 0.4;
   &.desktop {
     .legend {
       .thumbnail {
-        height: #{$legendHeight_desktop}px;
-        width: #{$legendHeight_desktop}px;
+        height: #{$legendThumbnailHeight_desktop}px;
+        width: #{$legendThumbnailHeight_desktop}px;
         svg {
-          height: calc(#{$legendHeight_desktop}px * $iconRatio);
-          width: calc(#{$legendHeight_desktop}px * $iconRatio);
+          height: calc(#{$legendThumbnailHeight_desktop}px * $iconRatio);
+          width: calc(#{$legendThumbnailHeight_desktop}px * $iconRatio);
         }
       }
     }

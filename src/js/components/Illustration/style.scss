@@ -1,32 +1,28 @@
 @forward '../../../css/main';
 
-.game-container {
-  overflow: hidden;
+.game {
+  cursor: crosshair;
+  position: relative;
 
-  .game {
-    cursor: crosshair;
-    position: relative;
+  &:focus {
+    // canvas element hides this?
+    // from: https://css-tricks.com/copy-the-browsers-native-focus-styles/
+    outline: medium auto Highlight;
+    outline: 5px auto -webkit-focus-ring-color;
+  }
 
-    &:focus {
-      // canvas element hides this?
-      // from: https://css-tricks.com/copy-the-browsers-native-focus-styles/
-      outline: medium auto Highlight;
-      outline: 5px auto -webkit-focus-ring-color;
-    }
+  canvas {
+    position: absolute;
+    z-index: var(--stack-findable);
 
-    canvas {
-      position: absolute;
-      z-index: var(--stack-findable);
+    &.hint {
+      opacity: 0;
+      transition: opacity #{$hintFadeOut}ms;
+      z-index: var(--stack-hint);
 
-      &.hint {
-        opacity: 0;
-        transition: opacity #{$hintFadeOut}ms;
-        z-index: var(--stack-hint);
-
-        &.show {
-          opacity: 1;
-          transition: opacity #{$hintFadeIn}ms;
-        }
+      &.show {
+        opacity: 1;
+        transition: opacity #{$hintFadeIn}ms;
       }
     }
   }

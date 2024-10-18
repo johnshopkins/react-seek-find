@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import Background from '../Background';
 import Hint from '../Hint';
 import Sights from '../Sights';
+import Utilities from '../Utilities';
+
+import settings from '../../../settings';
 
 import './style.scss';
 
@@ -25,19 +28,24 @@ class Illustration extends Component {
       dragStartX: null,
       dragStartY: null,
       isMouseDown: false,
+      hint: null,
+      hintActive: false,
     };
 
     this.objects = [];
 
     this.checkGuess = this.checkGuess.bind(this);
     this.drawObjects = this.drawObjects.bind(this);
+    this.moveCanvas = this.moveCanvas.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
-    this.onShowHint = this.onShowHint.bind(this);
+    this.showHint - this.showHint.bind(this);
+    this.zoomIn = this.zoomIn.bind(this);
+    this.zoomOut = this.zoomOut.bind(this);
   }
 
   drawObjects() {
@@ -73,6 +81,8 @@ class Illustration extends Component {
     const stateVars = [
       'canvasX',
       'canvasY',
+      'hint',
+      'hintActive',
       'isKeyboardFocused',
       'sightsX',
       'sightsY',
@@ -80,7 +90,7 @@ class Illustration extends Component {
 
     for (const stateVar of stateVars) {
       if (nextState[stateVar] !== this.state[stateVar]) {
-        console.log(`state.${stateVar} changed`);
+        // console.log(`state.${stateVar} changed`);
         return true;
       }
     }
@@ -89,13 +99,12 @@ class Illustration extends Component {
       'found',
       'containerHeight',
       'containerWidth',
-      'hint',
       'scale',
     ]
 
     for (const propVar of propVars) {
       if (nextProps[propVar] !== this.props[propVar]) {
-        console.log(`props.${propVar} changed`);
+        // console.log(`props.${propVar} changed`);
         return true;
       }
     }
@@ -103,14 +112,23 @@ class Illustration extends Component {
     return false;
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.drawObjects();
+
+    if (this.props.containerWidth !== prevProps.containerWidth || this.props.containerHeight !== prevProps.containerHeight) {
+
+      const newX = this.state.canvasX * this.props.scale;
+      const newY = this.state.canvasY * this.props.scale;
+
+      this.moveCanvas(newX, newY);
+    }
   }
 
   checkGuess(positionX, positionY) {
     for (const object of this.objects) {
       if (this.state.context.isPointInPath(object.plotted, positionX, positionY)) {
         this.props.onFind(object);
+        this.removeHint();
         break;
       }
     }
@@ -124,10 +142,6 @@ class Illustration extends Component {
     });
   }
 
-  onShowHint({ x, y }) {
-    this.sights.current.moveSightsTo(x, y);
-  }
-
   onFocus() {
     this.setState({ isKeyboardFocused: !this.state.isClick });
   }
@@ -138,6 +152,8 @@ class Illustration extends Component {
 
   onMouseUp(e) {
 
+    // console.log('MOUSEUP');
+
     if (this.state.isDragging) {
       this.setState({ isDragging: false });
       return;
@@ -147,6 +163,7 @@ class Illustration extends Component {
   }
 
   onMouseDown(e) {
+    // console.log('MOUSEDOWN');
     this.setState({
       isMouseDown: true,
       isClick: true,
@@ -156,6 +173,8 @@ class Illustration extends Component {
   }
 
   onMouseMove(e) {
+
+    // this needs to take into account scale
 
     if (this.state.isMouseDown) {
       this.setState({ isDragging: true}, () => {
@@ -167,42 +186,71 @@ class Illustration extends Component {
         const diffX = this.state.dragStartX - e.nativeEvent.offsetX;
         const diffY = this.state.dragStartY - e.nativeEvent.offsetY;
 
-        // set min/max drag values
-
         let newX = this.state.canvasX - diffX;
         let newY = this.state.canvasY - diffY;
-        
-        if (newX > 0) {
-          newX = 0
-        } else if (newX < -Math.abs(this.props.width - this.props.containerWidth)) {
-          newX = -Math.abs(this.props.width - this.props.containerWidth);
-        }
 
-        if (newY > 0) {
-          newY = 0
-        } else if (newY < -Math.abs(this.props.height - this.props.containerHeight)) {
-          newY = -Math.abs(this.props.height - this.props.containerHeight);
-        }
-
-        this.setState({
-          canvasX: newX,
-          canvasY: newY,
-        });
+        this.moveCanvas(newX, newY);
         
       });
     }
 
   }
 
+  moveCanvas(newX, newY) {
+
+    // scaled dimensions of image
+    const scaledHeight = this.props.height * this.props.scale;
+    const scaledWidth = this.props.width * this.props.scale;
+
+    if (newX > 0) {
+      newX = 0
+    } else if (newX < -Math.abs(scaledWidth - this.props.containerWidth)) {
+      newX = -Math.abs(scaledWidth - this.props.containerWidth);
+    }
+
+    if (newY > 0) {
+      newY = 0
+    } else if (newY < -Math.abs(scaledHeight - this.props.containerHeight)) {
+      newY = -Math.abs(scaledHeight - this.props.containerHeight);
+    }
+
+    this.setState({
+      canvasX: newX,
+      canvasY: newY,
+    });
+  }
+
+  showHint() {
+
+    console.log('show hint');
+
+    const notFound = Object.values(this.objects).filter(object => !this.props.found.includes(object.id));
+    const random = Math.floor(Math.random() * notFound.length);
+
+    this.setState({ hint: notFound[random], hintActive: true }, () => {
+      setTimeout(() => this.removeHint(), settings.hintFadeIn + this.props.hintKeepAlive);
+    });
+  }
+
+  removeHint() {
+    this.setState({ hint: null }, () => {
+      setTimeout(() => this.setState({ hintActive: false }), settings.hintFadeOut);
+    });
+  }
+
+  zoomIn() {
+
+    console.log('zoom in');
+
+  }
+
+  zoomOut() {
+
+    console.log('zoom out');
+
+  }
+
   render() {
-
-    console.log('illustration render');
-    console.log('---');
-
-    const containerStyles = {
-      height: `${this.props.containerHeight}px`,
-      width: `${this.props.containerWidth}px`,
-    };
 
     const gameStyles = {
       height: `${this.props.height}px`,
@@ -215,42 +263,43 @@ class Illustration extends Component {
       gameStyles.cursor = 'grabbing';
     }
 
-    console.log('hint?', this.props.hint);
-
     return (
-      <div className="game-container" role="region" aria-label="Seek and Find" style={containerStyles}>
-        <div
-          className="game"
-          style={gameStyles}
-          onMouseDown={this.onMouseDown}
-          onMouseMove={this.onMouseMove}
-          onMouseUp={this.onMouseUp}
-          onDragStart={() => false}
-          onFocus={this.onFocus}
-          onKeyDown={this.onKeyDown}
-          onBlur={this.onBlur}
-          tabIndex="0" // makes keyboard focusable
-        >
-          {this.state.isKeyboardFocused &&
-            <Sights
-              ref={this.sights}
-              checkGuess={this.checkGuess}
-              height={this.props.height}
-              width={this.props.width}
-              scale={this.props.scale}
-            />
-          }
+      <>
+        <Utilities
+          gameStyles={this.props.gameStyles}
+          hintActive={this.state.hintActive}
+          showHint={() => this.showHint()}
+          zoomIn={this.zoomIn}
+          zoomOut={this.zoomOut}
+        />
+        <div className="game" style={gameStyles}>
+          <Sights
+            ref={this.sights}
+            checkGuess={this.checkGuess}
+            height={this.props.height}
+            width={this.props.width}
+            scale={this.props.scale}
+            show={this.state.isKeyboardFocused}
+          />
           <Hint
             height={this.props.height}
             width={this.props.width}
-            object={this.props.hint}
-            onShowHint={this.onShowHint}
+            object={this.state.hint}
+            onShowHint={coords => this.sights.current.moveSightsTo(coords)}
             scale={this.props.scale}
           />
           <canvas
             ref={this.canvas}
             height={this.props.height}
             width={this.props.width}
+            onMouseDown={this.onMouseDown}
+            onMouseMove={this.onMouseMove}
+            onMouseUp={this.onMouseUp}
+            onDragStart={() => false}
+            onFocus={this.onFocus}
+            onKeyDown={this.onKeyDown}
+            onBlur={this.onBlur}
+            tabIndex="0" // makes keyboard focusable
           />
           <Background
             imageSrc={this.props.imageSrc}
@@ -259,7 +308,7 @@ class Illustration extends Component {
             scale={this.props.scale}
           />
         </div>
-      </div>
+      </>
     );
 
   }
@@ -276,6 +325,7 @@ Illustration.propTypes = {
   objects: PropTypes.array,
   containerHeight: PropTypes.number.isRequired,
   containerWidth: PropTypes.number.isRequired,
+  gameStyles: PropTypes.object.isRequired,
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   onFind: PropTypes.func.isRequired,

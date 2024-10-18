@@ -5,9 +5,15 @@ module.exports = {
   hintFadeIn: 500,
   hintFadeOut: 3000,
 
-  // sizing (pixels)
-  legendHeight_mobile: 50,
-  legendHeight_desktop: 75,
-  utilitiesHeight_mobile: 30,
-  utilitiesHeight_desktop: 50,
+  // breakpoints
+  breakpoint_desktop: 1000,
+
+  // sizing (in pixels)
+  legendThumbnailHeight_mobile: 50,
+  legendThumbnailHeight_desktop: 75,
+
+  legendBackgroundGap: 5,
+
+  utilitiesIconHeight_mobile: 30,
+  utilitiesIconHeight_desktop: 50,
 }

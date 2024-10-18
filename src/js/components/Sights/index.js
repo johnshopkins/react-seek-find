@@ -4,7 +4,7 @@ import SightsIcon from '../Icons/Sights';
 
 import './style.scss';
 
-export default forwardRef(({ checkGuess, height, scale, width }, ref) => {
+export default forwardRef(({ checkGuess, height, scale, show, width }, ref) => {
 
   const iconSize = 36 * scale;
   const iconOffset = iconSize / 2;
@@ -53,7 +53,7 @@ export default forwardRef(({ checkGuess, height, scale, width }, ref) => {
 
         let newValue = positionX + increment;
         if (newValue > maxX) {
-          console.log('new value is less than maxX');
+          // console.log('new value is less than maxX');
           newValue = maxX;
         }
 
@@ -91,13 +91,14 @@ export default forwardRef(({ checkGuess, height, scale, width }, ref) => {
         setScaledPositionY(getScaledPosition(newValue));
       }
     },
-    moveSightsTo(x, y) {
+    moveSightsTo({ x, y }) {
       setPositionX(getScaledPosition('x', x - iconOffset));
       setPositionY(getScaledPosition('y', y - iconOffset));
     }
   }), [positionX, positionY, scale]);
 
   const style = {
+    display: show ? 'block' : 'none',
     left: `${scaledPositionX}px`,
     top: `${scaledPositionY}px`,
     height: `${iconSize}px`,

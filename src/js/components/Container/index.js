@@ -15,6 +15,8 @@ import {
   saveGameState
 } from '../../lib/persistance';
 
+import './style.scss';
+
 class Game extends Component {
 
   constructor(props) {
@@ -49,25 +51,21 @@ class Game extends Component {
       }
     });
 
-    const { mode, scale } = this.determineScaleAndMode();
+    const { breakpoint, height, scale, width } = this.determineView();
 
     // combine stored and default state
     this.state = {
-      // objects,
+      breakpoint,
+      height,
       hint: null,
       hintActive: false,
-      mode,
       scale,
+      width,
       ...userData,
     };
 
-    this.enterFullScreen = this.enterFullScreen.bind(this);
-    this.exitFullScreen = this.exitFullScreen.bind(this);
-    this.determineScaleAndMode = this.determineScaleAndMode.bind(this);
+    this.determineView = this.determineView.bind(this);
     this.onFind = this.onFind.bind(this);
-    this.showHint - this.showHint.bind(this);
-    this.zoomIn = this.zoomIn.bind(this);
-    this.zoomOut = this.zoomOut.bind(this);
   }
 
   componentDidMount() {
@@ -75,33 +73,33 @@ class Game extends Component {
     ResizeWatcher.startWatching();
 
     window.addEventListener('jhu:winresize:done', e => {
-      const { mode, scale  } = this.determineScaleAndMode();
-      this.setState({ mode, scale });
+      const { breakpoint, height, scale, width } = this.determineView();
+      this.setState({ breakpoint, height, scale, width });
     })
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  // shouldComponentUpdate(nextProps, nextState) {
 
-    console.log('---');
-    console.log('should container update?');
-    console.log('---');
+  //   console.log('---');
+  //   console.log('should container update?');
+  //   console.log('---');
 
-    for (const stateVar of Object.keys(nextState)) {
-      if (nextState[stateVar] !== this.state[stateVar]) {
-        console.log(`state.${stateVar} changed`);
-      }
-    }
+  //   for (const stateVar of Object.keys(nextState)) {
+  //     if (nextState[stateVar] !== this.state[stateVar]) {
+  //       console.log(`state.${stateVar} changed`);
+  //     }
+  //   }
 
-    for (const propVar of Object.keys(nextProps)) {
-      if (nextProps[propVar] !== this.props[propVar]) {
-        console.log(`props.${propVar} changed`);
-      }
-    }
+  //   for (const propVar of Object.keys(nextProps)) {
+  //     if (nextProps[propVar] !== this.props[propVar]) {
+  //       console.log(`props.${propVar} changed`);
+  //     }
+  //   }
 
-    console.log('---');
+  //   console.log('---');
 
-    return true;
-  }
+  //   return true;
+  // }
 
   componentDidUpdate(prevProps, prevState) {
     if (
@@ -113,25 +111,27 @@ class Game extends Component {
     }
   }
 
-  /**
-   * Determines the scale and mode (normal or fullscreen) of the application
-   * @returns object
-   */
-  determineScaleAndMode() {
+  determineView() {
 
+    const breakpoint = document.documentElement.clientWidth > settings.breakpoint_desktop ? 'desktop' : 'mobile';
+
+    // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
     const width = this.container.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
 
-    const scale = width >= this.props.width ? 1 : width / this.props.width;
+    // 50 pixel buffer on top/bottom of user's screen
+    const height = document.documentElement.clientHeight - 100;
 
-    let mode = typeof this.state !== 'undefined' ? this.state.mode : 'normal';
+    let scale = width >= this.props.width ? 1 : width / this.props.width;
 
-    // switch back to normal mode if going from scaled->unscaled view
-    if (typeof this.state !== 'undefined' && this.state.scale < 1 && mode === 'fullscreen') {
-      mode = 'normal';
+    // don't show the imag TOO small on first load
+    if (scale < 0.5) {
+      scale = 0.5;
     }
 
-    return { mode, scale };
+    console.log({ height, scale, width, breakpoint });
+
+    return { height, scale, width, breakpoint };
   }
 
   onFind(foundObject) {
@@ -149,111 +149,60 @@ class Game extends Component {
       return { found }
 
     }, () => {
-
       saveGameState({
         found: this.state.found,
         time: this.state.timer,
       })
-
-      // if (found.id === this.state.hint) {
-        this.removeHint();
-      // }
-      
     });
-  }
-
-  showHint() {
-
-    const notFound = Object.values(this.objects).filter(object => !this.state.found.includes(object.id));
-
-    const random = Math.floor(Math.random() * notFound.length);
-
-    this.setState({ hint: notFound[random].id, hintActive: true }, () => {
-      setTimeout(() => this.removeHint(), settings.hintFadeIn + this.props.hintKeepAlive);
-    });
-  }
-
-  removeHint() {
-    this.setState({ hint: null }, () => {
-      setTimeout(() => this.setState({ hintActive: false }), settings.hintFadeOut);
-    });
-  }
-
-  zoomIn() {
-
-    console.log('zoom in');
-
-  }
-
-  zoomOut() {
-
-    console.log('zoom out');
-
-  }
-
-  enterFullScreen() {
-    console.log('enter full screen');
-    this.setState({ mode: 'fullscreen' });
-  }
-
-  exitFullScreen() {
-    console.log('exit full screen');
-    this.setState({ mode: 'normal' });
   }
 
   render() {
 
-    console.log('container render');
-    console.log('---');
+    // 50 pixel buffer on top/bottom of user's screen
+    const containerHeight = this.state.height
 
-    // const containerWidth = this.props.width; // illustration width
-    // const containerWidth = (document.body.clientWidth / 2);
-    const containerWidth = this.state.scale === 1 ? this.props.width : (this.props.width * this.state.scale);
+    // scale should always be < 1 (illustration is larger than container)
+    const containerWidth = this.state.width;
 
-    // find height
-    const widthRatio = containerWidth / this.props.width;
+    const legendHeight = settings[`legendThumbnailHeight_${this.state.breakpoint}`];
 
-    const legendHeight = settings[`legendHeight_${this.state.breakpoint}`];
-    const utilitiesHeight = settings[`utilitiesHeight_${this.state.breakpoint}`];
-
-    const containerHeight = (this.props.height * widthRatio) + legendHeight + utilitiesHeight;
-
+    const illustrationContainerHeight = containerHeight - legendHeight;
     const illustrationContainerWidth = containerWidth;
-    const illustrationContainerHeight = this.props.height * widthRatio;
 
-    const styles = {
+
+    // contains legend
+    const containerStyles = {
       height: `${containerHeight}px`,
       width: `${containerWidth}px`,
+    }
+
+    const gameStyles = {
+      height: `${illustrationContainerHeight}px`,
+      width: `${illustrationContainerWidth}px`,
     };
 
     return (
-      <div className="container" style={styles}>
+      <div className={['container', this.state.breakpoint].join(' ')} style={containerStyles}>
         <Legend
           found={this.state.found}
           objects={Object.values(this.objects)}
         />
-        <Utilities
-          hintActive={this.state.hintActive}
-          enterFullScreen={this.enterFullScreen}
-          exitFullScreen={this.exitFullScreen}
-          mode={this.state.mode}
-          scale={this.state.scale}
-          showHint={() => this.showHint()}
-          zoomIn={this.zoomIn}
-          zoomOut={this.zoomOut}
-        />
-        <Illustration
-          found={this.state.found}
-          imageSrc={this.props.image}
-          objects={Object.values(this.objects)}
-          containerHeight={illustrationContainerHeight}
-          containerWidth={illustrationContainerWidth}
-          height={this.props.height}
-          width={this.props.width}
-          onFind={this.onFind}
-          hint={this.objects[this.state.hint]}
-          scale={this.state.scale}
-        />
+        <div className="game-container" role="region" aria-label="Seek and Find" style={gameStyles}>
+          <Illustration
+            found={this.state.found}
+            gameStyles={gameStyles}
+            imageSrc={this.props.image}
+            objects={Object.values(this.objects)}
+            containerHeight={illustrationContainerHeight}
+            containerWidth={illustrationContainerWidth}
+            height={this.props.height}
+            width={this.props.width}
+            onFind={this.onFind}
+            scale={this.state.scale}
+            hintKeepAlive={this.props.hintKeepAlive}
+          />
+        </div>
+        
       </div>
     );
   }
