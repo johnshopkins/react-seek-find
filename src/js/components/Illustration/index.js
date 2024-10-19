@@ -97,8 +97,15 @@ class Illustration extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.containerWidth !== prevProps.containerWidth || this.props.containerHeight !== prevProps.containerHeight) {
 
+    // conditions that require canvasX and canvasY to be recalculated
+    const conditions = (
+      this.props.containerWidth !== prevProps.containerWidth ||
+      this.props.containerHeight !== prevProps.containerHeight ||
+      this.props.scale !== prevProps.scale
+    );
+
+    if (conditions) {
       const newX = this.state.canvasX * this.props.scale;
       const newY = this.state.canvasY * this.props.scale;
 
