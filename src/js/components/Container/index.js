@@ -50,7 +50,7 @@ class Game extends Component {
       }
     });
 
-    const { breakpoint, height, scale, width } = this.determineView();
+    const { breakpoint, height, maxZoomOut, scale, width } = this.determineView();
 
     // combine stored and default state
     this.state = {
@@ -58,6 +58,9 @@ class Game extends Component {
       height,
       hint: null,
       hintActive: false,
+      maxZoomOut: maxZoomOut,
+      zoomInLimitReached: scale === 100, // the farthest IN you can zoom
+      zoomOutLimitReached: scale === maxZoomOut, // the farthest OUT you can zoom
       scale,
       width,
       ...userData,
@@ -117,8 +120,8 @@ class Game extends Component {
    * @param {number} num 
    * @returns 
    */
-  roundUp(num) {
-    return Math.ceil(num * 10) / 10;
+  round(num) {
+    return Math.round(num / 10) * 10;
   }
 
   determineView() {
@@ -133,17 +136,20 @@ class Game extends Component {
     const height = document.documentElement.clientHeight - 100;
 
     // store as integer. why? see: https://stackoverflow.com/questions/588004/is-floating-point-math-broken
-    let scale = (width >= this.props.imageWidth ? 1 : width / this.props.imageWidth) * 100;
+    const maxZoomOut = (width >= this.props.imageWidth ? 1 : width / this.props.imageWidth) * 100;
 
+    // zoom to the nearest 10 -- is this too close?
     // round to nearest 10
-    scale = Math.ceil(scale / 10) * 10;
+    let scale = Math.ceil(maxZoomOut / 10) * 10;
+
+    console.log('scale', scale);
 
     // don't show the imag TOO small on first load
-    if (scale < 40) {
-      scale = 40;
+    if (scale < 60) {
+      scale = 60;
     }
 
-    return { height, scale, width, breakpoint };
+    return { breakpoint, height, maxZoomOut, scale, width };
   }
 
   onFind(foundObject) {
@@ -172,12 +178,16 @@ class Game extends Component {
     this.setState(state => {
 
       if (state.scale === 100) {
-        return;
+        return { zoomInLimitReached: true };
       }
 
-      const newZoom = this.roundUp(state.scale + 10);
+      const newZoom = this.round(state.scale + 10);
 
-      return { scale: newZoom }
+      return {
+        scale: newZoom,
+        zoomInLimitReached: false,
+        zoomOutLimitReached: false
+      }
 
     });
   }
@@ -185,13 +195,21 @@ class Game extends Component {
   zoomOut() {
     this.setState(state => {
 
-      if (state.scale === 10) {
-        return;
+      if (state.scale === this.state.maxZoomOut) {
+        return { zoomOutLimitReached: true };
       }
 
-      const newZoom = state.scale - 10;
+      let newZoom = this.round(state.scale - 10);
 
-      return { scale: newZoom }
+      if (newZoom < this.state.maxZoomOut) {
+        newZoom = this.state.maxZoomOut;
+      }
+
+      return {
+        scale: newZoom,
+        zoomInLimitReached: false,
+        zoomOutLimitReached: false
+       }
 
     });
   }
@@ -239,6 +257,8 @@ class Game extends Component {
             hintKeepAlive={this.props.hintKeepAlive}
             zoomIn={this.zoomIn}
             zoomOut={this.zoomOut}
+            zoomInLimitReached={this.state.zoomInLimitReached}
+            zoomOutLimitReached={this.state.zoomOutLimitReached}
           />
         </div>
         
