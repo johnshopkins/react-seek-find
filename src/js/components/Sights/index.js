@@ -105,5 +105,5 @@ export default forwardRef(({ checkGuess, height, scale, show, width }, ref) => {
     width: `${iconSize}px`
   };
 
-  return <SightsIcon style={style} />
+  return <SightsIcon className="sights" style={style} />
 });

@@ -246,11 +246,11 @@ class Illustration extends Component {
               imageWidth={this.props.width * this.props.scale}
             />
             
-            <button onClick={this.props.zoomIn} disabled={this.props.zoomInLimitReached}>
+            <button className="zoom-in" onClick={this.props.zoomIn} disabled={this.props.zoomInLimitReached}>
               <ZoomInIcon tooltip="Zoom in" />
             </button>
 
-            <button onClick={this.props.zoomOut} disabled={this.props.zoomOutLimitReached}>
+            <button className="zoom-out" onClick={this.props.zoomOut} disabled={this.props.zoomOutLimitReached}>
               <ZoomOutIcon tooltip="Zoom out" />
             </button>
 
