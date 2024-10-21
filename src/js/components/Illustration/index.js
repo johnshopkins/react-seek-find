@@ -190,18 +190,20 @@ class Illustration extends Component {
   }
 
   onTouchStart(e) {
-    if (e.targetTouches.length === 2 && e.changedTouches.length === 2) {
-      // touch events do not give offset relative to target element,
-      // so we need to calculate them to get offset values like mouse events
-      const bcr = e.target.getBoundingClientRect();
-      const offsetX = e.targetTouches[0].clientX - bcr.x;
-      const offsetY = e.targetTouches[0].clientY - bcr.y;
 
-      this.setState({
-        dragStartX: offsetX,
-        dragStartY: offsetY,
-      });
-    }
+    // do not limit this event to 2-touch events because an event
+    // can go from 1-touch to 2-touch without triggering touchstart again
+
+    // touch events do not give offset relative to target element,
+    // so we need to calculate them to get offset values like mouse events
+    const bcr = e.target.getBoundingClientRect();
+    const offsetX = e.targetTouches[0].clientX - bcr.x;
+    const offsetY = e.targetTouches[0].clientY - bcr.y;
+
+    this.setState({
+      dragStartX: offsetX,
+      dragStartY: offsetY,
+    });
   }
 
   moveCanvas(newX, newY) {
