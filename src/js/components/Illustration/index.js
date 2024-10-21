@@ -48,15 +48,6 @@ class Illustration extends Component {
     this.showHint - this.showHint.bind(this);
   }
 
-  componentDidMount() {
-    window.addEventListener('mouseup', e => {
-      this.setState({
-        isDragging: false,
-        isMouseDown: false,
-      })
-    });
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
 
     // look for certain changes that should update component
@@ -150,6 +141,13 @@ class Illustration extends Component {
       dragStartX: e.nativeEvent.offsetX,
       dragStartY: e.nativeEvent.offsetY,
     });
+
+    window.addEventListener('mouseup', e => {
+      this.setState({
+        isDragging: false,
+        isMouseDown: false,
+      })
+    }, { once: true });
   }
 
   onMouseMove(e) {
