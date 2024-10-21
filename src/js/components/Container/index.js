@@ -154,13 +154,14 @@ class Game extends Component {
     const height = document.documentElement.clientHeight - 100;
 
     // store as integer. why? see: https://stackoverflow.com/questions/588004/is-floating-point-math-broken
-    const maxZoomOut = (width >= this.props.imageWidth ? 1 : width / this.props.imageWidth) * 100;
+    const maxZoomOutWidth = (width >= this.props.imageWidth ? 1 : width / this.props.imageWidth) * 100;
+    const maxZoomOutHeight = (height >= this.props.imageHeight ? 1 : height / this.props.imageHeight) * 100;
 
-    // zoom to the nearest 10 -- is this too close?
-    // round to nearest 10
-    let scale = Math.ceil(maxZoomOut / 10) * 10;
+    const maxZoomOut = Math.max(maxZoomOutWidth, maxZoomOutHeight)
 
     console.log('scale', scale);
+    // round to nearest 10 and add 20 so the zoom isn't too close to the max zoom out
+    let scale = (Math.ceil(maxZoomOut / 10) * 10) + 20;
 
     // don't show the imag TOO small on first load
     if (scale < 60) {
