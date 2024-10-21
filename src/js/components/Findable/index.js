@@ -57,7 +57,6 @@ export default forwardRef(({
       onMouseDown={onMouseDown}
       onTouchMove={onTouchMove}
       onTouchStart={onTouchStart}
-      onDragStart={() => false}
       onFocus={onFocus}
       onKeyDown={onKeyDown}
       onBlur={onBlur}
