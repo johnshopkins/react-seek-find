@@ -1,17 +1,28 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
-import './style.scss';
-
-export default forwardRef(({ found, height, objects, scale, width, onMouseDown, onMouseMove, onMouseUp, onFocus, onKeyDown, onBlur, onFind }, ref) => {
+export default forwardRef(({
+  found,
+  height,
+  objects,
+  onBlur,
+  onFind,
+  onFocus,
+  onKeyDown,
+  onMouseDown,
+  onMouseMove,
+  onMouseUp,
+  onTouchMove,
+  onTouchStart,
+  scale,
+  width,
+}, ref) => {
 
   const canvasRef = useRef(null);
 
   let plottedObjects = [];
 
   useEffect(() => {
-
-    console.log('plot objects');
-
+    
     const context = canvasRef.current.getContext('2d');
 
     context.clearRect(0, 0, width, height);
@@ -43,19 +54,22 @@ export default forwardRef(({ found, height, objects, scale, width, onMouseDown, 
   return (
     <canvas
       ref={canvasRef}
-      // className={classes.join(' ')}
       height={height}
       width={width}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
-      // onTouchMove={onTouchMove}
-      // onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchStart={onTouchStart}
       onDragStart={() => false}
       onFocus={onFocus}
       onKeyDown={onKeyDown}
       onBlur={onBlur}
       tabIndex="0"
+      style={{
+        // stops the browser from its scrolling on the element
+        touchAction: 'none'
+      }}
     />
   )
 

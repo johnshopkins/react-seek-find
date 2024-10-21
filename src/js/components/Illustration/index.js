@@ -46,6 +46,8 @@ class Illustration extends Component {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.showHint - this.showHint.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -169,7 +171,38 @@ class Illustration extends Component {
         
       });
     }
+  }
 
+  onTouchMove(e) {
+    if (e.targetTouches.length === 2 && e.changedTouches.length === 2) {
+      const bcr = e.target.getBoundingClientRect();
+      const offsetX = e.targetTouches[0].clientX - bcr.x;
+      const offsetY = e.targetTouches[0].clientY - bcr.y;
+
+      const diffX = this.state.dragStartX - offsetX;
+      const diffY = this.state.dragStartY - offsetY;
+
+      let newX = this.state.canvasX - diffX;
+      let newY = this.state.canvasY - diffY;
+
+      this.moveCanvas(newX, newY);
+    }
+  }
+
+  onTouchStart(e) {
+
+    // touch events do not give offset relative to target element,
+    // so we need to calculate them to get offset values like mouse events
+    const bcr = e.target.getBoundingClientRect();
+    const offsetX = e.targetTouches[0].clientX - bcr.x;
+    const offsetY = e.targetTouches[0].clientY - bcr.y;
+
+    console.log('touchstart offset', offsetX, offsetY);
+
+    this.setState({
+      dragStartX: offsetX,
+      dragStartY: offsetY,
+    });
   }
 
   moveCanvas(newX, newY) {
