@@ -63,6 +63,8 @@ class Game extends Component {
       zoomOutLimitReached: scale === maxZoomOut, // the farthest OUT you can zoom
       scale,
       width,
+      browserHeight: document.documentElement.clientHeight,
+      browserWidth: document.documentElement.clientWidth,
       ...userData,
     };
 
@@ -77,8 +79,24 @@ class Game extends Component {
     ResizeWatcher.startWatching();
 
     window.addEventListener('jhu:winresize:done', e => {
-      const { breakpoint, height, scale, width } = this.determineView();
-      this.setState({ breakpoint, height, scale, width });
+
+      const newHeight = document.documentElement.clientHeight;
+      const newWidth = document.documentElement.clientWidth;
+
+      // make sure the size actually changed (iOS triggers them randomly at times)
+      // see: https://johnkavanagh.co.uk/articles/understanding-phantom-window-resize-events-in-ios/
+      if (this.state.browserHeight !== newHeight || this.state.browserWidth !== newWidth) {
+        const { breakpoint, height, maxZoomOut, scale, width } = this.determineView();
+        this.setState({
+          browserHeight: newHeight,
+          browserWidth: newWidth,
+          breakpoint,
+          height,
+          maxZoomOut,
+          scale,
+          width
+        });
+      }
     })
   }
 
