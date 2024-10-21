@@ -55,7 +55,6 @@ export default forwardRef(({
       height={height}
       width={width}
       onMouseDown={onMouseDown}
-      onTouchMove={onTouchMove}
       onTouchStart={onTouchStart}
       onFocus={onFocus}
       onKeyDown={onKeyDown}

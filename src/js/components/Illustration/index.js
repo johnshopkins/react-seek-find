@@ -196,10 +196,22 @@ class Illustration extends Component {
     const offsetX = e.targetTouches[0].clientX - bcr.x;
     const offsetY = e.targetTouches[0].clientY - bcr.y;
 
-    this.setState({
+    const state = {
       dragStartX: offsetX,
       dragStartY: offsetY,
-    });
+    };
+    this.setState(state);
+
+    window.addEventListener('touchmove', this.onTouchMove);
+
+    // reset state vars
+    window.addEventListener('touchend', e => {
+      this.setState({
+        prevTouchDistance: null,
+        prevTouchEvent: null,
+      })
+      window.removeEventListener('touchmove', this.onTouchMove);
+    }, { once: true });
   }
 
   moveCanvas(newX, newY) {
