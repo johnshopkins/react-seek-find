@@ -174,19 +174,23 @@ class Illustration extends Component {
   }
 
   onTouchMove(e) {
-    if (e.targetTouches.length === 2 && e.changedTouches.length === 2) {
-      const bcr = e.target.getBoundingClientRect();
-      const offsetX = e.targetTouches[0].clientX - bcr.x;
-      const offsetY = e.targetTouches[0].clientY - bcr.y;
 
-      const diffX = this.state.dragStartX - offsetX;
-      const diffY = this.state.dragStartY - offsetY;
-
-      let newX = this.state.canvasX - diffX;
-      let newY = this.state.canvasY - diffY;
-
-      this.moveCanvas(newX, newY);
+    if (e.targetTouches.length !== 2 && e.changedTouches.length !== 2) {
+      console.log('do not respond to this touchmove event');
+      return;
     }
+
+    const bcr = e.target.getBoundingClientRect();
+    const offsetX = e.targetTouches[0].clientX - bcr.x;
+    const offsetY = e.targetTouches[0].clientY - bcr.y;
+
+    const diffX = this.state.dragStartX - offsetX;
+    const diffY = this.state.dragStartY - offsetY;
+
+    let newX = this.state.canvasX - diffX;
+    let newY = this.state.canvasY - diffY;
+
+    this.moveCanvas(newX, newY);
   }
 
   onTouchStart(e) {
