@@ -1,6 +1,7 @@
 .mini-map {
   background: var(--jhu-brand-gold);
   position: relative;
+  pointer-events: auto;
 
   .shown {
     background: var(--jhu-grayscale-100);

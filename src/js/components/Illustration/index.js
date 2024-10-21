@@ -242,6 +242,7 @@ class Illustration extends Component {
               containerWidth={this.props.containerWidth}
               imageHeight={this.props.height * this.props.scale}
               imageWidth={this.props.width * this.props.scale}
+              moveCanvas={this.moveCanvas}
             />
             
             <button className="zoom-in" onClick={this.props.zoomIn} disabled={this.props.zoomInLimitReached}>
