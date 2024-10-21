@@ -32,7 +32,6 @@ class Illustration extends Component {
       isDragging: false,
       dragStartX: null,
       dragStartY: null,
-      isMouseDown: false,
       hint: null,
       hintActive: false,
     };
@@ -138,39 +137,32 @@ class Illustration extends Component {
 
   onMouseDown(e) {
     this.setState({
-      isMouseDown: true,
       isClick: true,
       dragStartX: e.nativeEvent.offsetX,
       dragStartY: e.nativeEvent.offsetY,
     });
 
+    const target = e.target;
+    target.addEventListener('mousemove', this.onMouseMove);
+
     window.addEventListener('mouseup', e => {
-      this.setState({
-        isDragging: false,
-        isMouseDown: false,
-      })
+      this.setState({ isDragging: false })
+      target.removeEventListener('mousemove', this.onMouseMove);
     }, { once: true });
   }
 
   onMouseMove(e) {
+    this.setState({ isDragging: true}, () => {
 
-    if (this.state.isMouseDown) {
-      this.setState({ isDragging: true}, () => {
+      const diffX = this.state.dragStartX - e.offsetX;
+      const diffY = this.state.dragStartY - e.offsetY;
 
-        if (!this.state.isDragging) {
-          return;
-        }
+      let newX = this.state.canvasX - diffX;
+      let newY = this.state.canvasY - diffY;
 
-        const diffX = this.state.dragStartX - e.nativeEvent.offsetX;
-        const diffY = this.state.dragStartY - e.nativeEvent.offsetY;
-
-        let newX = this.state.canvasX - diffX;
-        let newY = this.state.canvasY - diffY;
-
-        this.moveCanvas(newX, newY);
-        
-      });
-    }
+      this.moveCanvas(newX, newY);
+      
+    });
   }
 
   onTouchMove(e) {

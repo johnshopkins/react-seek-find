@@ -9,8 +9,6 @@ export default forwardRef(({
   onFocus,
   onKeyDown,
   onMouseDown,
-  onMouseMove,
-  onMouseUp,
   onTouchMove,
   onTouchStart,
   scale,
@@ -57,8 +55,6 @@ export default forwardRef(({
       height={height}
       width={width}
       onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
       onTouchMove={onTouchMove}
       onTouchStart={onTouchStart}
       onDragStart={() => false}
