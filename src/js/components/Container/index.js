@@ -264,6 +264,7 @@ class Game extends Component {
         <div className="game-container" role="region" aria-label="Seek and Find" style={gameStyles}>
           <Illustration
             found={this.state.found}
+            foundKeepAlive={this.props.foundKeepAlive}
             containerStyles={gameStyles}
             imageSrc={this.props.image}
             objects={Object.values(this.objects)}
@@ -287,10 +288,12 @@ class Game extends Component {
 }
 
 Game.defaultProps = {
+  foundKeepAlive: 2000,
   hintKeepAlive: 10000,
 };
 
 Game.propTypes = {
+  foundKeepAlive: PropTypes.number,
   height: PropTypes.number,
   hintKeepAlive: PropTypes.number,
   image: PropTypes.string.isRequired,

@@ -1,0 +1,14 @@
+@forward '../../../css/main';
+
+canvas.found {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity #{$hintFadeOut}ms;
+  z-index: var(--stack-found);
+
+  &.show {
+    opacity: 1;
+    transition: opacity #{$hintFadeIn}ms;
+  }
+}

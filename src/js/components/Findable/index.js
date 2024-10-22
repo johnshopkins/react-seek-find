@@ -3,7 +3,6 @@ import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react
 import './style.scss';
 
 export default forwardRef(({
-  found,
   height,
   objects,
   onBlur,
@@ -29,11 +28,11 @@ export default forwardRef(({
     context.scale(scale, scale);
 
     plottedObjects = objects.map(object => {
-      object.plotted = object.create.call(this, context, found.includes(object.id));
+      object.plotted = object.create.call(this, context);
       return object;
     });
 
-  }, [found, objects, scale]);
+  }, [objects, scale]);
 
   useImperativeHandle(ref, () => ({
     checkGuess: (positionX, positionY) => {

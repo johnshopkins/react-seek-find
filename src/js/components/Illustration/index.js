@@ -4,6 +4,7 @@ const throttle = require('lodash.throttle');
 
 import Background from '../Background';
 import Findable from '../Findable';
+import Found from '../Found';
 import Hint from '../Hint';
 import MiniMap from '../MiniMap';
 import Sights from '../Sights';
@@ -49,6 +50,8 @@ class Illustration extends Component {
       dragStartY: null,
       hint: null,
       hintActive: false,
+      found: null,
+      foundActive: false,
     };
 
     this.moveCanvas = this.moveCanvas.bind(this);
@@ -59,6 +62,7 @@ class Illustration extends Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = throttle(this.onMouseMove.bind(this), 30);
     this.onMouseUp = this.onMouseUp.bind(this);
+    this.showFound = this.showFound.bind(this);
     this.showHint - this.showHint.bind(this);
     this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
     this.onTouchStart = this.onTouchStart.bind(this);
@@ -101,6 +105,8 @@ class Illustration extends Component {
     const stateVars = [
       'canvasX',
       'canvasY',
+      'found',
+      'foundActive',
       'hint',
       'hintActive',
       'isDragging',
@@ -154,6 +160,7 @@ class Illustration extends Component {
   }
 
   onFind(object) {
+    this.showFound(object);
     this.props.onFind(object);
     this.removeHint();
   }
@@ -180,7 +187,7 @@ class Illustration extends Component {
       return;
     }
 
-    this.findable.current.checkGuess(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.findable.current.checkGuess(e.offsetX, e.offsetY);
   }
 
   onMouseDown(e) {
@@ -194,8 +201,9 @@ class Illustration extends Component {
     target.addEventListener('mousemove', this.onMouseMove);
 
     window.addEventListener('mouseup', e => {
-      this.setState({ isDragging: false })
+      this.onMouseUp(e);
       target.removeEventListener('mousemove', this.onMouseMove);
+      this.setState({ isDragging: false });
     }, { once: true });
   }
 
@@ -324,6 +332,19 @@ class Illustration extends Component {
     });
   }
 
+  showFound(object) {
+
+    this.setState({ found: object, foundActive: true }, () => {
+      setTimeout(() => this.removeFound(), settings.foundFadeIn + this.props.foundKeepAlive);
+    });
+  }
+
+  removeFound() {
+    this.setState({ found: null }, () => {
+      setTimeout(() => this.setState({ foundActive: false }), settings.foundFadeOut);
+    });
+  }
+
   render() {
 
     const gameStyles = {
@@ -371,6 +392,7 @@ class Illustration extends Component {
           </div>
 
         </div>
+
         <div className="game" style={gameStyles}>
           <Sights
             ref={this.sights}
@@ -387,20 +409,21 @@ class Illustration extends Component {
             onShowHint={coords => this.sights.current.moveSightsTo(coords)}
             scale={this.props.scale}
           />
+          <Found
+            height={this.props.height}
+            width={this.props.width}
+            object={this.state.found}
+            scale={this.props.scale}
+          />
           <Findable
             onFind={this.onFind}
-            found={this.props.found}
             objects={this.props.objects}
             ref={this.findable}
             scale={this.props.scale}
             height={this.props.height}
             width={this.props.width}
             onMouseDown={this.onMouseDown}
-            onMouseMove={this.onMouseMove}
-            onMouseUp={this.onMouseUp}
-            onTouchMove={this.onTouchMove}
             onTouchStart={this.onTouchStart}
-            onDragStart={() => false}
             onFocus={this.onFocus}
             onKeyDown={this.onKeyDown}
             onBlur={this.onBlur}
@@ -425,11 +448,13 @@ Illustration.defaultProps = {
 
 Illustration.propTypes = {
   found: PropTypes.array,
+  foundKeepAlive: PropTypes.number.isRequired,
   imageSrc: PropTypes.string.isRequired,
   objects: PropTypes.array,
   containerHeight: PropTypes.number.isRequired,
   containerWidth: PropTypes.number.isRequired,
   containerStyles: PropTypes.object.isRequired,
+  hintKeepAlive: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   onFind: PropTypes.func.isRequired,

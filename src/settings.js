@@ -2,8 +2,10 @@
 module.exports = {
 
   // animations
+  foundFadeIn: 500,
+  foundFadeOut: 2000,
   hintFadeIn: 500,
-  hintFadeOut: 3000,
+  hintFadeOut: 5000,
 
   // breakpoints
   breakpoint_desktop: 1000,
