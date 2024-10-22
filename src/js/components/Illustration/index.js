@@ -8,6 +8,7 @@ import Found from '../Found';
 import Hint from '../Hint';
 import MiniMap from '../MiniMap';
 import Sights from '../Sights';
+import InstructionsIcon from '../Icons/Instructions';
 import QuestionIcon from '../Icons/Question';
 import ZoomInIcon from '../Icons/ZoomIn';
 import ZoomOutIcon from '../Icons/ZoomOut';
@@ -15,6 +16,7 @@ import ZoomOutIcon from '../Icons/ZoomOut';
 import settings from '../../../settings';
 
 import './style.scss';
+import Instructions from '../Instructions';
 
 /**
  * Manages all the elements within the illustration portion
@@ -56,8 +58,10 @@ class Illustration extends Component {
       hintActive: false,
       found: null,
       foundActive: false,
+      instructionsOpen: false,
     };
 
+    this.closeInstructions = this.closeInstructions.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFind = this.onFind.bind(this);
@@ -66,6 +70,7 @@ class Illustration extends Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = throttle(this.onMouseMove.bind(this), 30);
     this.onMouseUp = this.onMouseUp.bind(this);
+    this.openInstructions = this.openInstructions.bind(this);
     this.showFound = this.showFound.bind(this);
     this.showHint - this.showHint.bind(this);
     this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
@@ -113,6 +118,7 @@ class Illustration extends Component {
       'foundActive',
       'hint',
       'hintActive',
+      'instructionsOpen',
       'isDragging',
       'isKeyboardFocused',
       'sightsX',
@@ -349,6 +355,14 @@ class Illustration extends Component {
     });
   }
 
+  openInstructions() {
+    this.setState({ instructionsOpen: true });
+  }
+
+  closeInstructions() {
+    this.setState({ instructionsOpen: false });
+  }
+
   render() {
 
     const gameStyles = {
@@ -364,7 +378,15 @@ class Illustration extends Component {
 
     return (
       <>
+        <Instructions
+          onClose={this.closeInstructions}
+          isOpen={this.state.instructionsOpen}
+        />
         <div className="utilities" style={this.props.containerStyles}>
+
+          <button className="instructions" onClick={() => this.openInstructions()}>
+            <InstructionsIcon tooltip="How to play" />
+          </button>
 
           <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()}>
             <QuestionIcon tooltip="Give me a hint" />

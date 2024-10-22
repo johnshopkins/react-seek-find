@@ -25,6 +25,7 @@
     "@babel/plugin-transform-parameters": "^7.25.7",
     "@babel/preset-env": "^7.25.8",
     "@babel/preset-react": "^7.25.7",
+    "@jenwachter/react-accessible-modal": "^0.1.0",
     "@johnshopkins/jhu-wds": "github:johnshopkins/jhu-wds#utils",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
