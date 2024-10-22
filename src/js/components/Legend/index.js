@@ -2,6 +2,9 @@ import CheckIcon from '../Icons/Check';
 
 import './style.scss';
 
+/**
+ * Manages the legend.
+ */
 export default ({ found, objects }) => 
   <div className="legend" role="region" aria-label="Legend">
     {objects.map((object, i) => {

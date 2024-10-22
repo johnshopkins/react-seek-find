@@ -2,6 +2,9 @@ import React, { useEffect, useRef } from 'react';
 
 import './style.scss';
 
+/**
+ * A canvas that plots and highlights the found object for a time.
+ */
 export default ({ object, height, scale, width }) => {
 
   const ref = useRef(null);

@@ -4,6 +4,9 @@ import SightsIcon from '../Icons/Sights';
 
 import './style.scss';
 
+/**
+ * Manages the keyboard navigation sights.
+ */
 export default forwardRef(({ checkGuess, height, scale, show, width }, ref) => {
 
   const iconSize = 36 * scale;

@@ -16,48 +16,44 @@ import {
 
 import './style.scss';
 
+/**
+ * The container of the game, which manages the game state.
+ */
 class Game extends Component {
 
   constructor(props) {
 
     super(props);
 
-    // this.saveGame = data => saveGameState(data);
-    // this.onGameComplete = this.props.onGameComplete;
-
     // the DOM element the game is contained in. helps determine view
     this.container = props.container;
 
-    clearGameState();
+    // // for testing
+    // clearGameState();
 
     // fetch any stored data from localStorage
     const storedData = loadGameState();
 
+    // combine stored data with default data
     const userData = {
       found: [],
       timer: 0,
       ...storedData
     }
 
+    // organize the objects by ID
     this.objects = {};
     this.props.objects.forEach(object => {
-      this.objects[object.id] = {
-        id: object.id,
-        create: object.create,
-        hint: object.hint,
-        thumbnail: object.thumbnail,
-        alt_text: object.alt_text,
-      }
+      this.objects[object.id] = object;
     });
 
+    // determine variables related to the current view
     const { breakpoint, height, maxZoomOut, scale, width } = this.determineView();
 
     // combine stored and default state
     this.state = {
       breakpoint,
       height,
-      hint: null,
-      hintActive: false,
       maxZoomOut: maxZoomOut,
       zoomInLimitReached: scale === 100, // the farthest IN you can zoom
       zoomOutLimitReached: scale === maxZoomOut, // the farthest OUT you can zoom
@@ -100,39 +96,6 @@ class Game extends Component {
     })
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-
-  //   console.log('---');
-  //   console.log('should container update?');
-  //   console.log('---');
-
-  //   for (const stateVar of Object.keys(nextState)) {
-  //     if (nextState[stateVar] !== this.state[stateVar]) {
-  //       console.log(`state.${stateVar} changed`);
-  //     }
-  //   }
-
-  //   for (const propVar of Object.keys(nextProps)) {
-  //     if (nextProps[propVar] !== this.props[propVar]) {
-  //       console.log(`props.${propVar} changed`);
-  //     }
-  //   }
-
-  //   console.log('---');
-
-  //   return true;
-  // }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      this.props.roomId !== prevProps.roomId ||
-      this.state.serverUrl !== prevState.serverUrl
-    ) {
-      this.destroyConnection();
-      this.setupConnection();
-    }
-  }
-
   /**
    * Why? See: https://stackoverflow.com/questions/588004/is-floating-point-math-broken
    * @param {number} num 
@@ -159,7 +122,6 @@ class Game extends Component {
 
     const maxZoomOut = Math.max(maxZoomOutWidth, maxZoomOutHeight)
 
-    console.log('scale', scale);
     // round to nearest 10 and add 20 so the zoom isn't too close to the max zoom out
     let scale = (Math.ceil(maxZoomOut / 10) * 10) + 20;
 

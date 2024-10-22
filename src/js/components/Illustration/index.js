@@ -16,6 +16,10 @@ import settings from '../../../settings';
 
 import './style.scss';
 
+/**
+ * Manages all the elements within the illustration portion
+ * of the game (everything except the legend).
+ */
 class Illustration extends Component {
 
   constructor(props) {

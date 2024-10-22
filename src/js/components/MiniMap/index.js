@@ -4,6 +4,9 @@ import settings from '../../../settings';
 
 import './style.scss';
 
+/**
+ * Manages the mini-map utility.
+ */
 export default ({ canvasX, canvasY, containerHeight, containerWidth, imageHeight, imageWidth, moveCanvas }) => {
 
   // note: minimap click+drag works only for mouse users...

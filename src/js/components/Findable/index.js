@@ -2,6 +2,11 @@ import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react
 
 import './style.scss';
 
+/**
+ * A canvas element that has the findable objects plotted, though
+ * not visible to the user. When a user initiates a guess, this canvas
+ * is used to validate whether an object was found or not.
+ */
 export default forwardRef(({
   height,
   objects,

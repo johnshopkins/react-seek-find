@@ -2,6 +2,9 @@ import React, { useEffect, useRef } from 'react';
 
 import './style.scss';
 
+/**
+ * A canvas that plots and shows a hint for a time.
+ */
 export default ({ height, object, onShowHint, scale, width }) => {
 
   const ref = useRef(null);
