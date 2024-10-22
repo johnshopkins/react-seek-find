@@ -23,9 +23,23 @@ class Illustration extends Component {
     this.sights = createRef();
     this.findable = createRef();
 
+    const canvasX = 0;
+    const canvasY = 0;
+
+    const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
+
     this.state = {
-      canvasX: 0,
-      canvasY: 0,
+
+      // image coords that correspond to the origin (0, 0) of the game container
+      // used for css positioning
+      canvasX,
+      canvasY,
+
+      // image coords that correspond to center of the game container
+      // used to anchor scaling to the center of the image
+      anchorX,
+      anchorY,
+
       isClick: false,
       isKeyboardFocused: false,
       context: null,
@@ -47,6 +61,36 @@ class Illustration extends Component {
     this.showHint - this.showHint.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
+  }
+
+  /**
+   * With the given coordinates that correspond to the origin (0, 0)
+   * of the game container, figure out the coordinates that correspond
+   * to the center of the game container.
+   * @param {number} x 
+   * @param {number} y 
+   * @returns object
+   */
+  getCenterAnchor(x, y) {
+    return {
+      anchorX: x - (this.props.containerWidth / 2),
+      anchorY: y - (this.props.containerHeight / 2),
+    };
+  }
+
+  /**
+   * With the given coordinates that correspond to the center of the
+   * game container, figure out the coordinates that correspond to
+   * the origin (0, 0) of the game container.
+   * @param {number} x 
+   * @param {number} y 
+   * @returns object
+   */
+  getOriginFromCenterAnchor(x, y) {
+    return {
+      originX: x + (this.props.containerWidth / 2),
+      originY: y + (this.props.containerHeight / 2),
+    };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -98,10 +142,13 @@ class Illustration extends Component {
     );
 
     if (conditions) {
-      const newX = this.state.canvasX * this.props.scale;
-      const newY = this.state.canvasY * this.props.scale;
 
-      this.moveCanvas(newX, newY);
+      const scaleDiff = (this.props.scale * 100) / (prevProps.scale * 100);
+
+      const newX = this.state.anchorX * scaleDiff;
+      const newY = this.state.anchorY * scaleDiff;
+
+      this.moveCanvas(newX, newY, true);
     }
   }
 
@@ -214,7 +261,25 @@ class Illustration extends Component {
     }, { once: true });
   }
 
-  moveCanvas(newX, newY) {
+  /**
+   * Move the image canvas to a new location. newX and newY correspond
+   * to the coordinates of the image at its currently scaled size and will
+   * be placed at the origin (0, 0) of the game container.
+   * 
+   * If `center` parameter is true, the newX and newY represent the (x, y)
+   * coordinates to move to that are in the center of the game container.
+   * 
+   * @param {number} newX 
+   * @param {number} newY
+   * @param {string} center
+   */
+  moveCanvas(newX, newY, center = false) {
+
+    if (center) {
+      const originCoordinates = this.getOriginFromCenterAnchor(newX, newY)
+      newX = originCoordinates.originX;
+      newY = originCoordinates.originY;
+    }
 
     // scaled dimensions of image
     const scaledHeight = this.props.height * this.props.scale;
@@ -232,9 +297,13 @@ class Illustration extends Component {
       newY = -Math.abs(scaledHeight - this.props.containerHeight);
     }
 
+    const { anchorX, anchorY } = this.getCenterAnchor(newX, newY);
+
     this.setState({
       canvasX: newX,
       canvasY: newY,
+      anchorX,
+      anchorY,
     });
   }
 
