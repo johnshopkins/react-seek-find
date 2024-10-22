@@ -1,5 +1,6 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
+const throttle = require('lodash.throttle');
 
 import Background from '../Background';
 import Findable from '../Findable';
@@ -56,10 +57,10 @@ class Illustration extends Component {
     this.onFocus = this.onFocus.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseMove = throttle(this.onMouseMove.bind(this), 30);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.showHint - this.showHint.bind(this);
-    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
     this.onTouchStart = this.onTouchStart.bind(this);
   }
 
