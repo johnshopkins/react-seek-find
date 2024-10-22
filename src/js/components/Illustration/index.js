@@ -6,6 +6,7 @@ import Background from '../Background';
 import Findable from '../Findable';
 import Found from '../Found';
 import Hint from '../Hint';
+import InstructionsModal from '../InstructionsModal';
 import MiniMap from '../MiniMap';
 import Sights from '../Sights';
 import InstructionsIcon from '../Icons/Instructions';
@@ -16,7 +17,6 @@ import ZoomOutIcon from '../Icons/ZoomOut';
 import settings from '../../../settings';
 
 import './style.scss';
-import Instructions from '../Instructions';
 
 /**
  * Manages all the elements within the illustration portion
@@ -378,7 +378,7 @@ class Illustration extends Component {
 
     return (
       <>
-        <Instructions
+        <InstructionsModal
           onClose={this.closeInstructions}
           isOpen={this.state.instructionsOpen}
         />
