@@ -51,12 +51,14 @@ class Game extends Component {
     });
 
     // determine variables related to the current view
-    const { breakpoint, height, maxZoomOut, scale, width } = this.determineView();
+    const { breakpoint, height, illustrationContainerHeight, illustrationContainerWidth, maxZoomOut, scale, width } = this.determineView();
 
     // combine stored and default state
     this.state = {
       breakpoint,
       height,
+      illustrationContainerHeight,
+      illustrationContainerWidth,
       maxZoomOut: maxZoomOut,
       zoomInLimitReached: scale === 100, // the farthest IN you can zoom
       zoomOutLimitReached: scale === maxZoomOut, // the farthest OUT you can zoom
@@ -70,6 +72,7 @@ class Game extends Component {
     this.determineView = this.determineView.bind(this);
     this.hideTouchInstruction = this.hideTouchInstruction.bind(this);
     this.onFind = this.onFind.bind(this);
+    this.scaleToFit = this.scaleToFit.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
   }
@@ -109,6 +112,10 @@ class Game extends Component {
     return Math.round(num / 10) * 10;
   }
 
+  roundDown(num) {
+    return Math.floor(num / 10) * 10;
+  }
+
   determineView() {
 
     const breakpoint = document.documentElement.clientWidth > settings.breakpoint_desktop ? 'desktop' : 'mobile';
@@ -119,6 +126,11 @@ class Game extends Component {
 
     // 50 pixel buffer on top/bottom of user's screen
     const height = document.documentElement.clientHeight - 100;
+
+    const legendHeight = settings[`legendThumbnailHeight_${breakpoint}`];
+
+    const illustrationContainerHeight = height - legendHeight;
+    const illustrationContainerWidth = width;
 
     // store as integer. why? see: https://stackoverflow.com/questions/588004/is-floating-point-math-broken
     const maxZoomOutWidth = (width >= this.props.imageWidth ? 1 : width / this.props.imageWidth) * 100;
@@ -134,7 +146,7 @@ class Game extends Component {
       scale = 60;
     }
 
-    return { breakpoint, height, maxZoomOut, scale, width };
+    return { breakpoint, height, illustrationContainerHeight, illustrationContainerWidth, maxZoomOut, scale, width };
   }
 
   onFind(foundObject) {
@@ -207,16 +219,29 @@ class Game extends Component {
     })
   }
 
+  scaleToFit(height, width) {
+
+    const buffer = 50;
+
+    const containerHeight = this.state.illustrationContainerHeight;
+    const containerWidth = this.state.illustrationContainerWidth;
+
+    const zoomOutHeight = (containerHeight >= height + buffer ? 1 : containerHeight / (height  + buffer)) * 100;
+    const zoomOutWidth = (containerWidth >= width + buffer ? 1 : containerWidth / (width + buffer)) * 100;
+
+    let zoomTo = this.roundDown(Math.min(zoomOutHeight, zoomOutWidth));
+
+    if (zoomTo < this.state.maxZoomOut) {
+      zoomTo = this.state.maxZoomOut;
+    }
+
+    this.setState({ scale: zoomTo });
+  }
+
   render() {
 
     const containerHeight = this.state.height;
     const containerWidth = this.state.width;
-
-    const legendHeight = settings[`legendThumbnailHeight_${this.state.breakpoint}`];
-
-    const illustrationContainerHeight = containerHeight - legendHeight;
-    const illustrationContainerWidth = containerWidth;
-
 
     // contains legend
     const containerStyles = {
@@ -225,8 +250,8 @@ class Game extends Component {
     }
 
     const gameStyles = {
-      height: `${illustrationContainerHeight}px`,
-      width: `${illustrationContainerWidth}px`,
+      height: `${this.state.illustrationContainerHeight}px`,
+      width: `${this.state.illustrationContainerWidth}px`,
     };
 
     return (
@@ -242,8 +267,8 @@ class Game extends Component {
             containerStyles={gameStyles}
             imageSrc={this.props.image}
             objects={Object.values(this.objects)}
-            containerHeight={illustrationContainerHeight}
-            containerWidth={illustrationContainerWidth}
+            containerHeight={this.state.illustrationContainerHeight}
+            containerWidth={this.state.illustrationContainerWidth}
             height={this.props.imageHeight}
             width={this.props.imageWidth}
             onFind={this.onFind}
@@ -251,6 +276,7 @@ class Game extends Component {
             hintKeepAlive={this.props.hintKeepAlive}
             showTouchInstruction={this.state.showTouchInstruction}
             hideTouchInstruction={this.hideTouchInstruction}
+            scaleToFit={this.scaleToFit}
             zoomIn={this.zoomIn}
             zoomOut={this.zoomOut}
             zoomInLimitReached={this.state.zoomInLimitReached}

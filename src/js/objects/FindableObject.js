@@ -13,6 +13,7 @@ export default class {
     this.thumbnail = thumbnail;
     this.createFunction = createFunction;
     this.hintCoords = hintCoords;
+    this.hintSize = 746;
 
     this.create = this.create.bind(this);
     this.hint = this.hint.bind(this);
@@ -50,8 +51,8 @@ export default class {
     // add hint area
     const hintStart = this.hintCoords;
 
-    const bottom = hintStart.x + 746;
-    const right = hintStart.y + 746;
+    const bottom = hintStart.x + this.hintSize;
+    const right = hintStart.y + this.hintSize;
 
     path.moveTo(hintStart.x, hintStart.y);
     path.lineTo(bottom, hintStart.y);
@@ -61,7 +62,5 @@ export default class {
     path.closePath();
 
     context.fill(path);
-
-    return hintStart;
   }
 }

@@ -71,6 +71,8 @@ class Illustration extends Component {
     this.onMouseMove = throttle(this.onMouseMove.bind(this), 30);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.openInstructions = this.openInstructions.bind(this);
+    this.onSightsMove = this.onSightsMove.bind(this);
+    this.onShowHint = this.onShowHint.bind(this);
     this.showFound = this.showFound.bind(this);
     this.showHint - this.showHint.bind(this);
     this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
@@ -330,10 +332,53 @@ class Illustration extends Component {
     });
   }
 
+  /**
+   * Pan the canvas, if necessary.
+   * @param {number} x 
+   * @param {number} y 
+   * @param {string} direction 
+   */
+  onSightsMove(x, y, direction) {
+
+    const threshold = 50;
+    const move = 100;
+
+    const currentX = this.state.canvasX;
+    const currentY = this.state.canvasY;
+
+    if (direction === 'down' && y > (Math.abs(currentY) + this.props.containerHeight - threshold)) {
+      this.moveCanvas(currentX, currentY - move);
+    } else if (direction === 'right' && x > (Math.abs(currentX) + this.props.containerWidth - threshold)) {
+      this.moveCanvas(currentX - move, currentY);
+    } else if (direction === 'up' && y < (Math.abs(currentY) + threshold)) {
+      this.moveCanvas(currentX, currentY + move);
+    } else if ( direction === 'left' && x < (Math.abs(currentX) + threshold)) {
+      this.moveCanvas(currentX + move, currentY);
+    }
+  }
+
   showHint() {
 
     const notFound = Object.values(this.props.objects).filter(object => !this.props.found.includes(object.id));
     const random = Math.floor(Math.random() * notFound.length);
+
+    const hint = notFound[random];
+    const coords = hint.hintCoords;
+    
+    const scaledHintSize = hint.hintSize * this.props.scale;
+
+    const hintOffset = scaledHintSize / 2;
+    const newX = coords.x * this.props.scale;
+    const newY = coords.y * this.props.scale;
+
+    // move canvas so that the hint is within the center (or as close to center as possible) of the view
+    this.moveCanvas(-Math.abs(newX + hintOffset), -Math.abs(newY + hintOffset), true);
+
+    // move sights to the hint area
+    this.sights.current.moveSightsTo(coords.x, coords.y);
+
+    // scale the image so the entire hint can be seen as closely as possible
+    this.props.scaleToFit(hint.hintSize, hint.hintSize);
 
     this.setState({ hint: notFound[random], hintActive: true }, () => {
       setTimeout(() => this.removeHint(), settings.hintFadeIn + this.props.hintKeepAlive);
@@ -344,6 +389,33 @@ class Illustration extends Component {
     this.setState({ hint: null }, () => {
       setTimeout(() => this.setState({ hintActive: false }), settings.hintFadeOut);
     });
+  }
+
+  onShowHint(coords) {
+
+    console.log('on show hint', coords);
+
+
+
+    // // ORIGINAL
+
+    // const scaledHintSize = this.state.hint.hintSize * this.props.scale;
+
+    // // scale the image so the entire hint can be seen as closely as possible
+    // this.props.scaleToFit(scaledHintSize, scaledHintSize);
+
+    // // move canvas so that the hint is within the center (or as close to center as possible) of the view
+    // const hintOffset = scaledHintSize / 2;
+    // const newX = coords.x + hintOffset;
+    // const newY = coords.y + hintOffset;
+
+    // // this doesn't seem to be working
+    // this.moveCanvas(-Math.abs(newX), -Math.abs(newY));
+
+    // // move sights to the hint area
+    // this.sights.current.moveSightsTo(coords.x, coords.y);
+
+    
   }
 
   showFound(object) {
@@ -368,6 +440,8 @@ class Illustration extends Component {
   }
 
   render() {
+
+    console.log('illustration render');
 
     const gameStyles = {
       height: `${this.props.height}px`,
@@ -430,15 +504,16 @@ class Illustration extends Component {
             ref={this.sights}
             checkGuess={(x, y) => this.findable.current.checkGuess(x, y)}
             height={this.props.height}
+            onSightsMove={this.onSightsMove}
             width={this.props.width}
             scale={this.props.scale}
-            show={this.state.isKeyboardFocused}
+            // show={this.state.isKeyboardFocused}
+            show={true}
           />
           <Hint
             height={this.props.height}
             width={this.props.width}
             object={this.state.hint}
-            onShowHint={coords => this.sights.current.moveSightsTo(coords)}
             scale={this.props.scale}
           />
           <Found

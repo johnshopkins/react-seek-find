@@ -7,7 +7,7 @@ import './style.scss';
 /**
  * Manages the keyboard navigation sights.
  */
-export default forwardRef(({ checkGuess, height, scale, show, width }, ref) => {
+export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, width }, ref) => {
 
   const iconSize = 36 * scale;
   const iconOffset = iconSize / 2;
@@ -44,56 +44,80 @@ export default forwardRef(({ checkGuess, height, scale, show, width }, ref) => {
 
       const increment = e.shiftKey ? 20 : 2;
 
+      let newPositionX = positionX;
+      let newPositionY = positionY;
+      let direction;
+
       if (e.key === ' ') {
         
         // spacebar
-        checkGuess(positionX + iconOffset, positionY + iconOffset);
+        checkGuess(getScaledPosition(positionX + iconOffset), getScaledPosition(positionY + iconOffset));
 
       } else if (e.key === 'ArrowRight') {
 
-        let newValue = positionX + increment;
-        if (newValue > maxX) {
+        direction = 'right'
+
+        newPositionX = positionX + increment;
+        if (newPositionX > maxX) {
           // console.log('new value is less than maxX');
-          newValue = maxX;
+          newPositionX = maxX;
         }
 
-        setPositionX(newValue);
-        setScaledPositionX(getScaledPosition(newValue));
+        setPositionX(newPositionX);
+        setScaledPositionX(getScaledPosition(newPositionX));
 
       } else if (e.key === 'ArrowLeft') {
 
-        let newValue = positionX - increment;
-        if (newValue < minX) {
-          newValue = minX;
+        direction = 'left'
+
+        newPositionX = positionX - increment;
+        if (newPositionX < minX) {
+          newPositionX = minX;
         }
 
-        setPositionX(newValue);
-        setScaledPositionX(getScaledPosition(newValue));
+        setPositionX(newPositionX);
+        setScaledPositionX(getScaledPosition(newPositionX));
 
       } else if (e.key === 'ArrowUp') {
+
+        direction = 'up'
         
-        let newValue = positionY - increment;
-        if (newValue < minY) {
-          newValue = minY;
+        let newPositionY = positionY - increment;
+        if (newPositionY < minY) {
+          newPositionY = minY;
         }
 
-        setPositionY(newValue);
-        setScaledPositionY(getScaledPosition(newValue));
+        setPositionY(newPositionY);
+        setScaledPositionY(getScaledPosition(newPositionY));
 
       } else if (e.key === 'ArrowDown') {
+
+        direction = 'down'
         
-        let newValue = positionY + increment;
-        if (newValue > maxY) {
-          newValue = maxY;
+        let newPositionY = positionY + increment;
+        if (newPositionY > maxY) {
+          newPositionY = maxY;
         }
 
-        setPositionY(newValue);
-        setScaledPositionY(getScaledPosition(newValue));
+        setPositionY(newPositionY);
+        setScaledPositionY(getScaledPosition(newPositionY));
       }
+
+      // pan the background, if necessary
+      onSightsMove(
+        getScaledPosition(newPositionX + iconOffset),
+        getScaledPosition(newPositionY + iconOffset), direction
+      );
     },
-    moveSightsTo({ x, y }) {
-      setPositionX(getScaledPosition('x', x - iconOffset));
-      setPositionY(getScaledPosition('y', y - iconOffset));
+    moveSightsTo(x, y) {
+      const newX = x - iconOffset;
+      const newY = y - iconOffset;
+
+      setPositionX(newX);
+      setScaledPositionX(getScaledPosition(newX));
+
+      setPositionY(newY);
+      setScaledPositionY(getScaledPosition(newY));
     }
   }), [positionX, positionY, scale]);
 

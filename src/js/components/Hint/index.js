@@ -2,10 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 import './style.scss';
 
-/**
- * A canvas that plots and shows a hint for a time.
- */
-export default ({ height, object, onShowHint, scale, width }) => {
+export default ({ height, object, scale, width }) => {
 
   const ref = useRef(null);
   let classes = ['hint'];
@@ -23,10 +20,7 @@ export default ({ height, object, onShowHint, scale, width }) => {
       context.scale(scale, scale);
 
       // draw hint
-      const hintStart = object.hint.call(this, context, width, height);
-
-      // move keyboard navigation to the hint area
-      onShowHint(hintStart);
+      object.hint.call(this, context, width, height);
 
       return () => {
         classes = ['hint']
