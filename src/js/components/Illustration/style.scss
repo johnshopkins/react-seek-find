@@ -8,45 +8,10 @@
     z-index: var(--stack-utilities);
 
     button {
-      pointer-events: auto;
-    }
-
-    .navigation {
-      align-items: flex-end;
-      display: flex;
-      flex-direction: column;
-      gap: 0.3em;
-      justify-content: center;
-      position: absolute;
-      right: 1em;
-      top: 1em;
-    }
-
-    .hint {
-      color: var(--jhu-gold-30);
-      bottom: 1em;
-      left: 1em;
-      position: absolute;
-      
-      &:hover {
-        color: var(--jhu-gold-40);
-      }
-    }
-
-    .zoom-in,
-    .zoom-out {
-      color: var(--jhu-grayscale-40);
-      display: block;
-
-      &:hover {
-        color: var(--jhu-grayscale-50);
-      }
-    }
-
-    button {
       border: none;
       background: transparent;
       padding: 0;
+      pointer-events: auto;
 
       svg {
         height: #{$utilitiesIconHeight_mobile}px;
@@ -67,6 +32,38 @@
         }
       }
     }
+
+    .navigation {
+      align-items: flex-end;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3em;
+      justify-content: center;
+      position: absolute;
+      right: 1em;
+      top: 1em;
+    }
+
+    button.hint {
+      color: var(--jhu-gold-30);
+      bottom: 1em;
+      left: 1em;
+      position: absolute;
+      
+      &:hover {
+        color: var(--jhu-gold-40);
+      }
+    }
+
+    button.zoom-in,
+    button.zoom-out {
+      color: var(--jhu-grayscale-40);
+      display: block;
+
+      &:hover {
+        color: var(--jhu-grayscale-50);
+      }
+    }
   }
 
   .game {
@@ -78,22 +75,6 @@
       // from: https://css-tricks.com/copy-the-browsers-native-focus-styles/
       outline: medium auto Highlight;
       outline: 5px auto -webkit-focus-ring-color;
-    }
-
-    canvas {
-      position: absolute;
-      z-index: var(--stack-findable);
-
-      &.hint {
-        opacity: 0;
-        transition: opacity #{$hintFadeOut}ms;
-        z-index: var(--stack-hint);
-
-        &.show {
-          opacity: 1;
-          transition: opacity #{$hintFadeIn}ms;
-        }
-      }
     }
   }
 

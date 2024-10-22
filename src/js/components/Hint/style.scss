@@ -3,8 +3,9 @@
 canvas.hint {
   opacity: 0;
   pointer-events: none;
+  position: absolute;
   transition: opacity #{$hintFadeOut}ms;
-  z-index: 2;
+  z-index: var(--stack-hint);
 
   &.show {
     opacity: 1;

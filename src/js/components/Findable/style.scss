@@ -1,0 +1,6 @@
+@forward '../../../css/main';
+
+canvas.findable {
+  position: absolute;
+  z-index: var(--stack-findable);
+}

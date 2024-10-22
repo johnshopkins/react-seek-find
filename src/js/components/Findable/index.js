@@ -1,5 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
+import './style.scss';
+
 export default forwardRef(({
   found,
   height,
@@ -9,7 +11,6 @@ export default forwardRef(({
   onFocus,
   onKeyDown,
   onMouseDown,
-  onTouchMove,
   onTouchStart,
   scale,
   width,
@@ -51,6 +52,7 @@ export default forwardRef(({
 
   return (
     <canvas
+      className="findable"
       ref={canvasRef}
       height={height}
       width={width}
