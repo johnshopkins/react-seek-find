@@ -19,12 +19,9 @@ export default forwardRef(({ checkGuess, height, scale, show, width }, ref) => {
   const getScaledPosition = (coordinate) => coordinate * scale;
 
   // absolute positioning to full size
-  const [positionX, setPositionX] = useState(-Math.abs(iconOffset));
-  const [positionY, setPositionY] = useState(-Math.abs(iconOffset));
-
-  // // for testing - start on the superman S
-  // const [positionX, setPositionX] = useState(138);
-  // const [positionY, setPositionY] = useState(48);
+  // add iconOffset so the full sights are visible at first
+  const [positionX, setPositionX] = useState(-Math.abs(iconOffset) + iconOffset);
+  const [positionY, setPositionY] = useState(-Math.abs(iconOffset) + iconOffset);
 
   // scaled positioning
   const [scaledPositionX, setScaledPositionX] = useState(getScaledPosition(positionX));
