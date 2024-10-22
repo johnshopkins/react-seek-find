@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+const throttle = require('lodash.throttle');
 
 import settings from '../../../settings';
 
@@ -29,8 +30,8 @@ export default ({ canvasX, canvasY, containerHeight, containerWidth, imageHeight
       setIsMouseDown(false);
     }, { once: true });
   }
-
-  const onMouseMove = (e) => {
+  
+  const onMouseMove = throttle((e) => {
 
     if (isMouseDown) {
 
@@ -43,7 +44,7 @@ export default ({ canvasX, canvasY, containerHeight, containerWidth, imageHeight
       moveCanvas(newX, newY);
     }
     
-  }
+  }, 30);
 
   const mapHeight = imageHeight * sizeDown
   const mapWidth = settings.miniMap;
