@@ -33,33 +33,35 @@
       }
     }
 
+    .navigation,
+    .instructions-and-hint {
+      display: flex;
+      gap: 0.3em;
+      // justify-content: center;
+      position: absolute;
+      
+    }
+
     .navigation {
       align-items: flex-end;
       display: flex;
       flex-direction: column;
       gap: 0.3em;
       justify-content: center;
-      position: absolute;
       right: 1em;
       top: 1em;
     }
 
-    button.instructions {
-      color: var(--jhu-gold-30);
-      top: 1em;
-      left: 1em;
-      position: absolute;
-      
-      &:hover {
-        color: var(--jhu-gold-40);
-      }
-    }
-
-    button.hint {
-      color: var(--jhu-gold-30);
+    .instructions-and-hint {
+      align-items: flex-start;
+      flex-direction: row;
       bottom: 1em;
       left: 1em;
-      position: absolute;
+    }
+
+    button.instructions,
+    button.hint {
+      color: var(--jhu-gold-30);
       
       &:hover {
         color: var(--jhu-gold-40);

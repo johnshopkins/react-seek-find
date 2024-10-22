@@ -9,7 +9,7 @@ import Hint from '../Hint';
 import MiniMap from '../MiniMap';
 import Sights from '../Sights';
 import InstructionsIcon from '../Icons/Instructions';
-import QuestionIcon from '../Icons/Question';
+import LightbulbIcon from '../Icons/Lightbulb';
 import ZoomInIcon from '../Icons/ZoomIn';
 import ZoomOutIcon from '../Icons/ZoomOut';
 
@@ -384,13 +384,15 @@ class Illustration extends Component {
         />
         <div className="utilities" style={this.props.containerStyles}>
 
-          <button className="instructions" onClick={() => this.openInstructions()}>
-            <InstructionsIcon tooltip="How to play" />
-          </button>
+          <div className="instructions-and-hint">
+            <button className="instructions" onClick={() => this.openInstructions()}>
+              <InstructionsIcon tooltip="How to play" />
+            </button>
 
-          <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()}>
-            <QuestionIcon tooltip="Give me a hint" />
-          </button>
+            <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()}>
+              <LightbulbIcon tooltip="Give me a hint" />
+            </button>
+          </div>
 
           <div className="navigation">
             
