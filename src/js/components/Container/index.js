@@ -8,6 +8,8 @@ import ResizeWatcher from '@johnshopkins/jhu-wds/src/shared/js/utils/watch-windo
 
 import settings from '../../../settings';
 
+require('../../lib/modernizr');
+
 import {
   clearGameState,
   loadGameState,
@@ -169,7 +171,6 @@ class Game extends Component {
         zoomInLimitReached: false,
         zoomOutLimitReached: false
       }
-
     });
   }
 
@@ -190,8 +191,7 @@ class Game extends Component {
         scale: newZoom,
         zoomInLimitReached: false,
         zoomOutLimitReached: false
-       }
-
+      }
     });
   }
 
