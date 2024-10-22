@@ -2,6 +2,27 @@
 
 .container {
 
+  .touch-instructions {
+    align-items: center;
+    display: none;
+    background-color: var(--jhu-grayscale-20);
+    flex-direction: row;
+    font-size: 3em;
+    justify-content: center;
+    opacity: 0.9;
+    position: absolute;
+    text-align: center;
+    z-index: var(--touch-instructions);
+
+    p {
+      padding: 2em;
+    }
+
+    &.show {
+      display: flex;
+    }
+  }
+
   .utilities {
     pointer-events: none;
     position: absolute;

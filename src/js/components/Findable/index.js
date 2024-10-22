@@ -17,6 +17,8 @@ export default forwardRef(({
   onMouseDown,
   onTouchStart,
   scale,
+  showTouchInstruction,
+  touchInstructionStyle,
   width,
 }, ref) => {
 
@@ -54,23 +56,35 @@ export default forwardRef(({
     }
   }), []);
 
+  const touchevents = Modernizr.touchevents;
+
   return (
-    <canvas
-      className="findable"
-      ref={canvasRef}
-      height={height}
-      width={width}
-      onMouseDown={onMouseDown}
-      onTouchStart={onTouchStart}
-      onFocus={onFocus}
-      onKeyDown={onKeyDown}
-      onBlur={onBlur}
-      tabIndex="0"
-      style={{
-        // stops the browser from its scrolling on the element
-        touchAction: 'none'
-      }}
-    />
+    <>
+      {touchevents && showTouchInstruction &&
+        <div className="touch-instructions show" style={{
+          pointerEvents: 'none',
+          ...touchInstructionStyle,
+        }}>
+          <p>Use two fingers to move the image.</p>
+        </div>
+      }
+      <canvas
+        className="findable"
+        ref={canvasRef}
+        height={height}
+        width={width}
+        onMouseDown={onMouseDown}
+        onTouchStart={onTouchStart}
+        onFocus={onFocus}
+        onKeyDown={onKeyDown}
+        onBlur={onBlur}
+        tabIndex="0"
+        style={{
+          // stops the browser from its scrolling on the element
+          touchAction: 'none'
+        }}
+      />
+    </>
   )
 
 });

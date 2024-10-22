@@ -39,6 +39,7 @@ class Game extends Component {
     // combine stored data with default data
     const userData = {
       found: [],
+      showTouchInstruction: true,
       timer: 0,
       ...storedData
     }
@@ -67,6 +68,7 @@ class Game extends Component {
     };
 
     this.determineView = this.determineView.bind(this);
+    this.hideTouchInstruction = this.hideTouchInstruction.bind(this);
     this.onFind = this.onFind.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
@@ -195,6 +197,16 @@ class Game extends Component {
     });
   }
 
+  hideTouchInstruction() {
+    this.setState({ showTouchInstruction: false })
+
+    saveGameState({
+      found: this.state.found,
+      showTouchInstruction: false,
+      time: this.state.timer,
+    })
+  }
+
   render() {
 
     const containerHeight = this.state.height;
@@ -237,6 +249,8 @@ class Game extends Component {
             onFind={this.onFind}
             scale={this.state.scale / 100}
             hintKeepAlive={this.props.hintKeepAlive}
+            showTouchInstruction={this.state.showTouchInstruction}
+            hideTouchInstruction={this.hideTouchInstruction}
             zoomIn={this.zoomIn}
             zoomOut={this.zoomOut}
             zoomInLimitReached={this.state.zoomInLimitReached}

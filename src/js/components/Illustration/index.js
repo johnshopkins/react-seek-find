@@ -253,6 +253,10 @@ class Illustration extends Component {
 
   onTouchStart(e) {
 
+    if (this.props.showTouchInstruction) {
+      this.props.hideTouchInstruction();
+    }
+
     // do not limit this event to 2-touch events because an event
     // can go from 1-touch to 2-touch without triggering touchstart again
 
@@ -455,6 +459,8 @@ class Illustration extends Component {
             onFocus={this.onFocus}
             onKeyDown={this.onKeyDown}
             onBlur={this.onBlur}
+            showTouchInstruction={this.props.showTouchInstruction}
+            touchInstructionStyle={this.props.containerStyles}
           />
           <Background
             imageSrc={this.props.imageSrc}
