@@ -56,8 +56,9 @@ export default ({ breakpoint, canvasX, canvasY, containerHeight, containerWidth,
     width: `${mapWidth}px`,
   }
 
-  const shownHeight = sizeDown * containerHeight;
-  const shownWidth = sizeDown * containerWidth;
+  // subtract 4 to allow space for the border
+  const shownHeight = (sizeDown * containerHeight) - 4;
+  const shownWidth = (sizeDown * containerWidth) - 4;
 
   const shownStyle = {
     left: `${Math.abs(canvasX) * sizeDown}px`,

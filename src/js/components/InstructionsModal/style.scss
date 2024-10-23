@@ -1,0 +1,10 @@
+@use '../../../css/main' as *;
+
+.instructions-modal {
+  .close-box-x {
+    @include button;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

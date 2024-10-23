@@ -1,0 +1,22 @@
+@mixin button {
+  border: none;
+  background: var(--jhu-brand-gold);
+  border-radius: 50%;
+  color: var(--jhu-brand-heritage-blue);
+  padding: 10px;
+  pointer-events: auto;
+
+  &:hover {
+    background: var(--jhu-gold-20);
+    cursor: pointer;
+
+    &:disabled {
+      background: var(--jhu-brand-gold);
+      cursor: default;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}

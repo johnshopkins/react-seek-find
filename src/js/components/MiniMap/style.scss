@@ -1,10 +1,13 @@
+@use '../../../css/main' as *;
+
 .mini-map {
-  background: var(--jhu-brand-gold);
+  background: var(--jhu-brand-heritage-blue);
+  border: 2px solid var(--jhu-grayscale-0);
   position: relative;
   pointer-events: auto;
 
   .shown {
-    background: var(--jhu-grayscale-100);
+    border: 2px solid var(--jhu-red-50);
     position: absolute;
   }
 }

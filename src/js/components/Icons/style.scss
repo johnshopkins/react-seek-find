@@ -1,4 +1,4 @@
-@forward '../../../css/main';
+@use '../../../css/main' as *;
 
 .jhu-icon {
   display: block;

@@ -1,4 +1,4 @@
-@forward '../../../css/main';
+@use '../../../css/main' as *;
 
 $iconRatio: 0.4;
 
@@ -9,8 +9,8 @@ $iconRatio: 0.4;
     
     .thumbnail {
       background: #000;
-      height: #{$legendThumbnailHeight_mobile}px;
-      width: #{$legendThumbnailHeight_mobile}px;
+      height: #{$legendThumbnailHeight_small}px;
+      width: #{$legendThumbnailHeight_small}px;
 
       img {
         width: 100%;
@@ -19,21 +19,47 @@ $iconRatio: 0.4;
       svg {
         background: #fff;
         fill: green;
-        height: calc(#{$legendThumbnailHeight_mobile}px * $iconRatio);
-        width: calc(#{$legendThumbnailHeight_mobile}px * $iconRatio);
+        height: calc(#{$legendThumbnailHeight_small}px * $iconRatio);
+        width: calc(#{$legendThumbnailHeight_small}px * $iconRatio);
         position: absolute;
       }
     }
   }
 
-  &.desktop {
+  &.medium {
     .legend {
       .thumbnail {
-        height: #{$legendThumbnailHeight_desktop}px;
-        width: #{$legendThumbnailHeight_desktop}px;
+        height: #{$legendThumbnailHeight_medium}px;
+        width: #{$legendThumbnailHeight_medium}px;
         svg {
-          height: calc(#{$legendThumbnailHeight_desktop}px * $iconRatio);
-          width: calc(#{$legendThumbnailHeight_desktop}px * $iconRatio);
+          height: calc(#{$legendThumbnailHeight_medium}px * $iconRatio);
+          width: calc(#{$legendThumbnailHeight_medium}px * $iconRatio);
+        }
+      }
+    }
+  }
+
+  &.large {
+    .legend {
+      .thumbnail {
+        height: #{$legendThumbnailHeight_large}px;
+        width: #{$legendThumbnailHeight_large}px;
+        svg {
+          height: calc(#{$legendThumbnailHeight_large}px * $iconRatio);
+          width: calc(#{$legendThumbnailHeight_large}px * $iconRatio);
+        }
+      }
+    }
+  }
+
+  &.xlarge {
+    .legend {
+      .thumbnail {
+        height: #{$legendThumbnailHeight_xlarge}px;
+        width: #{$legendThumbnailHeight_xlarge}px;
+        svg {
+          height: calc(#{$legendThumbnailHeight_xlarge}px * $iconRatio);
+          width: calc(#{$legendThumbnailHeight_xlarge}px * $iconRatio);
         }
       }
     }

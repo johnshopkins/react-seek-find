@@ -1,4 +1,4 @@
-@forward '../../../css/main';
+@use '../../../css/main' as *;
 
 .container {
 
@@ -29,26 +29,9 @@
     z-index: var(--stack-utilities);
 
     button {
-      border: none;
-      background: transparent;
-      padding: 0;
-      pointer-events: auto;
+      @include button;
 
       svg {
-      }
-
-      &:hover {
-        cursor: pointer;
-
-        &:disabled {
-          cursor: default;
-        }
-      }
-
-      &:disabled {
-        svg {
-          color: var(--jhu-grayscale-10);
-        }
         height: #{$utilitiesIconHeight_small}px;
         width: #{$utilitiesIconHeight_small}px;
       }
@@ -64,7 +47,7 @@
     }
 
     .navigation {
-      align-items: flex-end;
+      align-items: center;
       display: flex;
       flex-direction: column;
       gap: 0.3em;
@@ -78,25 +61,6 @@
       flex-direction: row;
       bottom: 1em;
       left: 1em;
-    }
-
-    button.instructions,
-    button.hint {
-      color: var(--jhu-gold-30);
-      
-      &:hover {
-        color: var(--jhu-gold-40);
-      }
-    }
-
-    button.zoom-in,
-    button.zoom-out {
-      color: var(--jhu-grayscale-40);
-      display: block;
-
-      &:hover {
-        color: var(--jhu-grayscale-50);
-      }
     }
   }
 

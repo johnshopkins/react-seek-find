@@ -1,4 +1,4 @@
-@forward '../../../css/main';
+@use '../../../css/main' as *;
 
 canvas.hint {
   opacity: 0;
