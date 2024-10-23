@@ -343,8 +343,18 @@ class Illustration extends Component {
    */
   onSightsMove(x, y, direction) {
 
-    const threshold = 50;
-    const move = 100;
+    // 1.3x the size of the minimap width
+    const threshold = ((settings[`miniMap_${this.props.breakpoint}`] * 1.2) + settings[`utilitiesEdgeSpace_${this.props.breakpoint}`]) * this.props.emToPixel;
+    
+    // move 1/5 of either the container height or width (whichever is largest)
+    // but don't scroll more than the smallest
+    const largestDimension = Math.max(this.props.containerHeight, this.props.containerWidth);
+    const smallestDimension = Math.min(this.props.containerHeight, this.props.containerWidth);
+
+    let move = largestDimension / 5;
+    if (move > smallestDimension) {
+      move = smallestDimension / 2;
+    }
 
     const currentX = this.state.canvasX;
     const currentY = this.state.canvasY;
