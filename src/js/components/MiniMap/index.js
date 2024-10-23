@@ -46,7 +46,7 @@ export default ({ canvasX, canvasY, containerHeight, containerWidth, emToPixel, 
       moveCanvas(newX, newY);
     }
     
-  }, 30);
+  }, 15); // set to 15 to keep up with mousemove in a smaller space
 
   const mapHeight = imageHeight * sizeDown
   const mapWidth = miniMapWidth;
@@ -56,15 +56,29 @@ export default ({ canvasX, canvasY, containerHeight, containerWidth, emToPixel, 
     width: `${mapWidth}px`,
   }
 
-  // subtract 4 to allow space for the border
-  const shownHeight = (sizeDown * containerHeight) - 4;
-  const shownWidth = (sizeDown * containerWidth) - 4;
+  const shownHeight = (sizeDown * containerHeight);
+  const shownWidth = (sizeDown * containerWidth);
+
+  // adjustments for CSS absolute positioning
+  let left = Math.abs(canvasX * sizeDown);
+  if (canvasX > 0) {
+    left = -Math.abs(left);
+  }
+
+  let top = Math.abs(canvasY * sizeDown);
+  if (canvasY > 0) {
+    top = -Math.abs(top);
+  }
+
+  // border offset for absolute positioning
+  left = left - 2;
+  top = top - 2;
 
   const shownStyle = {
-    left: `${Math.abs(canvasX) * sizeDown}px`,
-    height: `${shownHeight <= mapHeight ? shownHeight : mapHeight}px`,
-    top: `${Math.abs(canvasY) * sizeDown}px`,
-    width: `${shownWidth <= mapWidth ? shownWidth : mapWidth}px`,
+    left: `${left}px`,
+    height: `${shownHeight}px`,
+    top: `${top}px`,
+    width: `${shownWidth}px`,
   }
 
   return (
