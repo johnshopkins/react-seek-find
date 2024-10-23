@@ -39,26 +39,20 @@
 
     .navigation,
     .instructions-and-hint {
-      display: flex;
-      gap: 0.3em;
-      // justify-content: center;
-      position: absolute;
-      
-    }
-
-    .navigation {
       align-items: center;
       display: flex;
       flex-direction: column;
       gap: 0.3em;
       justify-content: center;
+      position: absolute;
+    }
+
+    .navigation {
       right: #{$utilitiesEdgeSpace_small}em;
       top: #{$utilitiesEdgeSpace_small}em;
     }
 
     .instructions-and-hint {
-      align-items: flex-start;
-      flex-direction: row;
       bottom: #{$utilitiesEdgeSpace_small}em;
       left: #{$utilitiesEdgeSpace_small}em;
     }
