@@ -5,12 +5,12 @@ $iconRatio: 0.4;
 .container {
   .legend {
     display: flex;
-    gap: 5px;
+    gap: #{$legendGap_small}em;
     
     .thumbnail {
       background: #000;
-      height: #{$legendThumbnailHeight_small}px;
-      width: #{$legendThumbnailHeight_small}px;
+      height: #{$legendThumbnailHeight_small}em;
+      width: #{$legendThumbnailHeight_small}em;
 
       img {
         width: 100%;
@@ -19,8 +19,8 @@ $iconRatio: 0.4;
       svg {
         background: #fff;
         fill: green;
-        height: calc(#{$legendThumbnailHeight_small}px * $iconRatio);
-        width: calc(#{$legendThumbnailHeight_small}px * $iconRatio);
+        height: calc(#{$legendThumbnailHeight_small}em * $iconRatio);
+        width: calc(#{$legendThumbnailHeight_small}em * $iconRatio);
         position: absolute;
       }
     }
@@ -28,12 +28,14 @@ $iconRatio: 0.4;
 
   &.medium {
     .legend {
+      gap: #{$legendGap_medium}em;
+
       .thumbnail {
-        height: #{$legendThumbnailHeight_medium}px;
-        width: #{$legendThumbnailHeight_medium}px;
+        height: #{$legendThumbnailHeight_medium}em;
+        width: #{$legendThumbnailHeight_medium}em;
         svg {
-          height: calc(#{$legendThumbnailHeight_medium}px * $iconRatio);
-          width: calc(#{$legendThumbnailHeight_medium}px * $iconRatio);
+          height: calc(#{$legendThumbnailHeight_medium}em * $iconRatio);
+          width: calc(#{$legendThumbnailHeight_medium}em * $iconRatio);
         }
       }
     }
@@ -41,12 +43,14 @@ $iconRatio: 0.4;
 
   &.large {
     .legend {
+      gap: #{$legendGap_large}em;
+
       .thumbnail {
-        height: #{$legendThumbnailHeight_large}px;
-        width: #{$legendThumbnailHeight_large}px;
+        height: #{$legendThumbnailHeight_large}em;
+        width: #{$legendThumbnailHeight_large}em;
         svg {
-          height: calc(#{$legendThumbnailHeight_large}px * $iconRatio);
-          width: calc(#{$legendThumbnailHeight_large}px * $iconRatio);
+          height: calc(#{$legendThumbnailHeight_large}em * $iconRatio);
+          width: calc(#{$legendThumbnailHeight_large}em * $iconRatio);
         }
       }
     }
@@ -54,12 +58,14 @@ $iconRatio: 0.4;
 
   &.xlarge {
     .legend {
+      gap: #{$legendGap_xlarge}em;
+
       .thumbnail {
-        height: #{$legendThumbnailHeight_xlarge}px;
-        width: #{$legendThumbnailHeight_xlarge}px;
+        height: #{$legendThumbnailHeight_xlarge}em;
+        width: #{$legendThumbnailHeight_xlarge}em;
         svg {
-          height: calc(#{$legendThumbnailHeight_xlarge}px * $iconRatio);
-          width: calc(#{$legendThumbnailHeight_xlarge}px * $iconRatio);
+          height: calc(#{$legendThumbnailHeight_xlarge}em * $iconRatio);
+          width: calc(#{$legendThumbnailHeight_xlarge}em * $iconRatio);
         }
       }
     }

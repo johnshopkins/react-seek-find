@@ -32,8 +32,8 @@
       @include button;
 
       svg {
-        height: #{$utilitiesIconHeight_small}px;
-        width: #{$utilitiesIconHeight_small}px;
+        height: #{$utilitiesIconHeight_small}em;
+        width: #{$utilitiesIconHeight_small}em;
       }
     }
 
@@ -52,15 +52,15 @@
       flex-direction: column;
       gap: 0.3em;
       justify-content: center;
-      right: 1em;
-      top: 1em;
+      right: #{$utilitiesEdgeSpace_small}em;
+      top: #{$utilitiesEdgeSpace_small}em;
     }
 
     .instructions-and-hint {
       align-items: flex-start;
       flex-direction: row;
-      bottom: 1em;
-      left: 1em;
+      bottom: #{$utilitiesEdgeSpace_small}em;
+      left: #{$utilitiesEdgeSpace_small}em;
     }
   }
 
@@ -80,9 +80,19 @@
     .utilities {
       button {
         svg {
-          height: #{$utilitiesIconHeight_medium}px;
-          width: #{$utilitiesIconHeight_medium}px;
+          height: #{$utilitiesIconHeight_medium}em;
+          width: #{$utilitiesIconHeight_medium}em;
         }
+      }
+
+      .navigation {
+        right: #{$utilitiesEdgeSpace_medium}em;
+        top: #{$utilitiesEdgeSpace_medium}em;
+      }
+
+      .instructions-and-hint {
+        bottom: #{$utilitiesEdgeSpace_medium}em;
+        left: #{$utilitiesEdgeSpace_medium}em;
       }
     }
   }
@@ -91,9 +101,19 @@
     .utilities {
       button {
         svg {
-          height: #{$utilitiesIconHeight_large}px;
-          width: #{$utilitiesIconHeight_large}px;
+          height: #{$utilitiesIconHeight_large}em;
+          width: #{$utilitiesIconHeight_large}em;
         }
+      }
+
+      .navigation {
+        right: #{$utilitiesEdgeSpace_large}em;
+        top: #{$utilitiesEdgeSpace_large}em;
+      }
+
+      .instructions-and-hint {
+        bottom: #{$utilitiesEdgeSpace_large}em;
+        left: #{$utilitiesEdgeSpace_large}em;
       }
     }
   }
@@ -102,9 +122,19 @@
     .utilities {
       button {
         svg {
-          height: #{$utilitiesIconHeight_xlarge}px;
-          width: #{$utilitiesIconHeight_xlarge}px;
+          height: #{$utilitiesIconHeight_xlarge}em;
+          width: #{$utilitiesIconHeight_xlarge}em;
         }
+      }
+
+      .navigation {
+        right: #{$utilitiesEdgeSpace_xlarge}em;
+        top: #{$utilitiesEdgeSpace_xlarge}em;
+      }
+
+      .instructions-and-hint {
+        bottom: #{$utilitiesEdgeSpace_large}em;
+        left: #{$utilitiesEdgeSpace_xlarge}em;
       }
     }
   }

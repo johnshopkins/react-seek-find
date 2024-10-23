@@ -135,6 +135,7 @@ class Illustration extends Component {
 
     const propVars = [
       'breakpoint',
+      'emToPixel',
       'found',
       'containerHeight',
       'containerWidth',
@@ -453,6 +454,7 @@ class Illustration extends Component {
               canvasY={this.state.canvasY}
               containerHeight={this.props.containerHeight}
               containerWidth={this.props.containerWidth}
+              emToPixel={this.props.emToPixel}
               imageHeight={this.props.height * this.props.scale}
               imageWidth={this.props.width * this.props.scale}
               moveCanvas={this.moveCanvas}

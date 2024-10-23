@@ -8,7 +8,7 @@ import './style.scss';
 /**
  * Manages the mini-map utility.
  */
-export default ({ breakpoint, canvasX, canvasY, containerHeight, containerWidth, imageHeight, imageWidth, moveCanvas }) => {
+export default ({ breakpoint, canvasX, canvasY, containerHeight, containerWidth, emToPixel, imageHeight, imageWidth, moveCanvas }) => {
 
   // note: minimap click+drag works only for mouse users...
   // the minimap is too small to be usable for click+drag purposes on mobile.
@@ -17,7 +17,7 @@ export default ({ breakpoint, canvasX, canvasY, containerHeight, containerWidth,
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartY, setDragStartY] = useState(null);
 
-  const miniMapWidth = settings[`miniMap_${breakpoint}`];
+  const miniMapWidth = settings[`miniMap_${breakpoint}`] * emToPixel;
 
   const sizeDown = miniMapWidth / imageWidth;
   const sizeUp = imageWidth/ miniMapWidth;

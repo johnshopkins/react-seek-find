@@ -1,7 +1,7 @@
 // variables that need to be shared between CSS and JS
 module.exports = {
 
-  // animations
+  // animations (in ms)
   foundFadeIn: 500,
   foundFadeOut: 2000,
   hintFadeIn: 500,
@@ -10,23 +10,31 @@ module.exports = {
   // breakpoints (up to given pixel width)
   breakpoint_small: 430,
   breakpoint_medium: 768,
-  breakpoint_large: 1040,
+  breakpoint_large: 1001, // captures 1000
 
-  // sizing (in pixels)
-  legendThumbnailHeight_small: 50,
-  legendThumbnailHeight_medium: 75,
-  legendThumbnailHeight_large: 75,
-  legendThumbnailHeight_xlarge: 75,
-  legendBackgroundGap_small: 5,
-  legendBackgroundGap_medium: 5,
-  legendBackgroundGap_large: 5,
-  legendBackgroundGap_xlarge: 5,
-  miniMap_small: 50,
-  miniMap_medium: 50,
-  miniMap_large: 75,
-  miniMap_xlarge: 75,
-  utilitiesIconHeight_small: 50,
-  utilitiesIconHeight_medium: 30,
-  utilitiesIconHeight_large: 30,
-  utilitiesIconHeight_xlarge: 30,
+  // sizing (in ems)
+  legendThumbnailHeight_small: 3,
+  legendThumbnailHeight_medium: 3.125,
+  legendThumbnailHeight_large: 4.5,
+  legendThumbnailHeight_xlarge: 4.5,
+
+  legendGap_small: 0.3125,
+  legendGap_medium: 0.3125,
+  legendGap_large: 0.3125,
+  legendGap_xlarge: 0.3125,
+
+  miniMap_small: 2,
+  miniMap_medium: 3.125,
+  miniMap_large: 3.125,
+  miniMap_xlarge: 3.125,
+
+  utilitiesIconHeight_small: 2,
+  utilitiesIconHeight_medium: 2,
+  utilitiesIconHeight_large: 2,
+  utilitiesIconHeight_xlarge: 2,
+
+  utilitiesEdgeSpace_small: 0.3125,
+  utilitiesEdgeSpace_medium: 0.3125,
+  utilitiesEdgeSpace_large: 0.3125,
+  utilitiesEdgeSpace_xlarge: 0.3125,
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 
 import Illustration from '../Illustration';
@@ -29,6 +29,8 @@ class Game extends Component {
 
     // the DOM element the game is contained in. helps determine view
     this.container = props.container;
+
+    this.em = createRef();
 
     // // for testing
     // clearGameState();
@@ -105,6 +107,8 @@ class Game extends Component {
 
   getViewState() {
 
+    const emToPixel = this.em.current ? this.em.current.clientWidth : 16; // assume 16 to get started
+
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
     const width = this.container.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
@@ -115,7 +119,7 @@ class Game extends Component {
     // base breakpoint on the width of the container, not the user's screen
     const breakpoint = this.getBreakpoint(width);
 
-    const legendHeight = settings[`legendThumbnailHeight_${breakpoint}`];
+    const legendHeight = (settings[`legendThumbnailHeight_${breakpoint}`] + settings[`legendGap_${breakpoint}`]) * emToPixel;
 
     const illustrationContainerHeight = height - legendHeight;
     const illustrationContainerWidth = width;
@@ -136,6 +140,7 @@ class Game extends Component {
 
     return {
       breakpoint,
+      emToPixel,
       height,
       illustrationContainerHeight,
       illustrationContainerWidth,
@@ -276,6 +281,10 @@ class Game extends Component {
 
     return (
       <div className={['container', this.state.breakpoint].join(' ')} style={containerStyles}>
+
+        {/* used to convert ems to pixels */}
+        <div ref={this.em} aria-hidden style={{ position: 'absolute', visibility: 'hidden', width: '1em' }} />
+        
         <Legend
           found={this.state.found}
           objects={Object.values(this.objects)}
@@ -283,6 +292,7 @@ class Game extends Component {
         <div className="game-container" role="region" aria-label="Seek and Find" style={gameStyles}>
           <Illustration
             breakpoint={this.state.breakpoint}
+            emToPixel={this.state.emToPixel}
             found={this.state.found}
             foundKeepAlive={this.props.foundKeepAlive}
             containerStyles={gameStyles}
