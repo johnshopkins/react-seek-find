@@ -16,5 +16,6 @@ root.render(
     imageHeight={2448}
     imageWidth={1584}
     objects={[Beanie, Football]}
+    onGameComplete={() => console.log('hooray!')}
   />
 );

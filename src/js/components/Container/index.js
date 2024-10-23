@@ -40,6 +40,7 @@ class Game extends Component {
 
     // combine stored data with default data
     const userData = {
+      gameComplete: false,
       found: [],
       showTouchInstruction: true,
       timer: 0,
@@ -189,9 +190,17 @@ class Game extends Component {
       return { found }
 
     }, () => {
+
+      const gameComplete = this.state.found.length == Object.values(this.objects).length;
+
+      if (gameComplete) {
+        this.props.onGameComplete()
+      }
+
       saveGameState({
         found: this.state.found,
         time: this.state.timer,
+        gameComplete,
       })
     });
   }
@@ -300,6 +309,7 @@ class Game extends Component {
           breakpoint={this.state.breakpoint}
           emToPixel={this.state.emToPixel}
           found={this.state.found}
+          gameComplete={this.state.gameComplete}
           foundKeepAlive={this.props.foundKeepAlive}
           containerStyles={gameStyles}
           imageSrc={this.props.image}
@@ -329,6 +339,7 @@ Game.defaultProps = {
   buffer: true,
   foundKeepAlive: 2000,
   hintKeepAlive: 10000,
+  onGameComplete: () => {},
 };
 
 Game.propTypes = {
@@ -337,6 +348,7 @@ Game.propTypes = {
   height: PropTypes.number,
   hintKeepAlive: PropTypes.number,
   image: PropTypes.string.isRequired,
+  onGameComplete: PropTypes.func.isRequired,
   width: PropTypes.number,
   objects: PropTypes.array,
 };
