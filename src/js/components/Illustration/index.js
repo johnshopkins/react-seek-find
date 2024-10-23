@@ -504,9 +504,11 @@ class Illustration extends Component {
               <InstructionsIcon tooltip="How to play" />
             </button>
 
-            <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()}>
-              <LightbulbIcon tooltip="Give me a hint" />
-            </button>
+            {!this.props.gameComplete &&
+              <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()}>
+                <LightbulbIcon tooltip="Give me a hint" />
+              </button>
+            }
           </div>
 
           <div className="navigation">
