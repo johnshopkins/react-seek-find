@@ -1,6 +1,31 @@
 @use '../../../css/main' as *;
 
-canvas.findable {
-  position: absolute;
-  z-index: var(--stack-findable);
+.container {
+
+  .touch-instructions {
+    align-items: center;
+    display: none;
+    background-color: var(--jhu-grayscale-20);
+    flex-direction: row;
+    font-size: 2em;
+    justify-content: center;
+    opacity: 0.9;
+    position: absolute;
+    text-align: center;
+    z-index: var(--touch-instructions);
+
+    p {
+      padding: 2em;
+    }
+
+    &.show {
+      display: flex;
+    }
+  }
+
+  canvas.findable {
+    position: absolute;
+    z-index: var(--stack-findable);
+  }
+
 }
