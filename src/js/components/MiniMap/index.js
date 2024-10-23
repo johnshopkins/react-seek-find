@@ -68,7 +68,12 @@ export default ({ breakpoint, canvasX, canvasY, containerHeight, containerWidth,
   }
 
   return (
-    <div className="mini-map" style={mapStyle}>
+    <div
+      className="mini-map"
+      style={mapStyle}
+      // enables clicks within minimap to still register as focused within game container
+      tabIndex="-1"
+    >
       <div
         className="shown"
         style={shownStyle}

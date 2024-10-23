@@ -441,7 +441,15 @@ class Illustration extends Component {
     }
 
     return (
-      <div className="game-container" role="region" aria-label="Seek and Find" style={this.props.containerStyles}>
+      <div
+        className="game-container"
+        role="region"
+        aria-label="Seek and Find"
+        style={this.props.containerStyles}
+        onFocus={this.onFocus}
+        onBlur={this.onBlur}
+        onKeyDown={this.onKeyDown}
+      >
         <InstructionsModal
           onClose={this.closeInstructions}
           isOpen={this.state.instructionsOpen}
@@ -519,9 +527,6 @@ class Illustration extends Component {
             width={this.props.width}
             onMouseDown={this.onMouseDown}
             onTouchStart={this.onTouchStart}
-            onFocus={this.onFocus}
-            onKeyDown={this.onKeyDown}
-            onBlur={this.onBlur}
             showTouchInstruction={this.props.showTouchInstruction}
             touchInstructionStyle={this.props.containerStyles}
           />

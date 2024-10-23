@@ -10,10 +10,7 @@ import './style.scss';
 export default forwardRef(({
   height,
   objects,
-  onBlur,
   onFind,
-  onFocus,
-  onKeyDown,
   onMouseDown,
   onTouchStart,
   scale,
@@ -75,9 +72,6 @@ export default forwardRef(({
         width={width}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
-        onFocus={onFocus}
-        onKeyDown={onKeyDown}
-        onBlur={onBlur}
         tabIndex="0"
         style={{
           // stops the browser from its scrolling on the element
