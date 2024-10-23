@@ -48,8 +48,8 @@ class Illustration extends Component {
       anchorX,
       anchorY,
 
-      isClick: false,
       isKeyboardFocused: false,
+      focused: false,
       context: null,
       isDragging: false,
       dragStartX: null,
@@ -179,19 +179,22 @@ class Illustration extends Component {
   }
 
   onKeyDown(e) {
-    this.setState({ isClick: false }, () => {
-      if (this.state.isKeyboardFocused) {
+    if (this.state.focused) {
+      this.setState({ isKeyboardFocused: true }, () => {
         this.sights.current.moveSights(e);
-      }
-    });
+      });
+    }
   }
 
   onFocus() {
-    this.setState({ isKeyboardFocused: !this.state.isClick });
+    this.setState({ focused: true });
   }
 
   onBlur() {
-    this.setState({ isKeyboardFocused: false });
+    this.setState({
+      focused: false,
+      isKeyboardFocused: false,
+    });
   }
 
   onMouseUp(e) {
@@ -205,7 +208,6 @@ class Illustration extends Component {
 
   onMouseDown(e) {
     this.setState({
-      isClick: true,
       dragStartX: e.nativeEvent.offsetX,
       dragStartY: e.nativeEvent.offsetY,
     });
