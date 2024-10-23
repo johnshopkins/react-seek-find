@@ -44,40 +44,32 @@ class Game extends Component {
       ...storedData
     }
 
+    // combine stored and default state
+    this.state = {
+      browserHeight: document.documentElement.clientHeight,
+      browserWidth: document.documentElement.clientWidth,
+      ...this.getViewState(),
+      ...userData,
+    };
+
     // organize the objects by ID
     this.objects = {};
     this.props.objects.forEach(object => {
       this.objects[object.id] = object;
     });
 
-    // determine variables related to the current view
-    const { breakpoint, height, illustrationContainerHeight, illustrationContainerWidth, maxZoomOut, scale, width } = this.determineView();
-
-    // combine stored and default state
-    this.state = {
-      breakpoint,
-      height,
-      illustrationContainerHeight,
-      illustrationContainerWidth,
-      maxZoomOut: maxZoomOut,
-      zoomInLimitReached: scale === 100, // the farthest IN you can zoom
-      zoomOutLimitReached: scale === maxZoomOut, // the farthest OUT you can zoom
-      scale,
-      width,
-      browserHeight: document.documentElement.clientHeight,
-      browserWidth: document.documentElement.clientWidth,
-      ...userData,
-    };
-
-    this.determineView = this.determineView.bind(this);
+    this.getViewState = this.getViewState.bind(this);
     this.hideTouchInstruction = this.hideTouchInstruction.bind(this);
     this.onFind = this.onFind.bind(this);
     this.scaleToFit = this.scaleToFit.bind(this);
+    this.setViewState = this.setViewState.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
   }
 
   componentDidMount() {
+
+    this.setViewState();
 
     ResizeWatcher.startWatching();
 
@@ -89,18 +81,7 @@ class Game extends Component {
       // make sure the size actually changed (iOS triggers them randomly at times)
       // see: https://johnkavanagh.co.uk/articles/understanding-phantom-window-resize-events-in-ios/
       if (this.state.browserHeight !== newHeight || this.state.browserWidth !== newWidth) {
-        const { breakpoint, height, illustrationContainerHeight, illustrationContainerWidth, maxZoomOut, scale, width } = this.determineView();
-        this.setState({
-          browserHeight: newHeight,
-          browserWidth: newWidth,
-          breakpoint,
-          height,
-          illustrationContainerHeight,
-          illustrationContainerWidth,
-          maxZoomOut,
-          scale,
-          width
-        });
+        this.setViewState();
       }
     })
   }
@@ -118,7 +99,7 @@ class Game extends Component {
     return Math.floor(num / 10) * 10;
   }
 
-  determineView() {
+  getViewState() {
 
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
@@ -139,7 +120,7 @@ class Game extends Component {
     const maxZoomOutWidth = (width >= this.props.imageWidth ? 1 : width / this.props.imageWidth) * 100;
     const maxZoomOutHeight = (height >= this.props.imageHeight ? 1 : height / this.props.imageHeight) * 100;
 
-    const maxZoomOut = Math.max(maxZoomOutWidth, maxZoomOutHeight)
+    const maxZoomOut = Math.max(maxZoomOutWidth, maxZoomOutHeight);
 
     // round to nearest 10 and add 20 so the zoom isn't too close to the max zoom out
     let scale = (Math.ceil(maxZoomOut / 10) * 10) + 20;
@@ -149,7 +130,21 @@ class Game extends Component {
       scale = 60;
     }
 
-    return { breakpoint, height, illustrationContainerHeight, illustrationContainerWidth, maxZoomOut, scale, width };
+    return {
+      breakpoint,
+      height,
+      illustrationContainerHeight,
+      illustrationContainerWidth,
+      maxZoomOut,
+      scale,
+      width,
+      zoomInLimitReached: scale === 100, // the farthest IN you can zoom
+      zoomOutLimitReached: scale === maxZoomOut, // the farthest OUT you can zoom
+    };
+  }
+
+  setViewState() {
+    this.setState(this.getViewState());
   }
 
   getBreakpoint(width) {
