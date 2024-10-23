@@ -135,6 +135,7 @@ class Illustration extends Component {
     }
 
     const propVars = [
+      'breakpoint',
       'found',
       'containerHeight',
       'containerWidth',
@@ -475,6 +476,7 @@ class Illustration extends Component {
           <div className="navigation">
             
             <MiniMap
+              breakpoint={this.props.breakpoint}
               canvasX={this.state.canvasX}
               canvasY={this.state.canvasY}
               containerHeight={this.props.containerHeight}

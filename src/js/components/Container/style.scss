@@ -1,10 +1,22 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: #{$legendBackgroundGap}px;
+  gap: #{$legendBackgroundGap_small}px;
 
   .game-container {
     overflow: hidden;
     position: relative;
+  }
+
+  &.medium {
+    gap: #{$legendBackgroundGap_medium}px;
+  }
+
+  &.large {
+    gap: #{$legendBackgroundGap_large}px;
+  }
+
+  &.xlarge {
+    gap: #{$legendBackgroundGap_xlarge}px;
   }
 }

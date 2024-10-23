@@ -7,17 +7,26 @@ module.exports = {
   hintFadeIn: 500,
   hintFadeOut: 5000,
 
-  // breakpoints
-  breakpoint_desktop: 1000,
+  // breakpoints (up to given pixel width)
+  breakpoint_small: 430,
+  breakpoint_medium: 768,
+  breakpoint_large: 1040,
 
   // sizing (in pixels)
-  legendThumbnailHeight_mobile: 50,
-  legendThumbnailHeight_desktop: 75,
-
-  legendBackgroundGap: 5,
-
-  miniMap: 75,
-
-  utilitiesIconHeight_mobile: 30,
-  utilitiesIconHeight_desktop: 50,
+  legendThumbnailHeight_small: 50,
+  legendThumbnailHeight_medium: 75,
+  legendThumbnailHeight_large: 75,
+  legendThumbnailHeight_xlarge: 75,
+  legendBackgroundGap_small: 5,
+  legendBackgroundGap_medium: 5,
+  legendBackgroundGap_large: 5,
+  legendBackgroundGap_xlarge: 5,
+  miniMap_small: 50,
+  miniMap_medium: 50,
+  miniMap_large: 75,
+  miniMap_xlarge: 75,
+  utilitiesIconHeight_small: 50,
+  utilitiesIconHeight_medium: 30,
+  utilitiesIconHeight_large: 30,
+  utilitiesIconHeight_xlarge: 30,
 }

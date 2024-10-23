@@ -35,8 +35,6 @@
       pointer-events: auto;
 
       svg {
-        height: #{$utilitiesIconHeight_mobile}px;
-        width: #{$utilitiesIconHeight_mobile}px;
       }
 
       &:hover {
@@ -51,6 +49,8 @@
         svg {
           color: var(--jhu-grayscale-10);
         }
+        height: #{$utilitiesIconHeight_small}px;
+        width: #{$utilitiesIconHeight_small}px;
       }
     }
 
@@ -112,12 +112,34 @@
     }
   }
 
-  &.desktop {
+  &.medium {
     .utilities {
       button {
         svg {
-          height: #{$utilitiesIconHeight_desktop}px;
-          width: #{$utilitiesIconHeight_desktop}px;
+          height: #{$utilitiesIconHeight_medium}px;
+          width: #{$utilitiesIconHeight_medium}px;
+        }
+      }
+    }
+  }
+
+  &.large {
+    .utilities {
+      button {
+        svg {
+          height: #{$utilitiesIconHeight_large}px;
+          width: #{$utilitiesIconHeight_large}px;
+        }
+      }
+    }
+  }
+
+  &.xlarge {
+    .utilities {
+      button {
+        svg {
+          height: #{$utilitiesIconHeight_xlarge}px;
+          width: #{$utilitiesIconHeight_xlarge}px;
         }
       }
     }

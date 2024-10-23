@@ -89,12 +89,14 @@ class Game extends Component {
       // make sure the size actually changed (iOS triggers them randomly at times)
       // see: https://johnkavanagh.co.uk/articles/understanding-phantom-window-resize-events-in-ios/
       if (this.state.browserHeight !== newHeight || this.state.browserWidth !== newWidth) {
-        const { breakpoint, height, maxZoomOut, scale, width } = this.determineView();
+        const { breakpoint, height, illustrationContainerHeight, illustrationContainerWidth, maxZoomOut, scale, width } = this.determineView();
         this.setState({
           browserHeight: newHeight,
           browserWidth: newWidth,
           breakpoint,
           height,
+          illustrationContainerHeight,
+          illustrationContainerWidth,
           maxZoomOut,
           scale,
           width
@@ -118,14 +120,15 @@ class Game extends Component {
 
   determineView() {
 
-    const breakpoint = document.documentElement.clientWidth > settings.breakpoint_desktop ? 'desktop' : 'mobile';
-
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
     const width = this.container.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
 
     // 50 pixel buffer on top/bottom of user's screen
     const height = document.documentElement.clientHeight - 100;
+
+    // base breakpoint on the width of the container, not the user's screen
+    const breakpoint = this.getBreakpoint(width);
 
     const legendHeight = settings[`legendThumbnailHeight_${breakpoint}`];
 
@@ -147,6 +150,23 @@ class Game extends Component {
     }
 
     return { breakpoint, height, illustrationContainerHeight, illustrationContainerWidth, maxZoomOut, scale, width };
+  }
+
+  getBreakpoint(width) {
+
+    if (width < settings.breakpoint_small) {
+      return 'small';
+    }
+
+    if (width < settings.breakpoint_medium) {
+      return 'medium';
+    }
+
+    if (width < settings.breakpoint_large) {
+      return 'large';
+    }
+
+    return 'xlarge';
   }
 
   onFind(foundObject) {
@@ -262,6 +282,7 @@ class Game extends Component {
         />
         <div className="game-container" role="region" aria-label="Seek and Find" style={gameStyles}>
           <Illustration
+            breakpoint={this.state.breakpoint}
             found={this.state.found}
             foundKeepAlive={this.props.foundKeepAlive}
             containerStyles={gameStyles}
