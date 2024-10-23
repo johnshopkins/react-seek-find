@@ -467,7 +467,7 @@ class Illustration extends Component {
             </button>
 
             <div style={{ background: '#fff', padding: '5px' }}>
-              {this.props.scale * 100}%
+              {Math.round(this.props.scale * 100)}%
             </div>
           </div>
 
