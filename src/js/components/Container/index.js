@@ -256,6 +256,11 @@ class Game extends Component {
 
     let zoomTo = this.roundDown(Math.min(zoomOutHeight, zoomOutWidth));
 
+    if (this.state.scale <= zoomTo) {
+      // app is already scaled out enough; do not adjust
+      return;
+    }
+
     if (zoomTo < this.state.maxZoomOut) {
       zoomTo = this.state.maxZoomOut;
     }
