@@ -72,7 +72,6 @@ class Illustration extends Component {
     this.onMouseUp = this.onMouseUp.bind(this);
     this.openInstructions = this.openInstructions.bind(this);
     this.onSightsMove = this.onSightsMove.bind(this);
-    this.onShowHint = this.onShowHint.bind(this);
     this.showFound = this.showFound.bind(this);
     this.showHint - this.showHint.bind(this);
     this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
@@ -390,33 +389,6 @@ class Illustration extends Component {
     this.setState({ hint: null }, () => {
       setTimeout(() => this.setState({ hintActive: false }), settings.hintFadeOut);
     });
-  }
-
-  onShowHint(coords) {
-
-    console.log('on show hint', coords);
-
-
-
-    // // ORIGINAL
-
-    // const scaledHintSize = this.state.hint.hintSize * this.props.scale;
-
-    // // scale the image so the entire hint can be seen as closely as possible
-    // this.props.scaleToFit(scaledHintSize, scaledHintSize);
-
-    // // move canvas so that the hint is within the center (or as close to center as possible) of the view
-    // const hintOffset = scaledHintSize / 2;
-    // const newX = coords.x + hintOffset;
-    // const newY = coords.y + hintOffset;
-
-    // // this doesn't seem to be working
-    // this.moveCanvas(-Math.abs(newX), -Math.abs(newY));
-
-    // // move sights to the hint area
-    // this.sights.current.moveSightsTo(coords.x, coords.y);
-
-    
   }
 
   showFound(object) {
