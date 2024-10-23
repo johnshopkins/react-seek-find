@@ -316,8 +316,9 @@ class Illustration extends Component {
     if (this.props.buffer) {
       // adds buffer area around image for allow for utilities
       // replaces "uses edges of image" code below
-      const utilityEdgeSpace = settings[`utilitiesEdgeSpace_${this.props.breakpoint}`] * this.props.emToPixel;
-      const miniMapWidth = settings[`miniMap_${this.props.breakpoint}`] * this.props.emToPixel;
+
+      const utilityEdgeSpace = settings.utilitiesEdgeSpace * this.props.emToPixel;
+      const miniMapWidth = settings.miniMap * this.props.emToPixel;
 
       const xMin = miniMapWidth + (utilityEdgeSpace * 2);
       const xMax = -Math.abs(scaledWidth - this.props.containerWidth) - miniMapWidth - (utilityEdgeSpace * 2);
@@ -370,7 +371,7 @@ class Illustration extends Component {
   onSightsMove(x, y, direction) {
 
     // 1.3x the size of the minimap width
-    const threshold = ((settings[`miniMap_${this.props.breakpoint}`] * 1.2) + settings[`utilitiesEdgeSpace_${this.props.breakpoint}`]) * this.props.emToPixel;
+    const threshold = ((settings.miniMap * 1.2) + settings.utilitiesEdgeSpace) * this.props.emToPixel;
     
     // move 1/5 of either the container height or width (whichever is largest)
     // but don't scroll more than the smallest

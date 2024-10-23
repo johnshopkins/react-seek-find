@@ -18,23 +18,13 @@ module.exports = {
   legendThumbnailHeight_large: 4.5,
   legendThumbnailHeight_xlarge: 4.5,
 
+  legendGap: 0.3125,
   legendGap_small: 0.3125,
   legendGap_medium: 0.3125,
   legendGap_large: 0.3125,
   legendGap_xlarge: 0.3125,
 
-  miniMap_small: 2,
-  miniMap_medium: 3.125,
-  miniMap_large: 3.125,
-  miniMap_xlarge: 3.125,
-
-  utilitiesIconHeight_small: 2,
-  utilitiesIconHeight_medium: 2,
-  utilitiesIconHeight_large: 2,
-  utilitiesIconHeight_xlarge: 2,
-
-  utilitiesEdgeSpace_small: 0.3125,
-  utilitiesEdgeSpace_medium: 0.3125,
-  utilitiesEdgeSpace_large: 0.3125,
-  utilitiesEdgeSpace_xlarge: 0.3125,
+  miniMap: 3.125,
+  utilitiesIconHeight: 2,
+  utilitiesEdgeSpace: 0.3125,
 }

@@ -11,8 +11,8 @@
       @include button;
 
       svg {
-        height: #{$utilitiesIconHeight_small}em;
-        width: #{$utilitiesIconHeight_small}em;
+        height: #{$utilitiesIconHeight}em;
+        width: #{$utilitiesIconHeight}em;
       }
     }
 
@@ -27,13 +27,13 @@
     }
 
     .navigation {
-      right: #{$utilitiesEdgeSpace_small}em;
-      top: #{$utilitiesEdgeSpace_small}em;
+      right: #{$utilitiesEdgeSpace}em;
+      top: #{$utilitiesEdgeSpace}em;
     }
 
     .instructions-and-hint {
-      bottom: #{$utilitiesEdgeSpace_small}em;
-      left: #{$utilitiesEdgeSpace_small}em;
+      bottom: #{$utilitiesEdgeSpace}em;
+      left: #{$utilitiesEdgeSpace}em;
     }
   }
 
@@ -46,69 +46,6 @@
       // from: https://css-tricks.com/copy-the-browsers-native-focus-styles/
       outline: medium auto Highlight;
       outline: 5px auto -webkit-focus-ring-color;
-    }
-  }
-
-  &.medium {
-    .utilities {
-      button {
-        svg {
-          height: #{$utilitiesIconHeight_medium}em;
-          width: #{$utilitiesIconHeight_medium}em;
-        }
-      }
-
-      .navigation {
-        right: #{$utilitiesEdgeSpace_medium}em;
-        top: #{$utilitiesEdgeSpace_medium}em;
-      }
-
-      .instructions-and-hint {
-        bottom: #{$utilitiesEdgeSpace_medium}em;
-        left: #{$utilitiesEdgeSpace_medium}em;
-      }
-    }
-  }
-
-  &.large {
-    .utilities {
-      button {
-        svg {
-          height: #{$utilitiesIconHeight_large}em;
-          width: #{$utilitiesIconHeight_large}em;
-        }
-      }
-
-      .navigation {
-        right: #{$utilitiesEdgeSpace_large}em;
-        top: #{$utilitiesEdgeSpace_large}em;
-      }
-
-      .instructions-and-hint {
-        bottom: #{$utilitiesEdgeSpace_large}em;
-        left: #{$utilitiesEdgeSpace_large}em;
-      }
-    }
-  }
-
-  &.xlarge {
-    .utilities {
-      button {
-        svg {
-          height: #{$utilitiesIconHeight_xlarge}em;
-          width: #{$utilitiesIconHeight_xlarge}em;
-        }
-      }
-
-      .navigation {
-        right: #{$utilitiesEdgeSpace_xlarge}em;
-        top: #{$utilitiesEdgeSpace_xlarge}em;
-      }
-
-      .instructions-and-hint {
-        bottom: #{$utilitiesEdgeSpace_large}em;
-        left: #{$utilitiesEdgeSpace_xlarge}em;
-      }
     }
   }
 }
