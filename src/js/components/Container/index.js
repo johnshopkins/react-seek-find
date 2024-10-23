@@ -296,6 +296,7 @@ class Game extends Component {
         />
         
         <Illustration
+          buffer={this.props.buffer}
           breakpoint={this.state.breakpoint}
           emToPixel={this.state.emToPixel}
           found={this.state.found}
@@ -325,11 +326,13 @@ class Game extends Component {
 }
 
 Game.defaultProps = {
+  buffer: true,
   foundKeepAlive: 2000,
   hintKeepAlive: 10000,
 };
 
 Game.propTypes = {
+  buffer: PropTypes.bool,
   foundKeepAlive: PropTypes.number,
   height: PropTypes.number,
   hintKeepAlive: PropTypes.number,

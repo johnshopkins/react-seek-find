@@ -10,6 +10,7 @@ const root = createRoot(elem);
 
 root.render(
   <Game
+    buffer={true}
     container={elem} // image should always be wider than this element
     image={image}
     imageHeight={2448}

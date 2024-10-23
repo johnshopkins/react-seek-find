@@ -313,16 +313,42 @@ class Illustration extends Component {
     const scaledHeight = this.props.height * this.props.scale;
     const scaledWidth = this.props.width * this.props.scale;
 
-    if (newX > 0) {
-      newX = 0
-    } else if (newX < -Math.abs(scaledWidth - this.props.containerWidth)) {
-      newX = -Math.abs(scaledWidth - this.props.containerWidth);
-    }
+    if (this.props.buffer) {
+      // adds buffer area around image for allow for utilities
+      // replaces "uses edges of image" code below
+      const utilityEdgeSpace = settings[`utilitiesEdgeSpace_${this.props.breakpoint}`] * this.props.emToPixel;
+      const miniMapWidth = settings[`miniMap_${this.props.breakpoint}`] * this.props.emToPixel;
 
-    if (newY > 0) {
-      newY = 0
-    } else if (newY < -Math.abs(scaledHeight - this.props.containerHeight)) {
-      newY = -Math.abs(scaledHeight - this.props.containerHeight);
+      const xMin = miniMapWidth + (utilityEdgeSpace * 2);
+      const xMax = -Math.abs(scaledWidth - this.props.containerWidth) - miniMapWidth - (utilityEdgeSpace * 2);
+      const yMin = xMin;
+      const yMax = -Math.abs(scaledHeight - this.props.containerHeight) - miniMapWidth - (utilityEdgeSpace * 2);
+
+      // adds buffer for icons
+      if (newX > xMin) {
+        newX = xMin;
+      } else if (newX < xMax) {
+        newX = xMax;
+      }
+
+      if (newY > yMin) {
+        newY = yMin;
+      } else if (newY < yMax) {
+        newY = yMax;
+      }
+    } else {
+      // uses edges of image
+      if (newX > 0) {
+        newX = 0
+      } else if (newX < -Math.abs(scaledWidth - this.props.containerWidth)) {
+        newX = -Math.abs(scaledWidth - this.props.containerWidth);
+      }
+
+      if (newY > 0) {
+        newY = 0
+      } else if (newY < -Math.abs(scaledHeight - this.props.containerHeight)) {
+        newY = -Math.abs(scaledHeight - this.props.containerHeight);
+      }
     }
 
     const { anchorX, anchorY } = this.getCenterAnchor(newX, newY);
@@ -359,13 +385,30 @@ class Illustration extends Component {
     const currentX = this.state.canvasX;
     const currentY = this.state.canvasY;
 
-    if (direction === 'down' && y > (Math.abs(currentY) + this.props.containerHeight - threshold)) {
+    let height = this.props.containerHeight;
+    let width = this.props.containerWidth;
+
+    if (currentY > 0) {
+      // make up for the buffer space
+      // multiple by two to make up for addition of currentY in the calculation
+      // if we don't multiply by two, it's the same as currentY = 0
+      y = y + (currentY * 2);
+    }
+
+    if (currentX > 0) {
+      // make up for the buffer space
+      // multiple by two to make up for addition of currentX in the calculation
+      // if we don't multiply by two, it's the same as currentX = 0
+      x = x + (currentX * 2);
+    }
+
+    if (direction === 'down' && y > Math.abs(currentY) + height - threshold) {
       this.moveCanvas(currentX, currentY - move);
-    } else if (direction === 'right' && x > (Math.abs(currentX) + this.props.containerWidth - threshold)) {
+    } else if (direction === 'right' && x > Math.abs(currentX) + width - threshold) {
       this.moveCanvas(currentX - move, currentY);
-    } else if (direction === 'up' && y < (Math.abs(currentY) + threshold)) {
+    } else if (direction === 'up' && y < Math.abs(currentY) + threshold) {
       this.moveCanvas(currentX, currentY + move);
-    } else if ( direction === 'left' && x < (Math.abs(currentX) + threshold)) {
+    } else if ( direction === 'left' && x < Math.abs(currentX) + threshold) {
       this.moveCanvas(currentX + move, currentY);
     }
   }
