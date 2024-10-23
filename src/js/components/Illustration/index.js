@@ -431,7 +431,7 @@ class Illustration extends Component {
     }
 
     return (
-      <>
+      <div className="game-container" role="region" aria-label="Seek and Find" style={this.props.containerStyles}>
         <InstructionsModal
           onClose={this.closeInstructions}
           isOpen={this.state.instructionsOpen}
@@ -522,7 +522,7 @@ class Illustration extends Component {
             scale={this.props.scale}
           />
         </div>
-      </>
+      </div>
     );
 
   }

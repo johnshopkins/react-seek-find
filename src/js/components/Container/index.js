@@ -289,31 +289,30 @@ class Game extends Component {
           found={this.state.found}
           objects={Object.values(this.objects)}
         />
-        <div className="game-container" role="region" aria-label="Seek and Find" style={gameStyles}>
-          <Illustration
-            breakpoint={this.state.breakpoint}
-            emToPixel={this.state.emToPixel}
-            found={this.state.found}
-            foundKeepAlive={this.props.foundKeepAlive}
-            containerStyles={gameStyles}
-            imageSrc={this.props.image}
-            objects={Object.values(this.objects)}
-            containerHeight={this.state.illustrationContainerHeight}
-            containerWidth={this.state.illustrationContainerWidth}
-            height={this.props.imageHeight}
-            width={this.props.imageWidth}
-            onFind={this.onFind}
-            scale={this.state.scale / 100}
-            hintKeepAlive={this.props.hintKeepAlive}
-            showTouchInstruction={this.state.showTouchInstruction}
-            hideTouchInstruction={this.hideTouchInstruction}
-            scaleToFit={this.scaleToFit}
-            zoomIn={this.zoomIn}
-            zoomOut={this.zoomOut}
-            zoomInLimitReached={this.state.zoomInLimitReached}
-            zoomOutLimitReached={this.state.zoomOutLimitReached}
-          />
-        </div>
+        
+        <Illustration
+          breakpoint={this.state.breakpoint}
+          emToPixel={this.state.emToPixel}
+          found={this.state.found}
+          foundKeepAlive={this.props.foundKeepAlive}
+          containerStyles={gameStyles}
+          imageSrc={this.props.image}
+          objects={Object.values(this.objects)}
+          containerHeight={this.state.illustrationContainerHeight}
+          containerWidth={this.state.illustrationContainerWidth}
+          height={this.props.imageHeight}
+          width={this.props.imageWidth}
+          onFind={this.onFind}
+          scale={this.state.scale / 100}
+          hintKeepAlive={this.props.hintKeepAlive}
+          showTouchInstruction={this.state.showTouchInstruction}
+          hideTouchInstruction={this.hideTouchInstruction}
+          scaleToFit={this.scaleToFit}
+          zoomIn={this.zoomIn}
+          zoomOut={this.zoomOut}
+          zoomInLimitReached={this.state.zoomInLimitReached}
+          zoomOutLimitReached={this.state.zoomOutLimitReached}
+        />
         
       </div>
     );
