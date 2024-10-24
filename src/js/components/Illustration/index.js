@@ -311,7 +311,7 @@ class Illustration extends Component {
    * @param {number} newY
    * @param {string} center
    */
-  moveCanvas(newX, newY, center = false, moveSights = true) {
+  moveCanvas(newX, newY, center = false, moveSights = false) {
 
     if (center) {
       const originCoordinates = this.getOriginFromCenterAnchor(newX, newY)
@@ -421,13 +421,13 @@ class Illustration extends Component {
     }
 
     if (direction === 'down' && y > Math.abs(currentY) + height - threshold) {
-      this.moveCanvas(currentX, currentY - move, false, false);
+      this.moveCanvas(currentX, currentY - move);
     } else if (direction === 'right' && x > Math.abs(currentX) + width - threshold) {
-      this.moveCanvas(currentX - move, currentY, false, false);
+      this.moveCanvas(currentX - move, currentY);
     } else if (direction === 'up' && y < Math.abs(currentY) + threshold) {
-      this.moveCanvas(currentX, currentY + move, false, false);
+      this.moveCanvas(currentX, currentY + move);
     } else if ( direction === 'left' && x < Math.abs(currentX) + threshold) {
-      this.moveCanvas(currentX + move, currentY, false, false);
+      this.moveCanvas(currentX + move, currentY);
     }
   }
 
