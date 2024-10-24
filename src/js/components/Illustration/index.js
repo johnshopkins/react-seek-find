@@ -190,9 +190,19 @@ class Illustration extends Component {
 
   onKeyDown(e) {
     if (this.state.focused) {
-      this.setState({ isKeyboardFocused: true }, () => {
-        this.sights.current.moveSights(e);
-      });
+
+      const move = () => {
+        this.setState({ isKeyboardFocused: true }, () => {
+          this.sights.current.moveSights(e);
+        });
+      }
+
+      if (!this.state.isKeyboardFocused) {
+        // move sights to the current canvas location
+        this.moveCanvas(this.state.canvasX, this.state.canvasY, false, true, move);
+      } else {
+        move();
+      }
     }
   }
 
@@ -220,6 +230,7 @@ class Illustration extends Component {
     this.setState({
       dragStartX: e.nativeEvent.offsetX,
       dragStartY: e.nativeEvent.offsetY,
+      isKeyboardFocused: false,
     });
 
     const target = e.target;
@@ -281,11 +292,11 @@ class Illustration extends Component {
     const offsetX = e.targetTouches[0].clientX - bcr.x;
     const offsetY = e.targetTouches[0].clientY - bcr.y;
 
-    const state = {
+    this.setState({
       dragStartX: offsetX,
       dragStartY: offsetY,
-    };
-    this.setState(state);
+      isKeyboardFocused: false,
+    });
 
     window.addEventListener('touchmove', this.onTouchMove);
 
@@ -311,7 +322,7 @@ class Illustration extends Component {
    * @param {number} newY
    * @param {string} center
    */
-  moveCanvas(newX, newY, center = false, moveSights = false) {
+  moveCanvas(newX, newY, center = false, moveSights = false, callback = () => {}) {
 
     if (center) {
       const originCoordinates = this.getOriginFromCenterAnchor(newX, newY)
@@ -376,7 +387,7 @@ class Illustration extends Component {
       canvasY: newY,
       anchorX,
       anchorY,
-    });
+    }, callback);
   }
 
   /**
@@ -572,8 +583,7 @@ class Illustration extends Component {
             onSightsMove={this.onSightsMove}
             width={this.props.width}
             scale={this.props.scale}
-            // show={this.state.isKeyboardFocused}
-            show={true}
+            show={this.state.isKeyboardFocused}
           />
           <Hint
             height={this.props.height}
