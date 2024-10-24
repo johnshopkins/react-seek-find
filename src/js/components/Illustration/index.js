@@ -549,7 +549,6 @@ class Illustration extends Component {
           <div className="navigation">
             
             <MiniMap
-              breakpoint={this.props.breakpoint}
               canvasX={this.state.canvasX}
               canvasY={this.state.canvasY}
               containerHeight={this.props.containerHeight}
