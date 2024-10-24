@@ -130,8 +130,8 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
     display: show ? 'block' : 'none',
     left: `${scaledPositionX}px`,
     top: `${scaledPositionY}px`,
-    height: `${iconSize * scale}px`,
-    width: `${iconSize * scale}px`
+    height: `${iconSize}px`,
+    width: `${iconSize}px`
   };
 
   return <SightsIcon className="sights" style={style} />
