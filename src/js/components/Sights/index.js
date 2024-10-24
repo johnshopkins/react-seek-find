@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react';
 
 import SightsIcon from '../Icons/Sights';
 
@@ -16,7 +16,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
   const minY = 0 - iconOffset;
   const maxY = height - iconOffset;
 
-  const getScaledPosition = (coordinate) => coordinate * scale;
+  const getScaledPosition = useCallback((coordinate) => coordinate * scale, [scale]);
 
   // absolute positioning to full size
   // add iconOffset so the full sights are visible at first
@@ -30,7 +30,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
   useEffect(() => {
     setScaledPositionX(getScaledPosition(positionX));
     setScaledPositionY(getScaledPosition(positionY));
-  }, [scale]);
+  }, [getScaledPosition, positionX, positionY, scale]);
 
   useImperativeHandle(ref, () => ({
     moveSights: (e) => {
@@ -119,7 +119,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
       setPositionY(newY);
       setScaledPositionY(getScaledPosition(newY));
     }
-  }), [positionX, positionY, scale]);
+  }), [checkGuess, getScaledPosition, iconOffset, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
 
   const style = {
     display: show ? 'block' : 'none',

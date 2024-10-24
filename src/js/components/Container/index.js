@@ -1,22 +1,17 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
-
 import Illustration from '../Illustration';
 import Legend from '../Legend';
-
 import ResizeWatcher from '@johnshopkins/jhu-wds/src/shared/js/utils/watch-window-resize'
-
 import settings from '../../../settings';
-
-require('../../lib/modernizr');
-
 import {
   clearGameState,
   loadGameState,
   saveGameState
 } from '../../lib/persistance';
-
 import './style.scss';
+
+require('../../lib/modernizr');
 
 /**
  * The container of the game, which manages the game state.
@@ -191,7 +186,7 @@ class Game extends Component {
 
     }, () => {
 
-      const gameComplete = this.state.found.length == Object.values(this.objects).length;
+      const gameComplete = this.state.found.length === Object.values(this.objects).length;
 
       if (gameComplete) {
         this.props.onGameComplete()

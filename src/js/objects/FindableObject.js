@@ -1,4 +1,4 @@
-export default class {
+class FindableObject {
   /**
    * Create a findable object
    * @param {*} id             Unique name
@@ -64,3 +64,5 @@ export default class {
     context.fill(path);
   }
 }
+
+export default FindableObject;

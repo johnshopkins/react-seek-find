@@ -1,16 +1,16 @@
 import React, { useEffect, useRef } from 'react';
-
 import './style.scss';
 
 /**
  * A canvas that plots and highlights the found object for a time.
  */
-export default ({ object, height, scale, width }) => {
+export default function Found({ object, height, scale, width }) {
 
   const ref = useRef(null);
-  let classes = ['found'];
+  const classes = useRef(['found']);
+
   if (object) {
-    classes.push('show')
+    classes.current.push('show')
   }
 
   useEffect(() => {
@@ -27,16 +27,16 @@ export default ({ object, height, scale, width }) => {
       object.create.call(this, context, true);
 
       return () => {
-        classes = ['found']
+        classes.current = ['found']
       };
     }
 
-  }, [object, scale]);
+  }, [height, object, scale, width]);
 
   return (
     <canvas
       ref={ref}
-      className={classes.join(' ')}
+      className={classes.current.join(' ')}
       height={height}
       width={width}
     />

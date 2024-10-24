@@ -1,8 +1,7 @@
 import { Children } from 'react';
-
 import './style.scss';
 
-export default ({ children, className, style, tooltip, viewBox = '0 0 512 512' }) => {
+export default function Container({ children, className, style, tooltip, viewBox = '0 0 512 512' }) {
 
   const classes = ['jhu-icon']
   if (className) {

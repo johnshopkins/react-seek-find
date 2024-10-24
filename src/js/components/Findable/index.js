@@ -1,5 +1,6 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+/*global Modernizr*/
 
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import './style.scss';
 
 /**
@@ -21,8 +22,6 @@ export default forwardRef(({
 
   const canvasRef = useRef(null);
 
-  let plottedObjects = [];
-
   useEffect(() => {
     
     const context = canvasRef.current.getContext('2d');
@@ -31,12 +30,12 @@ export default forwardRef(({
     context.resetTransform();
     context.scale(scale, scale);
 
-    plottedObjects = objects.map(object => {
+    objects.map(object => {
       object.plotted = object.create.call(this, context);
       return object;
     });
 
-  }, [objects, scale]);
+  }, [height, objects, scale, width]);
 
   useImperativeHandle(ref, () => ({
     checkGuess: (positionX, positionY) => {
@@ -51,7 +50,7 @@ export default forwardRef(({
       }
 
     }
-  }), []);
+  }), [objects, onFind]);
 
   const touchevents = Modernizr.touchevents;
 

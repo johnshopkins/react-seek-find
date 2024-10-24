@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-
 import './style.scss';
 
-export default ({ height, object, scale, width }) => {
+export default function Hint({ height, object, scale, width }) {
 
   const ref = useRef(null);
-  let classes = ['hint'];
+  const classes = useRef(['hint']);
+  
   if (object) {
-    classes.push('show')
+    classes.current.push('show')
   }
 
   useEffect(() => {
@@ -23,16 +23,16 @@ export default ({ height, object, scale, width }) => {
       object.hint.call(this, context, width, height);
 
       return () => {
-        classes = ['hint']
+        classes.current = ['hint']
       };
     }
 
-  }, [object, scale]);
+  }, [height, object, scale, width]);
 
   return (
     <canvas
       ref={ref}
-      className={classes.join(' ')}
+      className={classes.current.join(' ')}
       height={height}
       width={width}
     />

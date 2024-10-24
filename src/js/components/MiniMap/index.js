@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-const throttle = require('lodash.throttle');
-
 import settings from '../../../settings';
-
 import './style.scss';
+
+const throttle = require('lodash.throttle');
 
 /**
  * Manages the mini-map utility.
  */
-export default ({ canvasX, canvasY, containerHeight, containerWidth, emToPixel, imageHeight, imageWidth, moveCanvas }) => {
+export default function MiniMap({ canvasX, canvasY, containerHeight, containerWidth, emToPixel, imageHeight, imageWidth, moveCanvas }) {
 
   // note: minimap click+drag works only for mouse users...
   // the minimap is too small to be usable for click+drag purposes on mobile.

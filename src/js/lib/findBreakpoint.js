@@ -1,6 +1,6 @@
 import settings from '../../settings';
 
-export default width => {
+export default function findBreakpoint(width) {
 
   if (width < settings.breakpointTablet) {
     return 'mobile';

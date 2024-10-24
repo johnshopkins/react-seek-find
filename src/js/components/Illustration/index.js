@@ -1,7 +1,5 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
-const throttle = require('lodash.throttle');
-
 import Background from '../Background';
 import Findable from '../Findable';
 import Found from '../Found';
@@ -13,10 +11,10 @@ import InstructionsIcon from '../Icons/Instructions';
 import LightbulbIcon from '../Icons/Lightbulb';
 import ZoomInIcon from '../Icons/ZoomIn';
 import ZoomOutIcon from '../Icons/ZoomOut';
-
 import settings from '../../../settings';
-
 import './style.scss';
+
+const throttle = require('lodash.throttle');
 
 /**
  * Manages all the elements within the illustration portion
@@ -73,7 +71,7 @@ class Illustration extends Component {
     this.openInstructions = this.openInstructions.bind(this);
     this.onSightsMove = this.onSightsMove.bind(this);
     this.showFound = this.showFound.bind(this);
-    this.showHint - this.showHint.bind(this);
+    this.showHint = this.showHint.bind(this);
     this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
     this.onTouchStart = this.onTouchStart.bind(this);
   }
