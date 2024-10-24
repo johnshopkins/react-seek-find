@@ -248,7 +248,7 @@ class Game extends Component {
     })
   }
 
-  scaleToFit(height, width) {
+  scaleToFit(height, width, callback = () => {}) {
 
     const buffer = 50;
 
@@ -264,7 +264,7 @@ class Game extends Component {
       zoomTo = this.state.maxZoomOut;
     }
 
-    this.setState({ scale: zoomTo });
+    this.setState({ scale: zoomTo }, callback);
   }
 
   render() {

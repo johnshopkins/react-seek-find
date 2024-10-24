@@ -17,11 +17,12 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
   const maxY = height - iconOffset;
 
   const getScaledPosition = useCallback((coordinate) => coordinate * scale, [scale]);
+  const getUnscaledPosition = useCallback((coordinate) => coordinate / scale, [scale]);
 
   // absolute positioning to full size
   // add iconOffset so the full sights are visible at first
-  const [positionX, setPositionX] = useState(-Math.abs(iconOffset) + iconOffset);
-  const [positionY, setPositionY] = useState(-Math.abs(iconOffset) + iconOffset);
+  const [positionX, setPositionX] = useState(Math.abs(iconOffset));
+  const [positionY, setPositionY] = useState(Math.abs(iconOffset));
 
   // scaled positioning
   const [scaledPositionX, setScaledPositionX] = useState(getScaledPosition(positionX));
@@ -46,6 +47,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
 
       let newPositionX = positionX;
       let newPositionY = positionY;
+
       let direction;
 
       if (e.key === ' ') {
@@ -109,24 +111,27 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
         getScaledPosition(newPositionY + iconOffset), direction
       );
     },
-    moveSightsTo(x, y) {
-      const newX = x - iconOffset;
-      const newY = y - iconOffset;
+    moveSightsTo(x, y, alreadyScaled = false) {
 
-      setPositionX(newX);
-      setScaledPositionX(getScaledPosition(newX));
+      if (alreadyScaled) {
+        x = getUnscaledPosition(x)
+        y = getUnscaledPosition(y)
+      }
 
-      setPositionY(newY);
-      setScaledPositionY(getScaledPosition(newY));
+      setPositionX(x);
+      setScaledPositionX(getScaledPosition(x));
+
+      setPositionY(y);
+      setScaledPositionY(getScaledPosition(y));
     }
-  }), [checkGuess, getScaledPosition, iconOffset, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
+  }), [checkGuess, getScaledPosition, getUnscaledPosition, iconOffset, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
 
   const style = {
     display: show ? 'block' : 'none',
     left: `${scaledPositionX}px`,
     top: `${scaledPositionY}px`,
-    height: `${iconSize}px`,
-    width: `${iconSize}px`
+    height: `${iconSize * scale}px`,
+    width: `${iconSize * scale}px`
   };
 
   return <SightsIcon className="sights" style={style} />

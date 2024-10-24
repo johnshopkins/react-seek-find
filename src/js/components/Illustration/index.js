@@ -299,7 +299,7 @@ class Illustration extends Component {
    * @param {number} newY
    * @param {string} center
    */
-  moveCanvas(newX, newY, center = false) {
+  moveCanvas(newX, newY, center = false, moveSights = true) {
 
     if (center) {
       const originCoordinates = this.getOriginFromCenterAnchor(newX, newY)
@@ -352,6 +352,13 @@ class Illustration extends Component {
 
     const { anchorX, anchorY } = this.getCenterAnchor(newX, newY);
 
+    if (moveSights) {
+      // move sights to this location as well
+      const sightsX = newX < 0 ? Math.abs(newX) : 0;
+      const sightsY = newY < 0 ? Math.abs(newY) : 0;
+      this.sights.current.moveSightsTo(sightsX, sightsY, true);
+    }
+
     this.setState({
       canvasX: newX,
       canvasY: newY,
@@ -402,13 +409,13 @@ class Illustration extends Component {
     }
 
     if (direction === 'down' && y > Math.abs(currentY) + height - threshold) {
-      this.moveCanvas(currentX, currentY - move);
+      this.moveCanvas(currentX, currentY - move, false, false);
     } else if (direction === 'right' && x > Math.abs(currentX) + width - threshold) {
-      this.moveCanvas(currentX - move, currentY);
+      this.moveCanvas(currentX - move, currentY, false, false);
     } else if (direction === 'up' && y < Math.abs(currentY) + threshold) {
-      this.moveCanvas(currentX, currentY + move);
+      this.moveCanvas(currentX, currentY + move, false, false);
     } else if ( direction === 'left' && x < Math.abs(currentX) + threshold) {
-      this.moveCanvas(currentX + move, currentY);
+      this.moveCanvas(currentX + move, currentY, false, false);
     }
   }
 
@@ -419,21 +426,20 @@ class Illustration extends Component {
 
     const hint = notFound[random];
     const coords = hint.hintCoords;
-    
-    const scaledHintSize = hint.hintSize * this.props.scale;
 
-    const hintOffset = scaledHintSize / 2;
+    const hintOffset = (hint.hintSize * this.props.scale) / 2;
     const newX = coords.x * this.props.scale;
     const newY = coords.y * this.props.scale;
 
     // move canvas so that the hint is within the center (or as close to center as possible) of the view
+    // this.moveCanvas(-Math.abs(newX + hintOffset), -Math.abs(newY + hintOffset), true, false);
     this.moveCanvas(-Math.abs(newX + hintOffset), -Math.abs(newY + hintOffset), true);
 
-    // move sights to the hint area
-    this.sights.current.moveSightsTo(coords.x, coords.y);
-
     // scale the image so the entire hint can be seen as closely as possible
-    this.props.scaleToFit(hint.hintSize, hint.hintSize);
+    this.props.scaleToFit(hint.hintSize, hint.hintSize, () => {
+      // move sights to the hint area
+      this.sights.current.moveSightsTo(coords.x, coords.y);
+    });
 
     this.setState({ hint: notFound[random], hintActive: true }, () => {
       setTimeout(() => this.removeHint(), settings.hintFadeIn + this.props.hintKeepAlive);
