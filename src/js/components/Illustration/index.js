@@ -166,7 +166,11 @@ class Illustration extends Component {
       const newX = this.state.anchorX * scaleDiff;
       const newY = this.state.anchorY * scaleDiff;
 
-      this.moveCanvas(newX, newY, true);
+      // do not move sights if hint is active. the sights have
+      // already been moved in this.showHint()
+      const moveSights = !this.state.hintActive;
+      
+      this.moveCanvas(newX, newY, true, moveSights);
     }
   }
 
@@ -426,22 +430,30 @@ class Illustration extends Component {
 
     const hint = notFound[random];
     const coords = hint.hintCoords;
+    const hintSize = hint.hintSize;
 
-    const hintOffset = (hint.hintSize * this.props.scale) / 2;
+    const hintOffset = (hintSize * this.props.scale) / 2;
     const newX = coords.x * this.props.scale;
     const newY = coords.y * this.props.scale;
 
-    // move canvas so that the hint is within the center (or as close to center as possible) of the view
-    this.moveCanvas(-Math.abs(newX + hintOffset), -Math.abs(newY + hintOffset), true, false);
+    this.setState({
+      
+      // set the center anchor to be the center of the hint
+      // on componentDidUpdate, the new canvas position will be based on that
+      anchorX: -Math.abs(newX + hintOffset),
+      anchorY: -Math.abs(newY + hintOffset),
 
-    // scale the image so the entire hint can be seen as closely as possible
-    this.props.scaleToFit(hint.hintSize, hint.hintSize, () => {
-      // move sights to the hint area
+      // activate hint
+      hint: notFound[random],
+      hintActive: true
+
+    }, () => {
+
+      this.props.scaleToFit(hint.hintSize, hint.hintSize);
       this.sights.current.moveSightsTo(coords.x, coords.y);
-    });
 
-    this.setState({ hint: notFound[random], hintActive: true }, () => {
       setTimeout(() => this.removeHint(), settings.hintFadeIn + this.props.hintKeepAlive);
+
     });
   }
 

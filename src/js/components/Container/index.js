@@ -254,13 +254,7 @@ class Game extends Component {
     const zoomOutHeight = (containerHeight >= height + buffer ? 1 : containerHeight / (height  + buffer)) * 100;
     const zoomOutWidth = (containerWidth >= width + buffer ? 1 : containerWidth / (width + buffer)) * 100;
 
-    let zoomTo = this.roundDown(Math.min(zoomOutHeight, zoomOutWidth));
-
-    if (zoomTo < this.state.maxZoomOut) {
-      zoomTo = this.state.maxZoomOut;
-    }
-
-    this.setState({ scale: zoomTo }, callback);
+    this.zoomTo(this.roundDown(Math.min(zoomOutHeight, zoomOutWidth)), callback);
   }
 
   render() {
