@@ -432,8 +432,7 @@ class Illustration extends Component {
     const newY = coords.y * this.props.scale;
 
     // move canvas so that the hint is within the center (or as close to center as possible) of the view
-    // this.moveCanvas(-Math.abs(newX + hintOffset), -Math.abs(newY + hintOffset), true, false);
-    this.moveCanvas(-Math.abs(newX + hintOffset), -Math.abs(newY + hintOffset), true);
+    this.moveCanvas(-Math.abs(newX + hintOffset), -Math.abs(newY + hintOffset), true, false);
 
     // scale the image so the entire hint can be seen as closely as possible
     this.props.scaleToFit(hint.hintSize, hint.hintSize, () => {
