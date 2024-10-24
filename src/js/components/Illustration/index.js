@@ -135,6 +135,7 @@ class Illustration extends Component {
       'breakpoint',
       'emToPixel',
       'found',
+      'gameComplete',
       'containerHeight',
       'containerWidth',
       'scale',

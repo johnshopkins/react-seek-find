@@ -181,22 +181,23 @@ class Game extends Component {
         return;
       }
 
-      found.push(foundObject.id)
+      found.push(foundObject.id);
 
-      return { found }
+      return {
+        gameComplete: found.length === Object.values(this.objects).length,
+        found,
+      }
 
     }, () => {
 
-      const gameComplete = this.state.found.length === Object.values(this.objects).length;
-
-      if (gameComplete) {
+      if (this.state.gameComplete) {
         this.props.onGameComplete()
       }
 
       saveGameState({
         found: this.state.found,
         time: this.state.timer,
-        gameComplete,
+        gameComplete: this.state.gameComplete,
       })
     });
   }
