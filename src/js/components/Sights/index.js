@@ -28,6 +28,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
   const [scaledPositionX, setScaledPositionX] = useState(getScaledPosition(positionX));
   const [scaledPositionY, setScaledPositionY] = useState(getScaledPosition(positionY));
 
+  // sets the scaled position after positionX or positionY changes
   useEffect(() => {
     setScaledPositionX(getScaledPosition(positionX));
     setScaledPositionY(getScaledPosition(positionY));
@@ -66,7 +67,6 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
         }
 
         setPositionX(newPositionX);
-        setScaledPositionX(getScaledPosition(newPositionX));
 
       } else if (e.key === 'ArrowLeft') {
 
@@ -78,7 +78,6 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
         }
 
         setPositionX(newPositionX);
-        setScaledPositionX(getScaledPosition(newPositionX));
 
       } else if (e.key === 'ArrowUp') {
 
@@ -90,7 +89,6 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
         }
 
         setPositionY(newPositionY);
-        setScaledPositionY(getScaledPosition(newPositionY));
 
       } else if (e.key === 'ArrowDown') {
 
@@ -102,7 +100,6 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
         }
 
         setPositionY(newPositionY);
-        setScaledPositionY(getScaledPosition(newPositionY));
       }
 
       // pan the background, if necessary
@@ -119,10 +116,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
       }
 
       setPositionX(x);
-      setScaledPositionX(getScaledPosition(x));
-
       setPositionY(y);
-      setScaledPositionY(getScaledPosition(y));
     }
   }), [checkGuess, getScaledPosition, getUnscaledPosition, iconOffset, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
 
