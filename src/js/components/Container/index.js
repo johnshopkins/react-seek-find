@@ -63,6 +63,7 @@ class Game extends Component {
     this.setViewState = this.setViewState.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
+    this.zoomTo = this.zoomTo.bind(this);
   }
 
   componentDidMount() {
@@ -201,41 +202,36 @@ class Game extends Component {
   }
 
   zoomIn() {
-    this.setState(state => {
-
-      if (state.scale === 100) {
-        return { zoomInLimitReached: true };
-      }
-
-      const newZoom = this.round(state.scale + 10);
-
-      return {
-        scale: newZoom,
-        zoomInLimitReached: false,
-        zoomOutLimitReached: false
-      }
-    });
+    this.zoomTo(this.round(this.state.scale + 10));
   }
 
   zoomOut() {
-    this.setState(state => {
+    this.zoomTo(this.round(this.state.scale - 10));
+  }
 
-      if (state.scale === this.state.maxZoomOut) {
-        return { zoomOutLimitReached: true };
+  zoomTo(value, callback = () => {}) {
+
+    let newState = {};
+
+    if (value >= 100) {
+      newState = {
+        scale: 100,
+        zoomInLimitReached: true
+      };
+    } else if (value < this.state.maxZoomOut) {
+      newState = {
+        scale: this.state.maxZoomOut,
+        zoomOutLimitReached: true,
       }
-
-      let newZoom = this.round(state.scale - 10);
-
-      if (newZoom < this.state.maxZoomOut) {
-        newZoom = this.state.maxZoomOut;
-      }
-
-      return {
-        scale: newZoom,
+    } else {
+      newState = {
+        scale: value,
         zoomInLimitReached: false,
-        zoomOutLimitReached: false
+        zoomOutLimitReached: false,
       }
-    });
+    }
+
+    this.setState(newState, callback.call(null, value));
   }
 
   hideTouchInstruction() {
