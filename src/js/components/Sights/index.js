@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
 
 import SightsIcon from '../Icons/Sights';
 
@@ -9,30 +9,22 @@ import './style.scss';
  */
 export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, width }, ref) => {
 
-  const iconSize = 26;
-  const iconOffset = (iconSize / 2) + 2;
-  const minX = 0 - iconOffset;
-  const maxX = width - iconOffset;
-  const minY = 0 - iconOffset;
-  const maxY = height - iconOffset;
+  const iconSize = 170;
+
+  // where the sights are located from the top-left
+  const iconOffsetLeft = 67;
+  const iconOffsetTop = 67;
+
+  const minX = 0 - iconOffsetLeft;
+  const maxX = width - iconOffsetLeft;
+  const minY = 0 - iconOffsetTop;
+  const maxY = height - iconOffsetTop;
 
   const getScaledPosition = useCallback((coordinate) => coordinate * scale, [scale]);
   const getUnscaledPosition = useCallback((coordinate) => coordinate / scale, [scale]);
 
-  // absolute positioning to full size
-  // add iconOffset so the full sights are visible at first
-  const [positionX, setPositionX] = useState(Math.abs(iconOffset));
-  const [positionY, setPositionY] = useState(Math.abs(iconOffset));
-
-  // scaled positioning
-  const [scaledPositionX, setScaledPositionX] = useState(getScaledPosition(positionX));
-  const [scaledPositionY, setScaledPositionY] = useState(getScaledPosition(positionY));
-
-  // sets the scaled position after positionX or positionY changes
-  useEffect(() => {
-    setScaledPositionX(getScaledPosition(positionX));
-    setScaledPositionY(getScaledPosition(positionY));
-  }, [getScaledPosition, positionX, positionY, scale]);
+  const [positionX, setPositionX] = useState(-Math.abs(iconOffsetLeft));
+  const [positionY, setPositionY] = useState(-Math.abs(iconOffsetTop));
 
   useImperativeHandle(ref, () => ({
     moveSights: (e) => {
@@ -52,9 +44,8 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
       let direction;
 
       if (e.key === ' ') {
-        
-        // spacebar
-        checkGuess(getScaledPosition(positionX + iconOffset), getScaledPosition(positionY + iconOffset));
+
+        checkGuess(positionX + iconOffsetLeft, positionY + iconOffsetTop);
 
       } else if (e.key === 'ArrowRight') {
 
@@ -62,7 +53,6 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
 
         newPositionX = positionX + increment;
         if (newPositionX > maxX) {
-          // console.log('new value is less than maxX');
           newPositionX = maxX;
         }
 
@@ -73,6 +63,8 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
         direction = 'left'
 
         newPositionX = positionX - increment;
+        console.log('x', newPositionX, minX);
+
         if (newPositionX < minX) {
           newPositionX = minX;
         }
@@ -103,9 +95,12 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
       }
 
       // pan the background, if necessary
+      // if going up, we need to be aware of where the TOP of the icon is
+      // if going down, we need to be aware of where the BOTTOM of the icon is
       onSightsMove(
-        getScaledPosition(newPositionX + iconOffset),
-        getScaledPosition(newPositionY + iconOffset), direction
+        getScaledPosition(newPositionX + (iconSize + iconOffsetLeft)), // where the left side of the icon is
+        getScaledPosition(newPositionY + (iconSize + iconOffsetTop)), // where the bottom of the icon is
+        direction
       );
     },
     moveSightsTo(x, y, alreadyScaled = false, addIconOffset = true) {
@@ -116,19 +111,19 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
       }
 
       if (addIconOffset) {
-        x = x + iconOffset;
-        y = y + iconOffset;
+        x = x + iconOffsetLeft;
+        y = y + iconOffsetTop;
       }
 
       setPositionX(x);
       setPositionY(y);
     }
-  }), [checkGuess, getScaledPosition, getUnscaledPosition, iconOffset, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
+  }), [checkGuess, getScaledPosition, getUnscaledPosition, iconOffsetLeft, iconOffsetTop, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
 
   const style = {
     display: show ? 'block' : 'none',
-    left: `${scaledPositionX}px`,
-    top: `${scaledPositionY}px`,
+    left: `${positionX}px`,
+    top: `${positionY}px`,
     height: `${iconSize}px`,
     width: `${iconSize}px`
   };

@@ -1,8 +1,6 @@
 @forward '../../../css/main';
 
 svg.sights {
-  color: var(--jhu-grayscale-100);
   position: absolute;
-  transform: rotate(45deg);
   z-index: 3;
 }
