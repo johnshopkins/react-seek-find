@@ -108,11 +108,16 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
         getScaledPosition(newPositionY + iconOffset), direction
       );
     },
-    moveSightsTo(x, y, alreadyScaled = false) {
+    moveSightsTo(x, y, alreadyScaled = false, addIconOffset = true) {
 
       if (alreadyScaled) {
         x = getUnscaledPosition(x)
         y = getUnscaledPosition(y)
+      }
+
+      if (addIconOffset) {
+        x = x + iconOffset;
+        y = y + iconOffset;
       }
 
       setPositionX(x);

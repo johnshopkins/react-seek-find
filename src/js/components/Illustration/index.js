@@ -199,7 +199,8 @@ class Illustration extends Component {
 
       if (!this.state.isKeyboardFocused) {
         // move sights to the current canvas location
-        this.moveCanvas(this.state.canvasX, this.state.canvasY, false, true, move);
+        this.sights.current.moveSightsTo(this.state.canvasX, this.state.canvasY);
+        move();
       } else {
         move();
       }
