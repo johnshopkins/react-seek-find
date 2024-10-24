@@ -150,13 +150,20 @@ class Illustration extends Component {
     return false;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
 
     // conditions that require canvasX and canvasY to be recalculated
     const conditions = (
+
+      // screen resize
       this.props.containerWidth !== prevProps.containerWidth ||
       this.props.containerHeight !== prevProps.containerHeight ||
-      this.props.scale !== prevProps.scale
+
+      // scale changed
+      this.props.scale !== prevProps.scale ||
+
+      // hint recently became active
+      (this.state.hintActive === true && prevState.hintActive === false)
     );
 
     if (conditions) {
