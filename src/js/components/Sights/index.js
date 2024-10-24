@@ -9,8 +9,8 @@ import './style.scss';
  */
 export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, width }, ref) => {
 
-  const iconSize = 36 * scale;
-  const iconOffset = iconSize / 2;
+  const iconSize = 26;
+  const iconOffset = (iconSize / 2) + 2;
   const minX = 0 - iconOffset;
   const maxX = width - iconOffset;
   const minY = 0 - iconOffset;
