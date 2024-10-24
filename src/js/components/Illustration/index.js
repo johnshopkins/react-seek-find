@@ -463,7 +463,7 @@ class Illustration extends Component {
       anchorY: -Math.abs(newY + hintOffset),
 
       // activate hint
-      hint: notFound[random],
+      hint: hint,
       hintActive: true
 
     }, () => {
