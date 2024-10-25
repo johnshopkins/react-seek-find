@@ -8,7 +8,7 @@ export default function Sights({ tooltip, style }) {
   const cls4 = { fill: '#fff' };
 
   return (
-    <IconContainer className="sights" viewBox="0 0 346 346" tooltip={tooltip} style={style}>
+    <IconContainer className="magnifying-glass" viewBox="0 0 346 346" tooltip={tooltip} style={style}>
       <g>
         <g>
           <rect style={cls4} x="131.46" y="121.68" width="6" height="28.64"/>

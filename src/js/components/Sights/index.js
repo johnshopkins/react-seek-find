@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 
-import SightsIcon from '../Icons/Sights';
+import MagnifyingGlassIcon from '../Icons/MagnifyingGlass';
 
 import './style.scss';
 
@@ -107,5 +107,5 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
     width: `${iconSize}px`
   };
 
-  return <SightsIcon className="sights" style={style} />
+  return <MagnifyingGlassIcon style={style} />
 });
