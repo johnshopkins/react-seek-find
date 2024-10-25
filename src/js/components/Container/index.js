@@ -232,7 +232,7 @@ class Game extends Component {
       }
     }
 
-    this.setState(newState, callback.call(null, value));
+    this.setState(newState, callback.call(null, newState.scale / 100));
   }
 
   hideTouchInstruction() {
@@ -255,7 +255,9 @@ class Game extends Component {
     const zoomOutHeight = (containerHeight >= height + buffer ? 1 : containerHeight / (height  + buffer)) * 100;
     const zoomOutWidth = (containerWidth >= width + buffer ? 1 : containerWidth / (width + buffer)) * 100;
 
-    this.zoomTo(this.roundDown(Math.min(zoomOutHeight, zoomOutWidth)), callback);
+    const newZoom = this.roundDown(Math.min(zoomOutHeight, zoomOutWidth));
+
+    this.zoomTo(newZoom, callback);
   }
 
   render() {

@@ -432,7 +432,7 @@ class Illustration extends Component {
     const newY = coords.y * this.props.scale;
 
     this.setState({
-      
+
       // set the center anchor to be the center of the hint
       // on componentDidUpdate, the new canvas position will be based on that
       anchorX: -Math.abs(newX + hintOffset),
