@@ -489,46 +489,6 @@ class Illustration extends Component {
         onBlur={this.onBlur}
         onKeyDown={this.onKeyDown}
       >
-        <div className="utilities" style={this.props.containerStyles}>
-
-          <div className="instructions-and-hint">
-            <button className="instructions" onClick={this.props.openInstructions} tabIndex={this.props.disableTabbing ? '-1' : null}>
-              <InstructionsIcon tooltip="How to play" />
-            </button>
-
-            {!this.props.gameComplete &&
-              <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()} tabIndex={this.props.disableTabbing ? '-1' : null}>
-                <LightbulbIcon tooltip="Give me a hint" />
-              </button>
-            }
-          </div>
-
-          <div className="navigation">
-            
-            <MiniMap
-              canvasX={this.state.canvasX}
-              canvasY={this.state.canvasY}
-              containerHeight={this.props.containerHeight}
-              containerWidth={this.props.containerWidth}
-              emToPixel={this.props.emToPixel}
-              imageHeight={this.props.height * this.props.scale}
-              imageWidth={this.props.width * this.props.scale}
-              moveCanvas={this.moveCanvas}
-            />
-            
-            <button className="zoom-in" onClick={this.props.zoomIn} disabled={this.props.zoomInLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
-              <ZoomInIcon tooltip="Zoom in" />
-            </button>
-
-            <button className="zoom-out" onClick={this.props.zoomOut} disabled={this.props.zoomOutLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
-              <ZoomOutIcon tooltip="Zoom out" />
-            </button>
-
-            <div style={{ background: '#fff', padding: '5px' }}>
-              {Math.round(this.props.scale * 100)}%
-            </div>
-          </div>
-        </div>
         <div className="game" style={gameStyles}>
           <Sights
             ref={this.sights}
@@ -569,6 +529,46 @@ class Illustration extends Component {
             width={this.props.width}
             scale={this.props.scale}
           />
+        </div>
+        <div className="utilities" style={this.props.containerStyles}>
+
+          <div className="instructions-and-hint">
+            <button className="instructions" onClick={this.props.openInstructions} tabIndex={this.props.disableTabbing ? '-1' : null}>
+              <InstructionsIcon tooltip="How to play" />
+            </button>
+
+            {!this.props.gameComplete &&
+              <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()} tabIndex={this.props.disableTabbing ? '-1' : null}>
+                <LightbulbIcon tooltip="Give me a hint" />
+              </button>
+            }
+          </div>
+
+          <div className="navigation">
+            
+            <MiniMap
+              canvasX={this.state.canvasX}
+              canvasY={this.state.canvasY}
+              containerHeight={this.props.containerHeight}
+              containerWidth={this.props.containerWidth}
+              emToPixel={this.props.emToPixel}
+              imageHeight={this.props.height * this.props.scale}
+              imageWidth={this.props.width * this.props.scale}
+              moveCanvas={this.moveCanvas}
+            />
+            
+            <button className="zoom-in" onClick={this.props.zoomIn} disabled={this.props.zoomInLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
+              <ZoomInIcon tooltip="Zoom in" />
+            </button>
+
+            <button className="zoom-out" onClick={this.props.zoomOut} disabled={this.props.zoomOutLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
+              <ZoomOutIcon tooltip="Zoom out" />
+            </button>
+
+            <div style={{ background: '#fff', padding: '5px' }}>
+              {Math.round(this.props.scale * 100)}%
+            </div>
+          </div>
         </div>
       </div>
     );
