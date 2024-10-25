@@ -330,7 +330,6 @@ class Game extends Component {
             zoomOutLimitReached={this.state.zoomOutLimitReached}
             openInstructions={this.openInstructions}
             disableTabbing={this.state.openInstructions}
-            ref={this.illustration}
           />
           
         </div>

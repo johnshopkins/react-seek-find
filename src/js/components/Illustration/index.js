@@ -236,7 +236,6 @@ class Illustration extends Component {
   onTouchMove(e) {
 
     if (e.targetTouches.length !== 2 || e.changedTouches.length !== 2) {
-      console.log('do not respond to this touchmove event');
       return;
     }
 
