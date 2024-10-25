@@ -1,6 +1,6 @@
 import IconContainer from './Container';
 
-export default function Sights({ tooltip, style }) {
+export default function Sights({ className, tooltip, style }) {
 
   const cls1 = { fill: '#0072ce' };
   const cls2 = { fill: '#000' };
@@ -8,7 +8,7 @@ export default function Sights({ tooltip, style }) {
   const cls4 = { fill: '#fff' };
 
   return (
-    <IconContainer className="magnifying-glass" viewBox="0 0 346 346" tooltip={tooltip} style={style}>
+    <IconContainer viewBox="0 0 346 346" className={className} tooltip={tooltip} style={style}>
       <g>
         <g>
           <rect style={cls4} x="131.46" y="121.68" width="6" height="28.64"/>

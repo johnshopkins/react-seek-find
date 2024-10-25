@@ -107,5 +107,5 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
     width: `${iconSize}px`
   };
 
-  return <MagnifyingGlassIcon style={style} />
+  return <MagnifyingGlassIcon className="magnifying-glass" style={style} />
 });
