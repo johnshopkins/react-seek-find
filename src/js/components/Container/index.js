@@ -279,7 +279,7 @@ class Game extends Component {
     return (
       <div className={['container', this.state.breakpoint].join(' ')} style={containerStyles}>
 
-        {/* used to convert ems to pixels */}
+        {/* used to convert ems to pixels in js */}
         <div ref={this.em} aria-hidden style={{ position: 'absolute', visibility: 'hidden', width: '1em' }} />
         
         <Legend
