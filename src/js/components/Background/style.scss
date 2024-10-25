@@ -4,3 +4,14 @@ img.game-background {
   position: relative;
   z-index: var(--stack-background);
 }
+
+.loading {
+  animation: rotation 1s linear infinite;
+  color: var(--jhu-grayscale-40);
+  position: absolute;
+}
+
+@keyframes rotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
