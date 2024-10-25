@@ -45,8 +45,8 @@ class Illustration extends Component {
       anchorX,
       anchorY,
 
+      isClick: false,
       isKeyboardFocused: false,
-      focused: false,
       context: null,
       isDragging: false,
       dragStartX: null,
@@ -179,33 +179,19 @@ class Illustration extends Component {
   }
 
   onKeyDown(e) {
-    if (this.state.focused) {
-
-      const move = () => {
-        this.setState({ isKeyboardFocused: true }, () => {
-          this.sights.current.moveSights(e);
-        });
+    this.setState({ isClick: false }, () => {
+      if (this.state.isKeyboardFocused) {
+        this.sights.current.moveSights(e);
       }
-
-      if (!this.state.isKeyboardFocused) {
-        // move sights to the current canvas location
-        this.sights.current.moveSightsTo(this.state.canvasX, this.state.canvasY);
-        move();
-      } else {
-        move();
-      }
-    }
+    });
   }
 
   onFocus() {
-    this.setState({ focused: true });
+    this.setState({ isKeyboardFocused: !this.state.isClick });
   }
 
   onBlur() {
-    this.setState({
-      focused: false,
-      isKeyboardFocused: false,
-    });
+    this.setState({ isKeyboardFocused: false });
   }
 
   onMouseUp(e) {
@@ -221,7 +207,6 @@ class Illustration extends Component {
     this.setState({
       dragStartX: e.nativeEvent.offsetX,
       dragStartY: e.nativeEvent.offsetY,
-      isKeyboardFocused: false,
     });
 
     const target = e.target;
@@ -488,6 +473,12 @@ class Illustration extends Component {
         onFocus={this.onFocus}
         onBlur={this.onBlur}
         onKeyDown={this.onKeyDown}
+        onMouseDown={() => {
+          this.setState({
+            isClick: true,
+            isKeyboardFocused: false,
+          });
+        }}
       >
         <div className="game" style={gameStyles}>
           <Sights
