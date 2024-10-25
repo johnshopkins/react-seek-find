@@ -8,7 +8,7 @@
     z-index: var(--stack-utilities);
 
     button {
-      @include button;
+      @include round_button;
 
       svg {
         height: #{$utilitiesIconHeight}em;
