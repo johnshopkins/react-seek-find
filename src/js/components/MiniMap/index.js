@@ -13,6 +13,7 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
   // the minimap is too small to be usable for click+drag purposes on mobile.
 
   const [isMouseDown, setIsMouseDown] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartY, setDragStartY] = useState(null);
 
@@ -29,12 +30,15 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
 
     window.addEventListener('mouseup', e => {
       setIsMouseDown(false);
+      setIsDragging(false);
     }, { once: true });
   }
   
   const onMouseMove = throttle((e) => {
 
     if (isMouseDown) {
+
+      setIsDragging(true);
 
       const diffX = (dragStartX - e.nativeEvent.offsetX);
       const diffY = (dragStartY - e.nativeEvent.offsetY);
@@ -73,7 +77,10 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
   left = left - 2;
   top = top - 2;
 
+  const cursor = isDragging ? 'grabbing' : 'grab';
+
   const shownStyle = {
+    cursor: cursor,
     left: `${left}px`,
     height: `${shownHeight}px`,
     top: `${top}px`,
