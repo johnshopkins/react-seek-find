@@ -3,6 +3,12 @@
 $iconRatio: 0.4;
 
 .container {
+  .legend-container {
+    display: flex;
+    flex: 1;
+    overflow: auto;
+  }
+
   .legend {
     display: flex;
     gap: #{$legendGap_small}em;
