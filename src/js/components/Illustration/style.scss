@@ -39,7 +39,7 @@
 
   .game {
     cursor: crosshair;
-    position: relative;
+    position: absolute;
 
     &:focus {
       // canvas element hides this?

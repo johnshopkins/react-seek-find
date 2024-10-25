@@ -3,11 +3,14 @@ import './style.scss';
 
 /**
  * Manages the legend.
+ * For reasons I cannot figure out, the legend container kept getting
+ * tabbed to when tabbing was disable (due to instructions overlay
+ * being opened), so I had to specify a tabIndex value to prevent that.
  */
 export default function Legend({ found, objects }) {
   return (
-    <div className="legend-container">
-      <div className="legend" role="region" aria-label="Legend">
+    <div className="legend-container" tabIndex="-1">
+      <div className="legend">
         {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(v => {
           return objects.map((object, i) => {
             const classes = ['thumbnail'];

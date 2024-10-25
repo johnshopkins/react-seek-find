@@ -4,7 +4,6 @@ import Background from '../Background';
 import Findable from '../Findable';
 import Found from '../Found';
 import Hint from '../Hint';
-import InstructionsModal from '../InstructionsModal';
 import MiniMap from '../MiniMap';
 import Sights from '../Sights';
 import InstructionsIcon from '../Icons/Instructions';
@@ -56,10 +55,8 @@ class Illustration extends Component {
       hintActive: false,
       found: null,
       foundActive: false,
-      instructionsOpen: false,
     };
 
-    this.closeInstructions = this.closeInstructions.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFind = this.onFind.bind(this);
@@ -68,7 +65,6 @@ class Illustration extends Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = throttle(this.onMouseMove.bind(this), 30);
     this.onMouseUp = this.onMouseUp.bind(this);
-    this.openInstructions = this.openInstructions.bind(this);
     this.onSightsMove = this.onSightsMove.bind(this);
     this.showFound = this.showFound.bind(this);
     this.showHint = this.showHint.bind(this);
@@ -117,7 +113,6 @@ class Illustration extends Component {
       'foundActive',
       'hint',
       'hintActive',
-      'instructionsOpen',
       'isDragging',
       'isKeyboardFocused',
     ];
@@ -132,6 +127,7 @@ class Illustration extends Component {
     const propVars = [
       'breakpoint',
       'emToPixel',
+      'disableTabbing',
       'found',
       'gameComplete',
       'containerHeight',
@@ -273,10 +269,6 @@ class Illustration extends Component {
   }
 
   onTouchStart(e) {
-
-    if (this.props.showTouchInstruction) {
-      this.props.hideTouchInstruction();
-    }
 
     // do not limit this event to 2-touch events because an event
     // can go from 1-touch to 2-touch without triggering touchstart again
@@ -472,14 +464,6 @@ class Illustration extends Component {
     });
   }
 
-  openInstructions() {
-    this.setState({ instructionsOpen: true });
-  }
-
-  closeInstructions() {
-    this.setState({ instructionsOpen: false });
-  }
-
   render() {
 
     console.log('illustration render');
@@ -505,19 +489,15 @@ class Illustration extends Component {
         onBlur={this.onBlur}
         onKeyDown={this.onKeyDown}
       >
-        <InstructionsModal
-          onClose={this.closeInstructions}
-          isOpen={this.state.instructionsOpen}
-        />
         <div className="utilities" style={this.props.containerStyles}>
 
           <div className="instructions-and-hint">
-            <button className="instructions" onClick={() => this.openInstructions()}>
+            <button className="instructions" onClick={this.props.openInstructions} tabIndex={this.props.disableTabbing ? '-1' : null}>
               <InstructionsIcon tooltip="How to play" />
             </button>
 
             {!this.props.gameComplete &&
-              <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()}>
+              <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()} tabIndex={this.props.disableTabbing ? '-1' : null}>
                 <LightbulbIcon tooltip="Give me a hint" />
               </button>
             }
@@ -536,11 +516,11 @@ class Illustration extends Component {
               moveCanvas={this.moveCanvas}
             />
             
-            <button className="zoom-in" onClick={this.props.zoomIn} disabled={this.props.zoomInLimitReached}>
+            <button className="zoom-in" onClick={this.props.zoomIn} disabled={this.props.zoomInLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
               <ZoomInIcon tooltip="Zoom in" />
             </button>
 
-            <button className="zoom-out" onClick={this.props.zoomOut} disabled={this.props.zoomOutLimitReached}>
+            <button className="zoom-out" onClick={this.props.zoomOut} disabled={this.props.zoomOutLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
               <ZoomOutIcon tooltip="Zoom out" />
             </button>
 
@@ -548,9 +528,7 @@ class Illustration extends Component {
               {Math.round(this.props.scale * 100)}%
             </div>
           </div>
-
         </div>
-
         <div className="game" style={gameStyles}>
           <Sights
             ref={this.sights}
@@ -573,6 +551,7 @@ class Illustration extends Component {
             scale={this.props.scale}
           />
           <Findable
+            disableTabbing={this.props.disableTabbing}
             onFind={this.onFind}
             objects={this.props.objects}
             ref={this.findable}
@@ -581,11 +560,11 @@ class Illustration extends Component {
             width={this.props.width}
             onMouseDown={this.onMouseDown}
             onTouchStart={this.onTouchStart}
-            showTouchInstruction={this.props.showTouchInstruction}
-            touchInstructionStyle={this.props.containerStyles}
           />
           <Background
             imageSrc={this.props.imageSrc}
+            containerHeight={this.props.containerHeight}
+            containerWidth={this.props.containerWidth}
             height={this.props.height}
             width={this.props.width}
             scale={this.props.scale}

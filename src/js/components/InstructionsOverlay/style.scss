@@ -1,0 +1,38 @@
+@use '../../../css/main' as *;
+
+.overlay-container {
+  background: rgb(0, 0, 0, .75);
+  display: none;
+  position: absolute;
+  z-index: var(--overlay);
+
+  &.open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .overlay {
+    background: var(--jhu-grayscale-100);
+    background: var(--jhu-grayscale-0);
+    border: 1.5em solid var(--jhu-grayscale-0);
+    box-sizing: border-box;
+    overflow: scroll;
+    padding: 1em;
+    max-height: 80%;
+    width: 80%;
+    z-index: calc(var(--overlay) + 1);
+  }
+
+  .close-box-x {
+    float: right;
+    @include round_button;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .ready {
+    @include button;
+  }
+}

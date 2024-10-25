@@ -1,6 +1,7 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import Illustration from '../Illustration';
+import InstructionsOverlay from '../InstructionsOverlay';
 import Legend from '../Legend';
 import ResizeWatcher from '@johnshopkins/jhu-wds/src/shared/js/utils/watch-window-resize'
 import settings from '../../../settings';
@@ -37,7 +38,7 @@ class Game extends Component {
     const userData = {
       gameComplete: false,
       found: [],
-      showTouchInstruction: true,
+      seenInstructions: false,
       timer: 0,
       ...storedData
     }
@@ -46,6 +47,7 @@ class Game extends Component {
     this.state = {
       browserHeight: document.documentElement.clientHeight,
       browserWidth: document.documentElement.clientWidth,
+      openInstructions: userData.seenInstructions === false,
       ...this.getViewState(),
       ...userData,
     };
@@ -56,9 +58,11 @@ class Game extends Component {
       this.objects[object.id] = object;
     });
 
+    this.closeInstructions = this.closeInstructions.bind(this);
     this.getViewState = this.getViewState.bind(this);
-    this.hideTouchInstruction = this.hideTouchInstruction.bind(this);
     this.onFind = this.onFind.bind(this);
+    this.openInstructions = this.openInstructions.bind(this);
+    this.saveGame = this.saveGame.bind(this);
     this.scaleToFit = this.scaleToFit.bind(this);
     this.setViewState = this.setViewState.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
@@ -194,12 +198,21 @@ class Game extends Component {
         this.props.onGameComplete()
       }
 
-      saveGameState({
+      this.saveGame({
         found: this.state.found,
-        time: this.state.timer,
         gameComplete: this.state.gameComplete,
       })
     });
+  }
+
+  saveGame(changed = {}) {
+    saveGameState({
+      found: this.state.found,
+      time: this.state.timer,
+      gameComplete: this.state.gameComplete,
+      seenInstructions: false,
+      changed
+    })
   }
 
   zoomIn() {
@@ -235,14 +248,13 @@ class Game extends Component {
     this.setState(newState, callback.call(null, newState.scale / 100));
   }
 
-  hideTouchInstruction() {
-    this.setState({ showTouchInstruction: false })
+  closeInstructions() {
+    this.setState({ openInstructions: false });
+    this.saveGame({ seenInstructions: true });
+  }
 
-    saveGameState({
-      found: this.state.found,
-      showTouchInstruction: false,
-      time: this.state.timer,
-    })
+  openInstructions() {
+    this.setState({ openInstructions: true });
   }
 
   scaleToFit(height, width, callback = () => {}) {
@@ -277,43 +289,52 @@ class Game extends Component {
     };
 
     return (
-      <div className={['container', this.state.breakpoint].join(' ')} style={containerStyles}>
+      <>
+        <InstructionsOverlay
+          isAutoOpen={!this.state.seenInstructions}
+          isOpen={this.state.openInstructions}
+          onClose={this.closeInstructions}
+          style={containerStyles}
+        />
+        <div className={['container', this.state.breakpoint].join(' ')} style={containerStyles} aria-hidden={this.state.openInstructions}>
 
-        {/* used to convert ems to pixels in js */}
-        <div ref={this.em} aria-hidden style={{ position: 'absolute', visibility: 'hidden', width: '1em' }} />
-        
-        <Legend
-          found={this.state.found}
-          objects={Object.values(this.objects)}
-        />
-        
-        <Illustration
-          buffer={this.props.buffer}
-          breakpoint={this.state.breakpoint}
-          emToPixel={this.state.emToPixel}
-          found={this.state.found}
-          gameComplete={this.state.gameComplete}
-          foundKeepAlive={this.props.foundKeepAlive}
-          containerStyles={gameStyles}
-          imageSrc={this.props.image}
-          objects={Object.values(this.objects)}
-          containerHeight={this.state.illustrationContainerHeight}
-          containerWidth={this.state.illustrationContainerWidth}
-          height={this.props.imageHeight}
-          width={this.props.imageWidth}
-          onFind={this.onFind}
-          scale={this.state.scale / 100}
-          hintKeepAlive={this.props.hintKeepAlive}
-          showTouchInstruction={this.state.showTouchInstruction}
-          hideTouchInstruction={this.hideTouchInstruction}
-          scaleToFit={this.scaleToFit}
-          zoomIn={this.zoomIn}
-          zoomOut={this.zoomOut}
-          zoomInLimitReached={this.state.zoomInLimitReached}
-          zoomOutLimitReached={this.state.zoomOutLimitReached}
-        />
-        
-      </div>
+          {/* used to convert ems to pixels in js */}
+          <div ref={this.em} aria-hidden style={{ position: 'absolute', visibility: 'hidden', width: '1em' }} />
+          
+          <Legend
+            found={this.state.found}
+            objects={Object.values(this.objects)}
+          />
+          
+          <Illustration
+            buffer={this.props.buffer}
+            breakpoint={this.state.breakpoint}
+            emToPixel={this.state.emToPixel}
+            found={this.state.found}
+            gameComplete={this.state.gameComplete}
+            foundKeepAlive={this.props.foundKeepAlive}
+            containerStyles={gameStyles}
+            imageSrc={this.props.image}
+            objects={Object.values(this.objects)}
+            containerHeight={this.state.illustrationContainerHeight}
+            containerWidth={this.state.illustrationContainerWidth}
+            height={this.props.imageHeight}
+            width={this.props.imageWidth}
+            onFind={this.onFind}
+            scale={this.state.scale / 100}
+            hintKeepAlive={this.props.hintKeepAlive}
+            scaleToFit={this.scaleToFit}
+            zoomIn={this.zoomIn}
+            zoomOut={this.zoomOut}
+            zoomInLimitReached={this.state.zoomInLimitReached}
+            zoomOutLimitReached={this.state.zoomOutLimitReached}
+            openInstructions={this.openInstructions}
+            disableTabbing={this.state.openInstructions}
+            ref={this.illustration}
+          />
+          
+        </div>
+      </>
     );
   }
 }

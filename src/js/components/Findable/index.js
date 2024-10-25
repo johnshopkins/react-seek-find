@@ -1,5 +1,3 @@
-/*global Modernizr*/
-
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import './style.scss';
 
@@ -9,14 +7,13 @@ import './style.scss';
  * is used to validate whether an object was found or not.
  */
 export default forwardRef(({
+  disableTabbing,
   height,
   objects,
   onFind,
   onMouseDown,
   onTouchStart,
   scale,
-  showTouchInstruction,
-  touchInstructionStyle,
   width,
 }, ref) => {
 
@@ -52,18 +49,8 @@ export default forwardRef(({
     }
   }), [objects, onFind]);
 
-  const touchevents = Modernizr.touchevents;
-
   return (
     <>
-      {touchevents && showTouchInstruction &&
-        <div className="touch-instructions show" style={{
-          pointerEvents: 'none',
-          ...touchInstructionStyle,
-        }}>
-          <p>Use two fingers to move the image.</p>
-        </div>
-      }
       <canvas
         className="findable"
         ref={canvasRef}
@@ -71,7 +58,7 @@ export default forwardRef(({
         width={width}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
-        tabIndex="0"
+        tabIndex={disableTabbing ? '-1' : '0'}
         style={{
           // stops the browser from its scrolling on the element
           touchAction: 'none'
