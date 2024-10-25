@@ -120,8 +120,6 @@ class Illustration extends Component {
       'instructionsOpen',
       'isDragging',
       'isKeyboardFocused',
-      'sightsX',
-      'sightsY',
     ];
 
     for (const stateVar of stateVars) {
@@ -173,12 +171,8 @@ class Illustration extends Component {
 
       const newX = this.state.anchorX * scaleDiff;
       const newY = this.state.anchorY * scaleDiff;
-
-      // do not move sights if hint is active. the sights have
-      // already been moved in this.showHint()
-      const moveSights = !this.state.hintActive;
       
-      this.moveCanvas(newX, newY, true, moveSights);
+      this.moveCanvas(newX, newY, true);
     }
   }
 
@@ -469,8 +463,9 @@ class Illustration extends Component {
 
     }, () => {
 
-      this.props.scaleToFit(hint.hintSize, hint.hintSize);
-      this.sights.current.moveSightsTo(coords.x, coords.y);
+      this.props.scaleToFit(hint.hintSize, hint.hintSize, (scale) => {
+        this.sights.current.moveSightsTo(coords.x * scale, coords.y * scale);
+      });
 
       setTimeout(() => this.removeHint(), settings.hintFadeIn + this.props.hintKeepAlive);
 

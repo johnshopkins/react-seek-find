@@ -11,7 +11,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
 
   const iconSize = 170;
 
-  // where the sights are located from the top-left
+  // where the sights are located from the top-left of icon SVG
   const iconOffsetLeft = 67;
   const iconOffsetTop = 67;
 
@@ -21,7 +21,6 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
   const maxY = height - iconOffsetTop;
 
   const getScaledPosition = useCallback((coordinate) => coordinate * scale, [scale]);
-  const getUnscaledPosition = useCallback((coordinate) => coordinate / scale, [scale]);
 
   const [positionX, setPositionX] = useState(-Math.abs(iconOffsetLeft));
   const [positionY, setPositionY] = useState(-Math.abs(iconOffsetTop));
@@ -103,22 +102,11 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
         direction
       );
     },
-    moveSightsTo(x, y, alreadyScaled = false, addIconOffset = true) {
-
-      if (alreadyScaled) {
-        x = getUnscaledPosition(x)
-        y = getUnscaledPosition(y)
-      }
-
-      if (addIconOffset) {
-        x = x + iconOffsetLeft;
-        y = y + iconOffsetTop;
-      }
-
+    moveSightsTo(x, y) {
       setPositionX(x);
       setPositionY(y);
     }
-  }), [checkGuess, getScaledPosition, getUnscaledPosition, iconOffsetLeft, iconOffsetTop, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
+  }), [checkGuess, getScaledPosition, iconOffsetLeft, iconOffsetTop, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
 
   const style = {
     display: show ? 'block' : 'none',
