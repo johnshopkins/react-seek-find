@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 
 import SightsIcon from '../Icons/Sights';
 
@@ -7,7 +7,7 @@ import './style.scss';
 /**
  * Manages the keyboard navigation sights.
  */
-export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, width }, ref) => {
+export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, ref) => {
 
   const iconSize = 170;
 
@@ -16,11 +16,9 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
   const iconOffsetTop = 67;
 
   const minX = 0 - iconOffsetLeft;
-  const maxX = width - iconOffsetLeft;
   const minY = 0 - iconOffsetTop;
+  const maxX = width - iconOffsetLeft;
   const maxY = height - iconOffsetTop;
-
-  const getScaledPosition = useCallback((coordinate) => coordinate * scale, [scale]);
 
   const [positionX, setPositionX] = useState(-Math.abs(iconOffsetLeft));
   const [positionY, setPositionY] = useState(-Math.abs(iconOffsetTop));
@@ -62,7 +60,6 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
         direction = 'left'
 
         newPositionX = positionX - increment;
-        console.log('x', newPositionX, minX);
 
         if (newPositionX < minX) {
           newPositionX = minX;
@@ -74,7 +71,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
 
         direction = 'up'
         
-        let newPositionY = positionY - increment;
+        newPositionY = positionY - increment;
         if (newPositionY < minY) {
           newPositionY = minY;
         }
@@ -85,7 +82,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
 
         direction = 'down'
         
-        let newPositionY = positionY + increment;
+        newPositionY = positionY + increment;
         if (newPositionY > maxY) {
           newPositionY = maxY;
         }
@@ -94,19 +91,13 @@ export default forwardRef(({ checkGuess, height, onSightsMove, scale, show, widt
       }
 
       // pan the background, if necessary
-      // if going up, we need to be aware of where the TOP of the icon is
-      // if going down, we need to be aware of where the BOTTOM of the icon is
-      onSightsMove(
-        getScaledPosition(newPositionX + (iconSize + iconOffsetLeft)), // where the left side of the icon is
-        getScaledPosition(newPositionY + (iconSize + iconOffsetTop)), // where the bottom of the icon is
-        direction
-      );
+      onSightsMove(positionX, positionY, iconSize, direction);
     },
     moveSightsTo(x, y) {
       setPositionX(x);
       setPositionY(y);
     }
-  }), [checkGuess, getScaledPosition, iconOffsetLeft, iconOffsetTop, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
+  }), [checkGuess, iconOffsetLeft, iconOffsetTop, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
 
   const style = {
     display: show ? 'block' : 'none',

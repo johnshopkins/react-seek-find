@@ -389,12 +389,13 @@ class Illustration extends Component {
    * Pan the canvas, if necessary.
    * @param {number} x 
    * @param {number} y 
+   * @param {number} size
    * @param {string} direction 
    */
-  onSightsMove(x, y, direction) {
+  onSightsMove(x, y, size, direction) {
 
-    // 1.3x the size of the minimap width
-    const threshold = ((settings.miniMap * 1.2) + settings.utilitiesEdgeSpace) * this.props.emToPixel;
+    // size of minimap + utility edge
+    const threshold = (settings.miniMap + (settings.utilitiesEdgeSpace * 2)) * this.props.emToPixel;
     
     // move 1/5 of either the container height or width (whichever is largest)
     // but don't scroll more than the smallest
@@ -406,34 +407,14 @@ class Illustration extends Component {
       move = smallestDimension / 2;
     }
 
-    const currentX = this.state.canvasX;
-    const currentY = this.state.canvasY;
-
-    let height = this.props.containerHeight;
-    let width = this.props.containerWidth;
-
-    if (currentY > 0) {
-      // make up for the buffer space
-      // multiple by two to make up for addition of currentY in the calculation
-      // if we don't multiply by two, it's the same as currentY = 0
-      y = y + (currentY * 2);
-    }
-
-    if (currentX > 0) {
-      // make up for the buffer space
-      // multiple by two to make up for addition of currentX in the calculation
-      // if we don't multiply by two, it's the same as currentX = 0
-      x = x + (currentX * 2);
-    }
-
-    if (direction === 'down' && y > Math.abs(currentY) + height - threshold) {
-      this.moveCanvas(currentX, currentY - move);
-    } else if (direction === 'right' && x > Math.abs(currentX) + width - threshold) {
-      this.moveCanvas(currentX - move, currentY);
-    } else if (direction === 'up' && y < Math.abs(currentY) + threshold) {
-      this.moveCanvas(currentX, currentY + move);
-    } else if ( direction === 'left' && x < Math.abs(currentX) + threshold) {
-      this.moveCanvas(currentX + move, currentY);
+    if (direction === 'down' && this.props.containerHeight - threshold <= this.state.canvasY + y + size) {
+      this.moveCanvas(this.state.canvasX, this.state.canvasY - move);
+    } else if (direction === 'right' && this.props.containerWidth - threshold <= this.state.canvasX + x + size) {
+      this.moveCanvas(this.state.canvasX - move, this.state.canvasY);
+    } else if (direction === 'up' && y < Math.abs(this.state.canvasY) + threshold) {
+      this.moveCanvas(this.state.canvasX, this.state.canvasY + move);
+    } else if ( direction === 'left' && x < Math.abs(this.state.canvasX) + threshold) {
+      this.moveCanvas(this.state.canvasX + move, this.state.canvasY);
     }
   }
 
@@ -574,11 +555,10 @@ class Illustration extends Component {
           <Sights
             ref={this.sights}
             checkGuess={(x, y) => this.findable.current.checkGuess(x, y)}
-            height={this.props.height}
+            height={this.props.height * this.props.scale}
             onSightsMove={this.onSightsMove}
-            width={this.props.width}
-            scale={this.props.scale}
             show={this.state.isKeyboardFocused}
+            width={this.props.width * this.props.scale}
           />
           <Hint
             height={this.props.height}
