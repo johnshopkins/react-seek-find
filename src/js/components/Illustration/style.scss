@@ -38,7 +38,7 @@
   }
 
   .game {
-    cursor: crosshair;
+    cursor: url(../../images/magnifying-glass.svg) 50 50, crosshair;
     position: absolute;
 
     &:focus {

@@ -9,11 +9,11 @@ import './style.scss';
  */
 export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, ref) => {
 
-  const iconSize = 170;
+  const iconSize = 128;
 
   // where the sights are located from the top-left of icon SVG
-  const iconOffsetLeft = 67;
-  const iconOffsetTop = 67;
+  const iconOffsetLeft = 50;
+  const iconOffsetTop = 50;
 
   const minX = 0 - iconOffsetLeft;
   const minY = 0 - iconOffsetTop;
