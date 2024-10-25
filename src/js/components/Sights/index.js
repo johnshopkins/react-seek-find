@@ -20,8 +20,8 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
   const maxX = width - iconOffsetLeft;
   const maxY = height - iconOffsetTop;
 
-  const [positionX, setPositionX] = useState(-Math.abs(iconOffsetLeft));
-  const [positionY, setPositionY] = useState(-Math.abs(iconOffsetTop));
+  const [positionX, setPositionX] = useState(0);
+  const [positionY, setPositionY] = useState(0);
 
   useImperativeHandle(ref, () => ({
     moveSights: (e) => {
