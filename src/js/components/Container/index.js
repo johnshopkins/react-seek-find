@@ -300,40 +300,35 @@ class Game extends Component {
           style={containerStyles}
         />
         <div className={['container', this.state.breakpoint].join(' ')} style={containerStyles} aria-hidden={this.state.openInstructions}>
-
-          {/* used to convert ems to pixels in js */}
           <div ref={this.em} aria-hidden style={{ position: 'absolute', visibility: 'hidden', width: '1em' }} />
-          
           <Legend
             found={this.state.found}
             objects={Object.values(this.objects)}
           />
-          
           <Illustration
             buffer={this.props.buffer}
             containerHeight={this.state.illustrationContainerHeight}
             containerWidth={this.state.illustrationContainerWidth}
+            disableTabbing={this.state.openInstructions}
             emToPixel={this.state.emToPixel}
             found={this.state.found}
-            gameComplete={this.state.gameComplete}
             foundKeepAlive={this.props.foundKeepAlive}
+            gameComplete={this.state.gameComplete}
+            hintKeepAlive={this.props.hintKeepAlive}
             imageHeight={this.props.imageHeight}
             imageSrc={this.props.image}
             imageWidth={this.props.imageWidth}
             objects={Object.values(this.objects)}
             onFind={this.onFind}
+            openInstructions={this.openInstructions}
+            replay={this.replay}
             scale={this.state.scale / 100}
-            hintKeepAlive={this.props.hintKeepAlive}
             scaleToFit={this.scaleToFit}
             zoomIn={this.zoomIn}
             zoomOut={this.zoomOut}
             zoomInLimitReached={this.state.zoomInLimitReached}
             zoomOutLimitReached={this.state.zoomOutLimitReached}
-            openInstructions={this.openInstructions}
-            disableTabbing={this.state.openInstructions}
-            replay={this.replay}
           />
-          
         </div>
       </>
     );

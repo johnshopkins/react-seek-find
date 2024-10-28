@@ -613,23 +613,37 @@ class Illustration extends Component {
 }
 
 Illustration.defaultProps = {
+  disableTabbing: false,
   found: [],
+  gameComplete: false,
   scale: 1,
+  zoomInLimitReached: false,
+  zoomOutLimitReached: false,
 };
 
 Illustration.propTypes = {
+  buffer: PropTypes.bool.isRequired,
   containerHeight: PropTypes.number.isRequired,
   containerWidth: PropTypes.number.isRequired,
+  disableTabbing: PropTypes.bool,
+  emToPixel: PropTypes.number.isRequired,
   found: PropTypes.array,
   foundKeepAlive: PropTypes.number.isRequired,
+  gameComplete: PropTypes.bool,
+  hintKeepAlive: PropTypes.number.isRequired,
   imageHeight: PropTypes.number.isRequired,
   imageSrc: PropTypes.string.isRequired,
   imageWidth: PropTypes.number.isRequired,
   objects: PropTypes.array,
-  hintKeepAlive: PropTypes.number.isRequired,
+  openInstructions: PropTypes.func.isRequired,
   onFind: PropTypes.func.isRequired,
-  hint: PropTypes.object,
-  scale: PropTypes.number.isRequired,
+  replay: PropTypes.func.isRequired,
+  scale: PropTypes.number,
+  scaleToFit: PropTypes.func.isRequired,
+  zoomIn: PropTypes.func.isRequired,
+  zoomInLimitReached: PropTypes.bool,
+  zoomOut: PropTypes.func.isRequired,
+  zoomOutLimitReached: PropTypes.bool,
 };
 
 export default Illustration;
