@@ -1,6 +1,6 @@
 /*global Modernizr*/
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import XMarkIcon from '../Icons/Xmark';
 import './style.scss';
 
@@ -10,19 +10,10 @@ import './style.scss';
 export default function InstructionsOverlay({ isAutoOpen, isOpen, onClose, style }) {
 
   const overlay = useRef(null);
+  const closeButton = useRef(null);
 
   // what had focus before the overlay was opened
   const focused = document.activeElement;
-
-  if (overlay.current) {
-    // scroll it back to the top
-    overlay.current.scroll(0, 0)
-
-    if (!isAutoOpen) {
-      // focus the close button
-      overlay.current.querySelector('.close-box-x').focus();
-    }
-  }
 
   const close = () => {
     
@@ -38,10 +29,24 @@ export default function InstructionsOverlay({ isAutoOpen, isOpen, onClose, style
     classes.push('open');
   }
 
+  useEffect(() => {
+
+    if (isOpen) {
+      // scroll it back to the top
+      overlay.current.scroll(0, 0)
+    }
+
+    if (isOpen && !isAutoOpen) {
+      // focus the close button
+      closeButton.current.focus();
+    }
+
+  }, [isAutoOpen, isOpen]);
+
   return (
     <div className={classes.join(' ')} style={style}>
       <div className="overlay" ref={overlay}>
-        <button className="close-box-x" aria-label="Close modal" onClick={close}>
+        <button className="close-box-x" aria-label="Close modal" onClick={close} ref={closeButton}>
           <XMarkIcon />
         </button>
         <h1>How to play</h1>
