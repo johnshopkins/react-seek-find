@@ -96,6 +96,10 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
     moveSightsTo(x, y) {
       setPositionX(x);
       setPositionY(y);
+    },
+    resetSights() {
+      setPositionX(0);
+      setPositionY(0);
     }
   }), [checkGuess, iconOffsetLeft, iconOffsetTop, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
 

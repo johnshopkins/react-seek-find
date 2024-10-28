@@ -217,8 +217,6 @@ class Game extends Component {
     })
   }
 
-  zoomIn() {
-    this.zoomTo(this.round(this.state.scale + 10));
   replay() {
 
     this.setState({
@@ -232,26 +230,32 @@ class Game extends Component {
       gameComplete: false,
     });
   }
+  
+  zoomIn(callback = () => {}) {
+    this.zoomTo(this.round(this.state.scale + 10), callback);
   }
 
-  zoomOut() {
-    this.zoomTo(this.round(this.state.scale - 10));
+  zoomOut(callback = () => {}) {
+    this.zoomTo(this.round(this.state.scale - 10), callback);
   }
 
   zoomTo(value, callback = () => {}) {
 
     let newState = {};
+    let limitReached = false;
 
     if (value >= 100) {
       newState = {
         scale: 100,
         zoomInLimitReached: true
       };
+      limitReached = true;
     } else if (value < this.state.maxZoomOut) {
       newState = {
         scale: this.state.maxZoomOut,
         zoomOutLimitReached: true,
       }
+      limitReached = true;
     } else {
       newState = {
         scale: value,
@@ -260,7 +264,7 @@ class Game extends Component {
       }
     }
 
-    this.setState(newState, callback.call(null, newState.scale / 100));
+    this.setState(newState, callback.call(null, newState.scale / 100, limitReached));
   }
 
   closeInstructions() {

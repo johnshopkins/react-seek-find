@@ -179,6 +179,8 @@ class Illustration extends Component {
 
     this.props.replay();
     this.restoreCanvasState();
+    this.findable.current.focusCanvas();
+    this.sights.current.resetSights();
   }
 
   restoreCanvasState() {
@@ -371,7 +373,7 @@ class Illustration extends Component {
       // move sights to this location as well
       const sightsX = newX < 0 ? Math.abs(newX) : 0;
       const sightsY = newY < 0 ? Math.abs(newY) : 0;
-      this.sights.current.moveSightsTo(sightsX, sightsY, true);
+      this.sights.current.moveSightsTo(sightsX, sightsY);
     }
 
     this.setState({
@@ -446,6 +448,8 @@ class Illustration extends Component {
       });
 
       setTimeout(() => this.removeHint(), settings.hintFadeIn + this.props.hintKeepAlive);
+
+      this.findable.current.focusCanvas();
 
     });
   }
@@ -549,7 +553,7 @@ class Illustration extends Component {
             </button>
 
             {!this.props.gameComplete &&
-              <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()} tabIndex={this.props.disableTabbing ? '-1' : null}>
+              <button className="hint" disabled={this.state.hintActive} onClick={this.showHint} tabIndex={this.props.disableTabbing ? '-1' : null}>
                 <LightbulbIcon tooltip="Give me a hint" />
               </button>
             }
@@ -574,11 +578,23 @@ class Illustration extends Component {
               moveCanvas={this.moveCanvas}
             />
             
-            <button className="zoom-in" onClick={this.props.zoomIn} disabled={this.props.zoomInLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
+            <button className="zoom-in" onClick={() => {
+              this.props.zoomIn((newScale, limitReached) => {
+                if (limitReached) {
+                  this.findable.current.focusCanvas();
+                }
+              })
+            }} disabled={this.props.zoomInLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
               <ZoomInIcon tooltip="Zoom in" />
             </button>
 
-            <button className="zoom-out" onClick={this.props.zoomOut} disabled={this.props.zoomOutLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
+            <button className="zoom-out" onClick={() => {
+              this.props.zoomOut((newScale, limitReached) => {
+                if (limitReached) {
+                  this.findable.current.focusCanvas();
+                }
+              })
+            }} disabled={this.props.zoomOutLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
               <ZoomOutIcon tooltip="Zoom out" />
             </button>
 

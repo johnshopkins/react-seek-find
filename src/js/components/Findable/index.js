@@ -46,6 +46,9 @@ export default forwardRef(({
         }
       }
 
+    },
+    focusCanvas: () => {
+      canvasRef.current.focus();
     }
   }), [objects, onFind]);
 
