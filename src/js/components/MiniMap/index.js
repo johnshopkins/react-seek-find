@@ -29,6 +29,7 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
     setDragStartY(e.nativeEvent.offsetY);
 
     window.addEventListener('mouseup', e => {
+      onMouseMove.cancel();
       setIsMouseDown(false);
       setIsDragging(false);
     }, { once: true });

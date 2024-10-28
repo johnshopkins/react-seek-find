@@ -235,9 +235,9 @@ class Illustration extends Component {
     target.addEventListener('mousemove', this.onMouseMove);
 
     window.addEventListener('mouseup', e => {
-      this.onMouseUp(e);
+      this.onMouseMove.cancel();
       target.removeEventListener('mousemove', this.onMouseMove);
-      this.setState({ isDragging: false });
+      this.onMouseUp(e);
     }, { once: true });
   }
 
@@ -295,10 +295,7 @@ class Illustration extends Component {
 
     // reset state vars
     window.addEventListener('touchend', e => {
-      this.setState({
-        prevTouchDistance: null,
-        prevTouchEvent: null,
-      })
+      this.onTouchMove.cancel();
       window.removeEventListener('touchmove', this.onTouchMove);
     }, { once: true });
   }
