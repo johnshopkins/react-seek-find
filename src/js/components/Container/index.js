@@ -1,3 +1,4 @@
+/*global dataLayer*/
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import Illustration from '../Illustration';
@@ -199,6 +200,11 @@ class Game extends Component {
         this.props.onGameComplete()
       }
 
+      dataLayer.push({
+        event: 'unlock_achievement',
+        achievement_id: 'game_complete',
+      });
+
       this.saveGame({
         found: this.state.found,
         gameComplete: this.state.gameComplete,
@@ -273,6 +279,7 @@ class Game extends Component {
   }
 
   openInstructions() {
+    dataLayer.push({ event: 'tutorial_begin' });
     this.setState({ openInstructions: true });
   }
 
