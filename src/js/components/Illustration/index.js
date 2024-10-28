@@ -72,7 +72,6 @@ class Illustration extends Component {
     this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.replay = this.replay.bind(this);
-    this.restoreCanvasState = this.restoreCanvasState.bind(this);
   }
 
   /**
@@ -105,10 +104,14 @@ class Illustration extends Component {
     };
   }
 
+  /**
+   * The component should update only if changes were
+   * made to certain state and prop variables
+   * @param {object} nextProps 
+   * @param {object} nextState 
+   * @returns 
+   */
   shouldComponentUpdate(nextProps, nextState) {
-
-    // look for certain changes that should update component
-
     const stateVars = [
       'canvasX',
       'canvasY',
@@ -122,7 +125,6 @@ class Illustration extends Component {
 
     for (const stateVar of stateVars) {
       if (nextState[stateVar] !== this.state[stateVar]) {
-        // console.log(`state.${stateVar} changed`);
         return true;
       }
     }
@@ -139,7 +141,6 @@ class Illustration extends Component {
 
     for (const propVar of propVars) {
       if (nextProps[propVar] !== this.props[propVar]) {
-        // console.log(`props.${propVar} changed`);
         return true;
       }
     }
@@ -147,9 +148,14 @@ class Illustration extends Component {
     return false;
   }
 
+  /**
+   * After the component updates, look for certain conditions
+   * that require the canvas position to be recalculated.
+   * @param {object} prevProps 
+   * @param {object} prevState 
+   */
   componentDidUpdate(prevProps, prevState) {
 
-    // conditions that require canvasX and canvasY to be recalculated
     const conditions = (
 
       // screen resize
@@ -174,24 +180,29 @@ class Illustration extends Component {
     }
   }
 
+  /**
+   * Reset the game so the user can play again
+   */
   replay() {
-
     this.props.replay();
-    this.restoreCanvasState();
-    this.findable.current.focusCanvas();
-    this.sights.current.resetSights();
-  }
 
-  restoreCanvasState() {
+    // restore canvas position to (0, 0)
     const canvasX = 0;
     const canvasY = 0;
 
     const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
 
-    this.setState({ canvasX, canvasY, anchorX, anchorY })
+    this.setState({ canvasX, canvasY, anchorX, anchorY });
 
+    this.findable.current.focusCanvas();
+    this.sights.current.resetSights();
   }
 
+  /**
+   * If a found object is confirmed (hasn't been found before),
+   * highlight it and remove the hint.
+   * @param {object} object 
+   */
   onFind(object) {
     const confirmed = this.props.onFind(object)
     if (confirmed) {
@@ -200,6 +211,10 @@ class Illustration extends Component {
     }
   }
 
+  /**
+   * A key was pressed while the game is in focus.
+   * @param {event} e 
+   */
   onKeyDown(e) {
     this.setState({ isClick: false }, () => {
       if (this.state.isKeyboardFocused) {
@@ -208,6 +223,11 @@ class Illustration extends Component {
     });
   }
 
+  /**
+   * When the game is focused, if it wasn't initiated by a click,
+   * it was initiated by the keyboard. Set isKeyboardFocused to TRUE
+   * so tht the sights will be shown.
+   */
   onFocus() {
     this.setState({ isKeyboardFocused: !this.state.isClick });
   }
@@ -303,10 +323,11 @@ class Illustration extends Component {
   /**
    * Move the image canvas to a new location. newX and newY correspond
    * to the coordinates of the image at its currently scaled size and will
-   * be placed at the origin (0, 0) of the game container.
+   * be placed at the origin of the game container.
    * 
    * If `center` parameter is true, the newX and newY represent the (x, y)
-   * coordinates to move to that are in the center of the game container.
+   * coordinates to move to that are in the center of the game container
+   * and must be converted to origin coordinates.
    * 
    * @param {number} newX 
    * @param {number} newY

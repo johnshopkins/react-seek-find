@@ -40,6 +40,7 @@
   .game {
     cursor: url(../../images/magnifying-glass.svg) 50 50, crosshair;
     position: absolute;
+    user-select: none;
 
     &:focus {
       // canvas element hides this?
