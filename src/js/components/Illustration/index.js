@@ -173,9 +173,12 @@ class Illustration extends Component {
   }
 
   onFind(object) {
-    this.showFound(object);
-    this.props.onFind(object);
-    this.removeHint();
+    this.props.onFind(object, confirmed => {
+      if (confirmed) {
+        this.showFound(object);
+        this.removeHint();
+      }
+    });
   }
 
   onKeyDown(e) {

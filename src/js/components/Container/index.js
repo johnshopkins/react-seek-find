@@ -176,13 +176,14 @@ class Game extends Component {
 
   onFind(foundObject) {
 
+    if (this.state.found.includes(foundObject.id)) {
+      // object already found
+      return false;
+    }
+
     this.setState(state => {
 
       const found = [...state.found]; // handle immutably to prevent bugs
-
-      if (found.includes(foundObject.id)) {
-        return;
-      }
 
       found.push(foundObject.id);
 
@@ -202,6 +203,8 @@ class Game extends Component {
         gameComplete: this.state.gameComplete,
       })
     });
+
+    return true;
   }
 
   saveGame(changed = {}) {
