@@ -39,7 +39,6 @@ class Game extends Component {
       gameComplete: false,
       found: [],
       seenInstructions: false,
-      timer: 0,
       ...storedData
     }
 
@@ -208,7 +207,6 @@ class Game extends Component {
   saveGame(changed = {}) {
     saveGameState({
       found: this.state.found,
-      time: this.state.timer,
       gameComplete: this.state.gameComplete,
       seenInstructions: false,
       changed
