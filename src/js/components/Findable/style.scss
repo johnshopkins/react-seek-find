@@ -1,6 +1,7 @@
 @use '../../../css/main' as *;
 
 canvas.findable {
+  outline: 0;
   position: absolute;
   z-index: var(--stack-findable);
 }
