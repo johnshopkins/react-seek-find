@@ -48,7 +48,7 @@ class Illustration extends Component {
 
       isClick: false,
       isKeyboardFocused: false,
-      context: null,
+      loading: true,
       isDragging: false,
       dragStartX: null,
       dragStartY: null,
@@ -121,6 +121,7 @@ class Illustration extends Component {
       'hintActive',
       'isDragging',
       'isKeyboardFocused',
+      'loading',
     ];
 
     for (const stateVar of stateVars) {
@@ -527,104 +528,111 @@ class Illustration extends Component {
         }}
       >
         <div className="game" style={gameStyles}>
-          <Sights
-            ref={this.sights}
-            checkGuess={(x, y) => this.findable.current.checkGuess(x, y)}
-            height={this.props.imageHeight * this.props.scale}
-            onSightsMove={this.onSightsMove}
-            show={this.state.isKeyboardFocused}
-            width={this.props.imageWidth * this.props.scale}
-          />
-          <Hint
-            height={this.props.imageHeight}
-            width={this.props.imageWidth}
-            object={this.state.hint}
-            scale={this.props.scale}
-          />
-          <Found
-            height={this.props.imageHeight}
-            width={this.props.imageWidth}
-            object={this.state.found}
-            scale={this.props.scale}
-          />
-          <Findable
-            disableTabbing={this.props.disableTabbing}
-            onFind={this.onFind}
-            objects={this.props.objects}
-            ref={this.findable}
-            scale={this.props.scale}
-            height={this.props.imageHeight}
-            width={this.props.imageWidth}
-            onMouseDown={this.onMouseDown}
-            onTouchStart={this.onTouchStart}
-          />
+          {!this.state.loading &&
+            <>
+              <Sights
+                ref={this.sights}
+                checkGuess={(x, y) => this.findable.current.checkGuess(x, y)}
+                height={this.props.imageHeight * this.props.scale}
+                onSightsMove={this.onSightsMove}
+                show={this.state.isKeyboardFocused}
+                width={this.props.imageWidth * this.props.scale}
+              />
+              <Hint
+                height={this.props.imageHeight}
+                width={this.props.imageWidth}
+                object={this.state.hint}
+                scale={this.props.scale}
+              />
+              <Found
+                height={this.props.imageHeight}
+                width={this.props.imageWidth}
+                object={this.state.found}
+                scale={this.props.scale}
+              />
+              <Findable
+                disableTabbing={this.props.disableTabbing}
+                onFind={this.onFind}
+                objects={this.props.objects}
+                ref={this.findable}
+                scale={this.props.scale}
+                height={this.props.imageHeight}
+                width={this.props.imageWidth}
+                onMouseDown={this.onMouseDown}
+                onTouchStart={this.onTouchStart}
+            />
+            </>
+          }
           <Background
             imageSrc={this.props.imageSrc}
             containerHeight={this.props.containerHeight}
             containerWidth={this.props.containerWidth}
+            onReady={() => this.setState({ loading: false })}
             height={this.props.imageHeight}
             width={this.props.imageWidth}
             scale={this.props.scale}
           />
         </div>
-        <div className="utilities" style={containerStyles}>
+        {!this.state.loading &&
+          <div className="utilities" style={containerStyles}>
 
-          <div className="instructions-and-hint">
-            <button className="instructions" onClick={this.props.openInstructions} tabIndex={this.props.disableTabbing ? '-1' : null}>
-              <InstructionsIcon tooltip="How to play" />
-            </button>
-
-            {!this.props.gameComplete &&
-              <button className="hint" disabled={this.state.hintActive} onClick={this.showHint} tabIndex={this.props.disableTabbing ? '-1' : null}>
-                <LightbulbIcon tooltip="Give me a hint" />
+            <div className="instructions-and-hint">
+              <button className="instructions" onClick={this.props.openInstructions} tabIndex={this.props.disableTabbing ? '-1' : null}>
+                <InstructionsIcon tooltip="How to play" />
               </button>
-            }
 
-            {this.props.gameComplete &&
-              <button className="replay" onClick={this.replay} tabIndex={this.props.disableTabbing ? '-1' : null}>
-                <ReplayIcon tooltip="Play again" />
+              {!this.props.gameComplete &&
+                <button className="hint" disabled={this.state.hintActive} onClick={this.showHint} tabIndex={this.props.disableTabbing ? '-1' : null}>
+                  <LightbulbIcon tooltip="Give me a hint" />
+                </button>
+              }
+
+              {this.props.gameComplete &&
+                <button className="replay" onClick={this.replay} tabIndex={this.props.disableTabbing ? '-1' : null}>
+                  <ReplayIcon tooltip="Play again" />
+                </button>
+              }
+            </div>
+
+            <div className="navigation">
+              
+              <MiniMap
+                canvasX={this.state.canvasX}
+                canvasY={this.state.canvasY}
+                containerHeight={this.props.containerHeight}
+                containerWidth={this.props.containerWidth}
+                emToPixel={this.props.emToPixel}
+                imageHeight={this.props.imageHeight * this.props.scale}
+                imageWidth={this.props.imageWidth * this.props.scale}
+                moveCanvas={this.moveCanvas}
+              />
+              
+              <button className="zoom-in" onClick={() => {
+                this.props.zoomIn((newScale, limitReached) => {
+                  if (limitReached) {
+                    this.findable.current.focusCanvas();
+                  }
+                })
+              }} disabled={this.props.zoomInLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
+                <ZoomInIcon tooltip="Zoom in" />
               </button>
-            }
-          </div>
 
-          <div className="navigation">
-            
-            <MiniMap
-              canvasX={this.state.canvasX}
-              canvasY={this.state.canvasY}
-              containerHeight={this.props.containerHeight}
-              containerWidth={this.props.containerWidth}
-              emToPixel={this.props.emToPixel}
-              imageHeight={this.props.imageHeight * this.props.scale}
-              imageWidth={this.props.imageWidth * this.props.scale}
-              moveCanvas={this.moveCanvas}
-            />
-            
-            <button className="zoom-in" onClick={() => {
-              this.props.zoomIn((newScale, limitReached) => {
-                if (limitReached) {
-                  this.findable.current.focusCanvas();
-                }
-              })
-            }} disabled={this.props.zoomInLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
-              <ZoomInIcon tooltip="Zoom in" />
-            </button>
+              <button className="zoom-out" onClick={() => {
+                this.props.zoomOut((newScale, limitReached) => {
+                  if (limitReached) {
+                    this.findable.current.focusCanvas();
+                  }
+                })
+              }} disabled={this.props.zoomOutLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
+                <ZoomOutIcon tooltip="Zoom out" />
+              </button>
 
-            <button className="zoom-out" onClick={() => {
-              this.props.zoomOut((newScale, limitReached) => {
-                if (limitReached) {
-                  this.findable.current.focusCanvas();
-                }
-              })
-            }} disabled={this.props.zoomOutLimitReached} tabIndex={this.props.disableTabbing ? '-1' : null}>
-              <ZoomOutIcon tooltip="Zoom out" />
-            </button>
-
-            <div style={{ background: '#fff', padding: '5px' }}>
-              {Math.round(this.props.scale * 100)}%
+              <div style={{ background: '#fff', padding: '5px' }}>
+                {Math.round(this.props.scale * 100)}%
+              </div>
             </div>
           </div>
-        </div>
+        }
       </div>
     );
 

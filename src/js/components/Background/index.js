@@ -5,7 +5,7 @@ import './style.scss';
 /**
  * The background image
  */
-export default function Background({ containerHeight, containerWidth, height, imageSrc, scale, width }) {
+export default function Background({ containerHeight, containerWidth, height, imageSrc, onReady, scale, width }) {
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -30,7 +30,10 @@ export default function Background({ containerHeight, containerWidth, height, im
         src={imageSrc}
         width={scaledWidth}
         height={scaledHeight}
-        onLoad={() => setIsLoading(false)}
+        onLoad={() => {
+          onReady();
+          setIsLoading(false);
+        }}
         style={{ display: isLoading ? 'none' : 'block' }}
       />
     </>
