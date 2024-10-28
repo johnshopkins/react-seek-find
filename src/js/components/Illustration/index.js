@@ -480,6 +480,7 @@ class Illustration extends Component {
       height: `${this.props.containerHeight}px`,
       width: `${this.props.containerWidth}px`,
     };
+
     const gameStyles = {
       height: `${this.props.imageHeight}px`,
       width: `${this.props.imageWidth}px`,
