@@ -325,8 +325,8 @@ class Illustration extends Component {
     }
 
     // scaled dimensions of image
-    const scaledHeight = this.props.height * this.props.scale;
-    const scaledWidth = this.props.width * this.props.scale;
+    const scaledHeight = this.props.imageHeight * this.props.scale;
+    const scaledWidth = this.props.imageWidth * this.props.scale;
 
     if (this.props.buffer) {
       // adds buffer area around image for allow for utilities
@@ -478,8 +478,8 @@ class Illustration extends Component {
     console.log('illustration render');
 
     const gameStyles = {
-      height: `${this.props.height}px`,
-      width: `${this.props.width}px`,
+      height: `${this.props.imageHeight}px`,
+      width: `${this.props.imageWidth}px`,
       left: this.state.canvasX,
       top: this.state.canvasY,
     };
@@ -508,20 +508,20 @@ class Illustration extends Component {
           <Sights
             ref={this.sights}
             checkGuess={(x, y) => this.findable.current.checkGuess(x, y)}
-            height={this.props.height * this.props.scale}
+            height={this.props.imageHeight * this.props.scale}
             onSightsMove={this.onSightsMove}
             show={this.state.isKeyboardFocused}
-            width={this.props.width * this.props.scale}
+            width={this.props.imageWidth * this.props.scale}
           />
           <Hint
-            height={this.props.height}
-            width={this.props.width}
+            height={this.props.imageHeight}
+            width={this.props.imageWidth}
             object={this.state.hint}
             scale={this.props.scale}
           />
           <Found
-            height={this.props.height}
-            width={this.props.width}
+            height={this.props.imageHeight}
+            width={this.props.imageWidth}
             object={this.state.found}
             scale={this.props.scale}
           />
@@ -531,8 +531,8 @@ class Illustration extends Component {
             objects={this.props.objects}
             ref={this.findable}
             scale={this.props.scale}
-            height={this.props.height}
-            width={this.props.width}
+            height={this.props.imageHeight}
+            width={this.props.imageWidth}
             onMouseDown={this.onMouseDown}
             onTouchStart={this.onTouchStart}
           />
@@ -540,8 +540,8 @@ class Illustration extends Component {
             imageSrc={this.props.imageSrc}
             containerHeight={this.props.containerHeight}
             containerWidth={this.props.containerWidth}
-            height={this.props.height}
-            width={this.props.width}
+            height={this.props.imageHeight}
+            width={this.props.imageWidth}
             scale={this.props.scale}
           />
         </div>
@@ -573,8 +573,8 @@ class Illustration extends Component {
               containerHeight={this.props.containerHeight}
               containerWidth={this.props.containerWidth}
               emToPixel={this.props.emToPixel}
-              imageHeight={this.props.height * this.props.scale}
-              imageWidth={this.props.width * this.props.scale}
+              imageHeight={this.props.imageHeight * this.props.scale}
+              imageWidth={this.props.imageWidth * this.props.scale}
               moveCanvas={this.moveCanvas}
             />
             
@@ -617,14 +617,14 @@ Illustration.defaultProps = {
 Illustration.propTypes = {
   found: PropTypes.array,
   foundKeepAlive: PropTypes.number.isRequired,
+  imageHeight: PropTypes.number.isRequired,
   imageSrc: PropTypes.string.isRequired,
+  imageWidth: PropTypes.number.isRequired,
   objects: PropTypes.array,
   containerHeight: PropTypes.number.isRequired,
   containerWidth: PropTypes.number.isRequired,
   containerStyles: PropTypes.object.isRequired,
   hintKeepAlive: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
   onFind: PropTypes.func.isRequired,
   hint: PropTypes.object,
   scale: PropTypes.number.isRequired,

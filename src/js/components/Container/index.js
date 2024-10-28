@@ -322,12 +322,12 @@ class Game extends Component {
             gameComplete={this.state.gameComplete}
             foundKeepAlive={this.props.foundKeepAlive}
             containerStyles={gameStyles}
+            imageHeight={this.props.imageHeight}
             imageSrc={this.props.image}
+            imageWidth={this.props.imageWidth}
             objects={Object.values(this.objects)}
             containerHeight={this.state.illustrationContainerHeight}
             containerWidth={this.state.illustrationContainerWidth}
-            height={this.props.imageHeight}
-            width={this.props.imageWidth}
             onFind={this.onFind}
             scale={this.state.scale / 100}
             hintKeepAlive={this.props.hintKeepAlive}
