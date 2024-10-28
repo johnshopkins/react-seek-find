@@ -1,4 +1,4 @@
-import { Children } from 'react';
+import React, { Children } from 'react';
 import './style.scss';
 
 export default function Container({ children, className, style, tooltip, viewBox = '0 0 512 512' }) {

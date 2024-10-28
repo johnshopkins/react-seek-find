@@ -1,3 +1,4 @@
+import React from 'react';
 import IconContainer from './Container';
 
 export default function Replay({ className, tooltip, style }) {

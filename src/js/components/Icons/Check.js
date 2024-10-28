@@ -1,3 +1,4 @@
+import React from 'react';
 import IconContainer from './Container';
 
 export default function Check({ className, tooltip, style }) {
