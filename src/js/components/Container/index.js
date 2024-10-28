@@ -311,7 +311,6 @@ class Game extends Component {
           
           <Illustration
             buffer={this.props.buffer}
-            breakpoint={this.state.breakpoint}
             containerHeight={this.state.illustrationContainerHeight}
             containerWidth={this.state.illustrationContainerWidth}
             emToPixel={this.state.emToPixel}

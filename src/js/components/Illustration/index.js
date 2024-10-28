@@ -128,7 +128,6 @@ class Illustration extends Component {
     }
 
     const propVars = [
-      'breakpoint',
       'emToPixel',
       'disableTabbing',
       'found',
