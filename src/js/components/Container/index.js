@@ -13,8 +13,6 @@ import {
 } from '../../lib/persistance';
 import './style.scss';
 
-require('../../lib/modernizr');
-
 /**
  * The container of the game, which manages the game state.
  */

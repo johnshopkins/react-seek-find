@@ -4,6 +4,8 @@ import React, { useEffect, useRef } from 'react';
 import XMarkIcon from '../Icons/Xmark';
 import './style.scss';
 
+require('../../lib/modernizr');
+
 /**
  * The instructions overlay
  */
