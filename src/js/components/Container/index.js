@@ -61,6 +61,7 @@ class Game extends Component {
     this.getViewState = this.getViewState.bind(this);
     this.onFind = this.onFind.bind(this);
     this.openInstructions = this.openInstructions.bind(this);
+    this.replay = this.replay.bind(this);
     this.saveGame = this.saveGame.bind(this);
     this.scaleToFit = this.scaleToFit.bind(this);
     this.setViewState = this.setViewState.bind(this);
@@ -218,6 +219,19 @@ class Game extends Component {
 
   zoomIn() {
     this.zoomTo(this.round(this.state.scale + 10));
+  replay() {
+
+    this.setState({
+      found: [],
+      gameComplete: false,
+    })
+
+    this.saveGame({
+      found: [],
+      seenInstructions: true,
+      gameComplete: false,
+    });
+  }
   }
 
   zoomOut() {
@@ -331,6 +345,7 @@ class Game extends Component {
             zoomOutLimitReached={this.state.zoomOutLimitReached}
             openInstructions={this.openInstructions}
             disableTabbing={this.state.openInstructions}
+            replay={this.replay}
           />
           
         </div>

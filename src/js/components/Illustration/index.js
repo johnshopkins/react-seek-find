@@ -8,6 +8,7 @@ import MiniMap from '../MiniMap';
 import Sights from '../Sights';
 import InstructionsIcon from '../Icons/Instructions';
 import LightbulbIcon from '../Icons/Lightbulb';
+import ReplayIcon from '../Icons/Replay';
 import ZoomInIcon from '../Icons/ZoomIn';
 import ZoomOutIcon from '../Icons/ZoomOut';
 import settings from '../../../settings';
@@ -70,6 +71,8 @@ class Illustration extends Component {
     this.showHint = this.showHint.bind(this);
     this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
     this.onTouchStart = this.onTouchStart.bind(this);
+    this.replay = this.replay.bind(this);
+    this.restoreCanvasState = this.restoreCanvasState.bind(this);
   }
 
   /**
@@ -170,6 +173,22 @@ class Illustration extends Component {
       
       this.moveCanvas(newX, newY, true);
     }
+  }
+
+  replay() {
+
+    this.props.replay();
+    this.restoreCanvasState();
+  }
+
+  restoreCanvasState() {
+    const canvasX = 0;
+    const canvasY = 0;
+
+    const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
+
+    this.setState({ canvasX, canvasY, anchorX, anchorY })
+
   }
 
   onFind(object) {
@@ -533,6 +552,12 @@ class Illustration extends Component {
             {!this.props.gameComplete &&
               <button className="hint" disabled={this.state.hintActive} onClick={() => this.showHint()} tabIndex={this.props.disableTabbing ? '-1' : null}>
                 <LightbulbIcon tooltip="Give me a hint" />
+              </button>
+            }
+
+            {this.props.gameComplete &&
+              <button className="replay" onClick={this.replay} tabIndex={this.props.disableTabbing ? '-1' : null}>
+                <ReplayIcon tooltip="Play again" />
               </button>
             }
           </div>
