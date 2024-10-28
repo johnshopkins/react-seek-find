@@ -24,7 +24,7 @@
     z-index: calc(var(--overlay) + 1);
   }
 
-  .close-box-x {
+  .close {
     float: right;
     @include round_button;
     &:hover {

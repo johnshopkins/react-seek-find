@@ -48,7 +48,7 @@ export default function InstructionsOverlay({ isAutoOpen, isOpen, onClose, style
   return (
     <div className={classes.join(' ')} style={style}>
       <div className="overlay" ref={overlay}>
-        <button className="close-box-x" aria-label="Close modal" onClick={close} ref={closeButton}>
+        <button className="close" aria-label="Close modal" onClick={close} ref={closeButton}>
           <XMarkIcon />
         </button>
         <h1>How to play</h1>
