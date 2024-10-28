@@ -79,13 +79,13 @@ class Game extends Component {
 
       const newHeight = document.documentElement.clientHeight;
       const newWidth = document.documentElement.clientWidth;
-      const newOrientation = window.orientation;
+      const newOrientation = window.screen.orientation.type;
 
-      // make sure the size actually changed (iOS triggers them randomly at times)
+      // make sure the size actually changed (iOS triggers the resize event too much)
       // see: https://johnkavanagh.co.uk/articles/understanding-phantom-window-resize-events-in-ios/
       
       // note: in iOS, going from landscape to portrait reports the same
-      // height and width, so we must also check window.orientation.
+      // height and width, so we must also check window.orientation
       if (this.state.browserHeight !== newHeight || this.state.browserWidth !== newWidth || this.state.orientation !== newOrientation) {
         this.setViewState();
       }
@@ -145,7 +145,7 @@ class Game extends Component {
       illustrationContainerHeight,
       illustrationContainerWidth,
       maxZoomOut,
-      orientation: window.orientation, // helps with detecting resize on mobile
+      orientation: window.screen.orientation.type, // helps with detecting resize on mobile
       scale,
       width,
       zoomInLimitReached: scale === 100, // the farthest IN you can zoom
