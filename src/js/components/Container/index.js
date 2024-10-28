@@ -208,8 +208,8 @@ class Game extends Component {
     saveGameState({
       found: this.state.found,
       gameComplete: this.state.gameComplete,
-      seenInstructions: false,
-      changed
+      seenInstructions: this.state.seenInstructions,
+      ...changed
     })
   }
 
