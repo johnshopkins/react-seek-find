@@ -477,6 +477,10 @@ class Illustration extends Component {
 
     console.log('illustration render');
 
+    const containerStyles = {
+      height: `${this.props.containerHeight}px`,
+      width: `${this.props.containerWidth}px`,
+    };
     const gameStyles = {
       height: `${this.props.imageHeight}px`,
       width: `${this.props.imageWidth}px`,
@@ -493,7 +497,7 @@ class Illustration extends Component {
         className="game-container"
         role="region"
         aria-label="Seek and Find"
-        style={this.props.containerStyles}
+        style={containerStyles}
         onFocus={this.onFocus}
         onBlur={this.onBlur}
         onKeyDown={this.onKeyDown}
@@ -545,7 +549,7 @@ class Illustration extends Component {
             scale={this.props.scale}
           />
         </div>
-        <div className="utilities" style={this.props.containerStyles}>
+        <div className="utilities" style={containerStyles}>
 
           <div className="instructions-and-hint">
             <button className="instructions" onClick={this.props.openInstructions} tabIndex={this.props.disableTabbing ? '-1' : null}>
@@ -615,15 +619,14 @@ Illustration.defaultProps = {
 };
 
 Illustration.propTypes = {
+  containerHeight: PropTypes.number.isRequired,
+  containerWidth: PropTypes.number.isRequired,
   found: PropTypes.array,
   foundKeepAlive: PropTypes.number.isRequired,
   imageHeight: PropTypes.number.isRequired,
   imageSrc: PropTypes.string.isRequired,
   imageWidth: PropTypes.number.isRequired,
   objects: PropTypes.array,
-  containerHeight: PropTypes.number.isRequired,
-  containerWidth: PropTypes.number.isRequired,
-  containerStyles: PropTypes.object.isRequired,
   hintKeepAlive: PropTypes.number.isRequired,
   onFind: PropTypes.func.isRequired,
   hint: PropTypes.object,

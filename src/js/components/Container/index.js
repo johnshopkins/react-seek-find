@@ -291,11 +291,6 @@ class Game extends Component {
       width: `${this.state.width}px`,
     }
 
-    const gameStyles = {
-      height: `${this.state.illustrationContainerHeight}px`,
-      width: `${this.state.illustrationContainerWidth}px`,
-    };
-
     return (
       <>
         <InstructionsOverlay
@@ -317,17 +312,16 @@ class Game extends Component {
           <Illustration
             buffer={this.props.buffer}
             breakpoint={this.state.breakpoint}
+            containerHeight={this.state.illustrationContainerHeight}
+            containerWidth={this.state.illustrationContainerWidth}
             emToPixel={this.state.emToPixel}
             found={this.state.found}
             gameComplete={this.state.gameComplete}
             foundKeepAlive={this.props.foundKeepAlive}
-            containerStyles={gameStyles}
             imageHeight={this.props.imageHeight}
             imageSrc={this.props.image}
             imageWidth={this.props.imageWidth}
             objects={Object.values(this.objects)}
-            containerHeight={this.state.illustrationContainerHeight}
-            containerWidth={this.state.illustrationContainerWidth}
             onFind={this.onFind}
             scale={this.state.scale / 100}
             hintKeepAlive={this.props.hintKeepAlive}
