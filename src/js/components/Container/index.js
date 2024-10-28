@@ -6,11 +6,7 @@ import InstructionsOverlay from '../InstructionsOverlay';
 import Legend from '../Legend';
 import ResizeWatcher from '@johnshopkins/jhu-wds/src/shared/js/utils/watch-window-resize'
 import settings from '../../../settings';
-import {
-  clearGameState,
-  loadGameState,
-  saveGameState
-} from '../../lib/persistance';
+import { clearGameState, loadGameState, saveGameState } from '../../lib/persistance';
 import './style.scss';
 
 /**
@@ -25,20 +21,18 @@ class Game extends Component {
     // the DOM element the game is contained in. helps determine view
     this.container = props.container;
 
+    // the DOM element used to calculate ems to pixels
     this.em = createRef();
 
     // // for testing
     // clearGameState();
 
-    // fetch any stored data from localStorage
-    const storedData = loadGameState();
-
-    // combine stored data with default data
+    // combine stored user data with default user data
     const userData = {
       gameComplete: false,
       found: [],
       seenInstructions: false,
-      ...storedData
+      ...loadGameState()
     }
 
     // combine stored and default state
@@ -92,11 +86,6 @@ class Game extends Component {
     })
   }
 
-  /**
-   * Why? See: https://stackoverflow.com/questions/588004/is-floating-point-math-broken
-   * @param {number} num 
-   * @returns 
-   */
   round(num) {
     return Math.round(num / 10) * 10;
   }
@@ -107,7 +96,7 @@ class Game extends Component {
 
   getViewState() {
 
-    const emToPixel = this.em.current ? this.em.current.clientWidth : 16; // assume 16 to get started
+    const emToPixel = this.em.current ? this.em.current.clientWidth : 16; // assume 16 to get started before DOM loads
 
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
@@ -124,10 +113,8 @@ class Game extends Component {
     const illustrationContainerHeight = height - legendHeight;
     const illustrationContainerWidth = width;
 
-    // store as integer. why? see: https://stackoverflow.com/questions/588004/is-floating-point-math-broken
     const maxZoomOutWidth = (width >= this.props.imageWidth ? 1 : width / this.props.imageWidth) * 100;
     const maxZoomOutHeight = (height >= this.props.imageHeight ? 1 : height / this.props.imageHeight) * 100;
-
     const maxZoomOut = Math.max(maxZoomOutWidth, maxZoomOutHeight);
 
     // round to nearest 10 and add 20 so the zoom isn't too close to the max zoom out
@@ -298,13 +285,10 @@ class Game extends Component {
 
   render() {
 
-    const containerHeight = this.state.height;
-    const containerWidth = this.state.width;
-
     // contains legend
     const containerStyles = {
-      height: `${containerHeight}px`,
-      width: `${containerWidth}px`,
+      height: `${this.state.height}px`,
+      width: `${this.state.width}px`,
     }
 
     const gameStyles = {
