@@ -192,12 +192,11 @@ class Illustration extends Component {
   }
 
   onFind(object) {
-    this.props.onFind(object, confirmed => {
-      if (confirmed) {
-        this.showFound(object);
-        this.removeHint();
-      }
-    });
+    const confirmed = this.props.onFind(object)
+    if (confirmed) {
+      this.showFound(object);
+      this.removeHint(true);
+    }
   }
 
   onKeyDown(e) {
@@ -451,9 +450,9 @@ class Illustration extends Component {
     });
   }
 
-  removeHint() {
+  removeHint(now = false) {
     this.setState({ hint: null }, () => {
-      setTimeout(() => this.setState({ hintActive: false }), settings.hintFadeOut);
+      setTimeout(() => this.setState({ hintActive: false }), now ? 0 : settings.hintFadeOut);
     });
   }
 
