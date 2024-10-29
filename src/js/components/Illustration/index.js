@@ -11,6 +11,7 @@ import LightbulbIcon from '../Icons/Lightbulb';
 import ReplayIcon from '../Icons/Replay';
 import ZoomInIcon from '../Icons/ZoomIn';
 import ZoomOutIcon from '../Icons/ZoomOut';
+import getOffsetCoords from '../../lib/get-offset-coords';
 import settings from '../../../settings';
 import './style.scss';
 
@@ -25,7 +26,6 @@ class Illustration extends Component {
   constructor(props) {
     super(props);
 
-    this.canvas = createRef();
     this.sights = createRef();
     this.findable = createRef();
 
@@ -265,8 +265,10 @@ class Illustration extends Component {
   onMouseMove(e) {
     this.setState({ isDragging: true}, () => {
 
-      const diffX = this.state.dragStartX - e.offsetX;
-      const diffY = this.state.dragStartY - e.offsetY;
+      const { offsetX, offsetY } = getOffsetCoords(e);
+
+      const diffX = this.state.dragStartX - offsetX;
+      const diffY = this.state.dragStartY - offsetY;
 
       let newX = this.state.canvasX - diffX;
       let newY = this.state.canvasY - diffY;
@@ -282,9 +284,7 @@ class Illustration extends Component {
       return;
     }
 
-    const bcr = e.target.getBoundingClientRect();
-    const offsetX = e.targetTouches[0].clientX - bcr.x;
-    const offsetY = e.targetTouches[0].clientY - bcr.y;
+    const { offsetX, offsetY } = getOffsetCoords(e, true);
 
     const diffX = this.state.dragStartX - offsetX;
     const diffY = this.state.dragStartY - offsetY;
