@@ -53,21 +53,20 @@ export default forwardRef(({
   }), [objects, onFind]);
 
   return (
-    <>
-      <canvas
-        className="findable"
-        ref={canvasRef}
-        height={height}
-        width={width}
-        onMouseDown={onMouseDown}
-        onTouchStart={onTouchStart}
-        tabIndex={disableTabbing ? '-1' : '0'}
-        style={{
-          // stops the browser from its scrolling on the element
-          touchAction: 'none'
-        }}
-      />
-    </>
+    <canvas
+      className="findable"
+      data-testid="findable"
+      ref={canvasRef}
+      height={height}
+      width={width}
+      onMouseDown={onMouseDown}
+      onTouchStart={onTouchStart}
+      tabIndex={disableTabbing ? '-1' : '0'}
+      style={{
+        // stops the browser from its scrolling on the element
+        touchAction: 'none'
+      }}
+    />
   )
 
 });
