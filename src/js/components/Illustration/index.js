@@ -174,10 +174,19 @@ class Illustration extends Component {
 
       const scaleDiff = (this.props.scale * 100) / (prevProps.scale * 100);
 
-      const newX = this.state.anchorX * scaleDiff;
-      const newY = this.state.anchorY * scaleDiff;
+      // new (x, y) coordinates to the center of the canvas' current location
+      let newX = this.state.anchorX * scaleDiff;
+      let newY = this.state.anchorY * scaleDiff;
+
+      // translate to coordinates that moveCanvas can use (expects (x, y) to be origin)
+      const originCoordinates = this.getOriginFromCenterAnchor(newX, newY)
+
+      // but don't allow these to go above 0.
+      // prevents the canvas from moving into the buffer on resize
+      newX = originCoordinates.originX <= 0 ? originCoordinates.originX : 0;
+      newY = originCoordinates.originY <= 0 ? originCoordinates.originY : 0;
       
-      this.moveCanvas(newX, newY, true);
+      this.moveCanvas(newX, newY);
     }
   }
 
@@ -325,22 +334,10 @@ class Illustration extends Component {
    * Move the image canvas to a new location. newX and newY correspond
    * to the coordinates of the image at its currently scaled size and will
    * be placed at the origin of the game container.
-   * 
-   * If `center` parameter is true, the newX and newY represent the (x, y)
-   * coordinates to move to that are in the center of the game container
-   * and must be converted to origin coordinates.
-   * 
    * @param {number} newX 
    * @param {number} newY
-   * @param {string} center
    */
-  moveCanvas(newX, newY, center = false, moveSights = false, callback = () => {}) {
-
-    if (center) {
-      const originCoordinates = this.getOriginFromCenterAnchor(newX, newY)
-      newX = originCoordinates.originX;
-      newY = originCoordinates.originY;
-    }
+  moveCanvas(newX, newY) {
 
     // scaled dimensions of image
     const scaledHeight = this.props.imageHeight * this.props.scale;
@@ -387,19 +384,12 @@ class Illustration extends Component {
 
     const { anchorX, anchorY } = this.getCenterAnchor(newX, newY);
 
-    if (moveSights) {
-      // move sights to this location as well
-      const sightsX = newX < 0 ? Math.abs(newX) : 0;
-      const sightsY = newY < 0 ? Math.abs(newY) : 0;
-      this.sights.current.moveSightsTo(sightsX, sightsY);
-    }
-
     this.setState({
       canvasX: newX,
       canvasY: newY,
       anchorX,
       anchorY,
-    }, callback);
+    });
   }
 
   /**
