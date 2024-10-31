@@ -123,6 +123,8 @@ class Game extends Component {
     // don't show the imag TOO small on first load
     if (scale < 60) {
       scale = 60;
+    } else if (scale > 100) {
+      scale = 100;
     }
 
     return {
