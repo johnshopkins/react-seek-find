@@ -24,7 +24,7 @@ class FindableObject {
     const path = this.createFunction();
 
     if (fill) {
-      context.fillStyle = "rgb(255, 255, 255, 50%)";
+      context.fillStyle = 'rgb(255, 255, 255, 50%)';
       context.fill(path);
     }
 
@@ -36,32 +36,9 @@ class FindableObject {
   }
 
   hint (context, width, height) {
-
-    let path = new Path2D();
-
-    context.fillStyle = "rgb(0, 0, 0, 50%)";
-
-    path.moveTo(0, 0);
-    path.lineTo(0, height);
-    path.lineTo(width, height);
-    path.lineTo(width, 0);
-    path.lineTo(0, 0);
-    path.closePath();
-
-    // add hint area
-    const hintStart = this.hintCoords;
-
-    const bottom = hintStart.x + this.hintSize;
-    const right = hintStart.y + this.hintSize;
-
-    path.moveTo(hintStart.x, hintStart.y);
-    path.lineTo(bottom, hintStart.y);
-    path.lineTo(bottom, right);
-    path.lineTo(hintStart.x, right);
-    path.lineTo(hintStart.x, hintStart.y);
-    path.closePath();
-
-    context.fill(path);
+    context.fillStyle = 'rgb(0, 0, 0, 50%)';
+    context.fillRect(0, 0, width, height);
+    context.clearRect(this.hintCoords.x, this.hintCoords.y, this.hintSize, this.hintSize);
   }
 }
 
