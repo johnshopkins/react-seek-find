@@ -55,7 +55,6 @@ export default forwardRef(({
   return (
     <canvas
       className="findable"
-      data-testid="findable"
       ref={canvasRef}
       height={height}
       width={width}
