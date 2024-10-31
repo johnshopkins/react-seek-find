@@ -183,14 +183,18 @@ class Game extends Component {
 
     }, () => {
 
-      if (this.state.gameComplete) {
-        this.props.onGameComplete()
-      }
-
       dataLayer.push({
-        event: 'unlock_achievement',
-        achievement_id: 'game_complete',
+        event: 'level_up',
+        level: this.state.found.length,
       });
+
+      if (this.state.gameComplete) {
+        this.props.onGameComplete();
+        dataLayer.push({
+          event: 'unlock_achievement',
+          achievement_id: 'game_complete',
+        });
+      }
 
       this.saveGame({
         found: this.state.found,
