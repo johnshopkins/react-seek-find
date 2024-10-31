@@ -256,9 +256,12 @@ class Illustration extends Component {
   }
 
   onMouseDown(e) {
+
+    const { offsetX, offsetY } = getOffsetCoords(e);
+    
     this.setState({
-      dragStartX: e.nativeEvent.offsetX,
-      dragStartY: e.nativeEvent.offsetY,
+      dragStartX: offsetX,
+      dragStartY: offsetY,
     });
 
     const target = e.target;
