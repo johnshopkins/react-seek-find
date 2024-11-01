@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import getOffsetCoords from '../../lib/get-offset-coords';
 import settings from '../../../settings';
 import './style.scss';
 
@@ -25,8 +26,11 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
   const onMouseDown = (e) => {
 
     setIsMouseDown(true);
-    setDragStartX(e.nativeEvent.offsetX);
-    setDragStartY(e.nativeEvent.offsetY);
+
+    const { offsetX, offsetY } = getOffsetCoords(e);
+
+    setDragStartX(offsetX);
+    setDragStartY(offsetY);
 
     window.addEventListener('mouseup', e => {
       onMouseMove.cancel();
@@ -41,8 +45,10 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
 
       setIsDragging(true);
 
-      const diffX = (dragStartX - e.nativeEvent.offsetX);
-      const diffY = (dragStartY - e.nativeEvent.offsetY);
+      const { offsetX, offsetY } = getOffsetCoords(e);
+
+      const diffX = (dragStartX - offsetX);
+      const diffY = (dragStartY - offsetY);
 
       let newX = canvasX + (diffX * sizeUp);
       let newY = canvasY + (diffY * sizeUp);
