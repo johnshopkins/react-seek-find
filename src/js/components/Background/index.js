@@ -23,18 +23,18 @@ export default function Background({ containerHeight, containerWidth, height, im
 
   return (
     <>
-      {isLoading && <LoadingIcon className="loading" style={loadingStyle} />}
+      {isLoading && <LoadingIcon className="loading" style={loadingStyle} tooltip="Loading" />}
       <img
         className="game-background"
         alt="Seek and find"
         src={imageSrc}
         width={scaledWidth}
         height={scaledHeight}
+        style={{ display: isLoading ? 'none' : 'block' }}
         onLoad={() => {
           onReady();
           setIsLoading(false);
         }}
-        style={{ display: isLoading ? 'none' : 'block' }}
       />
     </>
   )
