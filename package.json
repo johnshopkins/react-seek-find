@@ -30,12 +30,14 @@
     "@testing-library/user-event": "^14.5.2",
     "babel-loader": "^9.2.1",
     "babel-plugin-add-module-exports": "^1.0.4",
+    "canvas": "^2.11.2",
     "css-loader": "^7.1.2",
     "eslint": "^8.57.1",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-react-hooks": "^5.0.0",
     "html-webpack-plugin": "^5.6.0",
     "jest": "^29.7.0",
+    "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^25.0.1",
     "lodash.throttle": "^4.1.1",
@@ -58,6 +60,15 @@
     "plugins": [
       "add-module-exports",
       "@babel/plugin-transform-class-properties"
+    ]
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
+      "watch-window-resize(.*)": "<rootDir>/tests/__mocks__/ResizeWatcher.js"
+    },
+    "setupFiles": [
+      "jest-canvas-mock"
     ]
   }
 }
