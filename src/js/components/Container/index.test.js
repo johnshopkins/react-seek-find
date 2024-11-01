@@ -316,12 +316,10 @@ describe('Container', () => {
           const { container } = await renderGame();
 
           const game = container.querySelector('.game');
+          const canvas = container.querySelector('canvas.findable');
 
           // original positioning
           expect(game).toHaveStyle({ left: '0px', top: '0px' });
-
-          // mock mousemove
-          const canvas = container.querySelector('canvas.findable');
 
           // initial placement of canvas, relative to the document
           jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
@@ -340,6 +338,84 @@ describe('Container', () => {
 
           // cursor reverted after mouseup
           expect(game).toHaveStyle({ left: '-128px', top: '-106px' });
+
+        });
+
+        test('Moving the canvas to the edges with a buffer', async () => {
+
+          const { container } = await renderGame();
+
+          const game = container.querySelector('.game');
+          const canvas = container.querySelector('canvas.findable');
+
+          // original positioning
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+
+          // initial placement of canvas, relative to the document
+          jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
+
+          // move into top-left buffer
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 100 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 200, clientY: 200 }));
+          expect(game).toHaveStyle({ left: '60px', top: '60px' });
+          fireEvent(canvas, getMouseEvent('mouseup'));
+
+          // move into bottom-left buffer
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 800 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 200 }));
+          expect(game).toHaveStyle({ left: '60px', top: '-415px' });
+          fireEvent(canvas, getMouseEvent('mouseup'));
+
+          // move into bottom-right buffer
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 800 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 800 }));
+          expect(game).toHaveStyle({ left: '-260px', top: '-415px' });
+          fireEvent(canvas, getMouseEvent('mouseup'));
+
+          // move into top-right buffer
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 100 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 800, clientY: 800 }));
+          expect(game).toHaveStyle({ left: '-260px', top: '60px' });
+          fireEvent(canvas, getMouseEvent('mouseup'));
+
+        });
+
+        test('Moving the canvas to the edges without a buffer', async () => {
+
+          const { container } = await renderGame({ buffer: false });
+
+          const game = container.querySelector('.game');
+          const canvas = container.querySelector('canvas.findable');
+
+          // original positioning
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+
+          // initial placement of canvas, relative to the document
+          jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
+
+          // move into top-left buffer
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 100 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 200, clientY: 200 }));
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+          fireEvent(canvas, getMouseEvent('mouseup'));
+
+          // move into bottom-left buffer
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 800 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 200 }));
+          expect(game).toHaveStyle({ left: '0px', top: '-355px' });
+          fireEvent(canvas, getMouseEvent('mouseup'));
+
+          // move into bottom-right buffer
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 800 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 800 }));
+          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
+          fireEvent(canvas, getMouseEvent('mouseup'));
+
+          // move into top-right buffer
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 100 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 800, clientY: 800 }));
+          expect(game).toHaveStyle({ left: '-200px', top: '0px' });
+          fireEvent(canvas, getMouseEvent('mouseup'));
 
         });
 
