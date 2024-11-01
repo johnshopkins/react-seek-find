@@ -100,7 +100,7 @@ class Game extends Component {
 
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
-    const width = this.container.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
+    const width = this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0);
 
     // 50 pixel buffer on top/bottom of user's screen
     const height = document.documentElement.clientHeight - 100;
