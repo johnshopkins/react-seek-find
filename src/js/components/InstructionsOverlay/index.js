@@ -9,7 +9,7 @@ require('../../lib/modernizr');
 /**
  * The instructions overlay
  */
-export default function InstructionsOverlay({ isAutoOpen, isOpen, onClose, style }) {
+export default function InstructionsOverlay({ isAutoOpen, onClose, style }) {
 
   const overlay = useRef(null);
   const closeButton = useRef(null);
@@ -26,29 +26,21 @@ export default function InstructionsOverlay({ isAutoOpen, isOpen, onClose, style
     onClose();
   }
 
-  const classes = ['overlay-container']
-  if (isOpen) {
-    classes.push('open');
-  }
-
   useEffect(() => {
 
-    if (isOpen) {
-      // scroll it back to the top
-      overlay.current.scroll(0, 0)
-    }
+    overlay.current.scroll(0, 0)
 
-    if (isOpen && !isAutoOpen) {
+    if (!isAutoOpen) {
       // focus the close button
       closeButton.current.focus();
     }
 
-  }, [isAutoOpen, isOpen]);
+  }, [isAutoOpen]);
 
   return (
-    <div className={classes.join(' ')} style={style}>
+    <div className="overlay-container" style={style}>
       <div className="overlay" ref={overlay}>
-        <button className="close" aria-label="Close modal" onClick={close} ref={closeButton}>
+        <button className="close" aria-label="Close instructions" onClick={close} ref={closeButton}>
           <XMarkIcon />
         </button>
         <h1>How to play</h1>

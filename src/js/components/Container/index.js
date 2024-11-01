@@ -299,12 +299,14 @@ class Game extends Component {
 
     return (
       <>
-        <InstructionsOverlay
-          isAutoOpen={!this.state.seenInstructions}
-          isOpen={this.state.openInstructions}
-          onClose={this.closeInstructions}
-          style={containerStyles}
-        />
+        {this.state.openInstructions &&
+          <InstructionsOverlay
+            isAutoOpen={!this.state.seenInstructions}
+            isOpen={this.state.openInstructions}
+            onClose={this.closeInstructions}
+            style={containerStyles}
+          />
+        }
         <div className={['container', this.state.breakpoint].join(' ')} style={containerStyles} aria-hidden={this.state.openInstructions}>
           <div ref={this.em} aria-hidden style={{ position: 'absolute', visibility: 'hidden', width: '1em' }} />
           <Legend

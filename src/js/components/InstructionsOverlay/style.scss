@@ -1,16 +1,12 @@
 @use '../../../css/main' as *;
 
 .overlay-container {
+    align-items: center;
   background: rgb(0, 0, 0, .75);
-  display: none;
+  display: flex;
+  justify-content: center;
   position: absolute;
   z-index: var(--overlay);
-
-  &.open {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
   
   .overlay {
     background: var(--jhu-grayscale-100);
