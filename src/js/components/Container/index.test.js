@@ -60,6 +60,7 @@ const getProps = (override) => {
 };
 
 let GameContainer;
+let user;
 
 beforeAll(() => {
 
@@ -94,6 +95,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   window.dataLayer = [];
+  user = userEvent.setup();
 })
 
 afterEach(() => {
@@ -135,7 +137,7 @@ describe('Container', () => {
       expect(instructionsOverlay).toBeVisible();
 
       // close the overlay
-      await userEvent.click(within(instructionsOverlay).getByRole('button', { name: 'Close instructions' }));
+      await user.click(within(instructionsOverlay).getByRole('button', { name: 'Close instructions' }));
       expect(container.querySelector('.overlay-container')).not.toBeInTheDocument();
 
     });
@@ -154,14 +156,14 @@ describe('Container', () => {
       const { container } = await renderGame();
 
       // click instructions button
-      await userEvent.click(screen.getByRole('button', { name: 'How to play' }));
+      await user.click(screen.getByRole('button', { name: 'How to play' }));
       expect(container.querySelector('.overlay-container')).toBeVisible();
 
       // open is tracked
       expect(window.dataLayer).toEqual([{ event: 'tutorial_begin' }]);
 
       // ready to play button also closes the overlay
-      await userEvent.click(screen.getByRole('button', { name: "I'm ready to play!" }));
+      await user.click(screen.getByRole('button', { name: "I'm ready to play!" }));
       expect(container.querySelector('.overlay-container')).not.toBeInTheDocument();
     });
 
@@ -169,9 +171,9 @@ describe('Container', () => {
 
       const { container } = await renderGame();
 
-      await userEvent.tab();
-      await userEvent.tab();
-      await userEvent.keyboard('{Enter}');
+      await user.tab();
+      await user.tab();
+      await user.keyboard('{Enter}');
 
       expect(container.querySelector('.overlay-container')).toBeVisible();
 
@@ -180,18 +182,18 @@ describe('Container', () => {
 
       expect(closeButton).toHaveFocus();
 
-      await userEvent.tab();
+      await user.tab();
       expect(readyButton).toHaveFocus();
 
       // we don't trap the tab in the overlay
-      await userEvent.tab();
+      await user.tab();
       expect(document.body).toHaveFocus()
 
-      await userEvent.tab();
+      await user.tab();
       expect(closeButton).toHaveFocus();
 
       // close the overlay
-      await userEvent.keyboard('{Enter}');
+      await user.keyboard('{Enter}');
       expect(container.querySelector('.overlay-container')).not.toBeInTheDocument();
 
       // instructions button regains focus
@@ -239,6 +241,7 @@ describe('Container', () => {
 
     test('onGameComplete fires when all objects are found', async () => {
 
+      const dataLayer = []
       const onGameComplete = jest.fn();
 
       const { container } = await renderGame({ onGameComplete });
@@ -514,7 +517,7 @@ describe('Container', () => {
 
       // click play again button
       const playAgainButton = screen.getByRole('button', { name: 'Play again' });
-      await userEvent.click(playAgainButton);
+      await user.click(playAgainButton);
 
       // play again button is hidden
       expect(playAgainButton).not.toBeVisible();
