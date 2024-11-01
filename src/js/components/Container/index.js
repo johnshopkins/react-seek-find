@@ -96,7 +96,16 @@ class Game extends Component {
 
   getViewState() {
 
-    const emToPixel = this.em.current ? this.em.current.clientWidth : 16; // assume 16 to get started before DOM loads
+    let emToPixel;
+
+    // add !== 0 condition to aid in testing
+    if (this.em.current && this.em.current.clientWidth !== 0) {
+      emToPixel = this.em.current.clientWidth;
+    } else {
+      emToPixel = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size').replace('px', ''));
+    }
+
+    // console.log('emToPixel', emToPixel);
 
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);

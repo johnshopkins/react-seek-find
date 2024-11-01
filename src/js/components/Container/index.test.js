@@ -66,6 +66,7 @@ beforeAll(() => {
 
   GameContainer = null;
   document.body.innerHTML = '';
+  document.body.style.fontSize = '16px';
 
   GameContainer = document.createElement('div');
   GameContainer.setAttribute('max-width', '400px');
@@ -113,11 +114,6 @@ const renderGame = async (overrideProps = {}, initialize = ['image']) => {
   if (initialize.includes('image')) {
     fireEvent.load(utils.getByAltText('Seek and find'));
   }
-
-  // this will only be updated when the component updates.
-  // trigger it with a screen resize
-  const em = document.querySelector('.container > div');
-  Object.defineProperty(em, 'clientWidth', { value: 16, writable: true });
 
   return utils;
 }
@@ -319,11 +315,6 @@ describe('Container', () => {
 
           const { container } = await renderGame();
 
-          act(() => {
-            // trigger a screen resize so em container is calculated
-            window.resizeTo(800, 600)
-          });
-
           const game = container.querySelector('.game');
 
           // original positioning
@@ -360,11 +351,6 @@ describe('Container', () => {
 
           const { container } = await renderGame();
 
-          act(() => {
-            // trigger a screen resize so em container is calculated
-            window.resizeTo(800, 600)
-          });
-
           const game = container.querySelector('.game');
 
           // original positioning
@@ -392,11 +378,6 @@ describe('Container', () => {
         test('1-touch scroll does not move the canvas', async () => {
 
           const { container } = await renderGame();
-
-          act(() => {
-            // trigger a screen resize so em container is calculated
-            window.resizeTo(800, 600)
-          });
 
           const game = container.querySelector('.game');
 
