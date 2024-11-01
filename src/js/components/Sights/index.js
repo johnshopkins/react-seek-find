@@ -91,7 +91,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
       }
 
       // pan the background, if necessary
-      onSightsMove(positionX, positionY, iconSize, direction);
+      onSightsMove(newPositionX, newPositionY, iconSize, direction);
     },
     moveSightsTo(x, y) {
       setPositionX(x);

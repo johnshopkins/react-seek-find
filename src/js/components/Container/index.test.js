@@ -51,9 +51,9 @@ const circleObject = new FindableObject(
 
 const getProps = (override) => {
   return {
-    imageWidth: 1600,
-    imageHeight: 1000,
-    image: 'https://picsum.photos/1600/1000',
+    imageWidth: 800,
+    imageHeight: 600,
+    image: 'https://picsum.photos/800/600',
     objects: [boxObject, circleObject],
     ...override
   }
@@ -74,10 +74,10 @@ beforeAll(() => {
 
   Element.prototype.scroll = jest.fn();
 
-  Object.defineProperty(document.documentElement, 'clientHeight', { value: 500, writable: true });
-  Object.defineProperty(document.documentElement, 'clientWidth', { value: 800, writable: true });
+  Object.defineProperty(document.documentElement, 'clientHeight', { value: 400, writable: true });
+  Object.defineProperty(document.documentElement, 'clientWidth', { value: 600, writable: true });
 
-  Object.defineProperty(GameContainer, 'clientWidth', { value: 800, writable: true });
+  Object.defineProperty(GameContainer, 'clientWidth', { value: 600, writable: true });
 
   window.resizeTo = function (width, height) {
 
@@ -426,57 +426,266 @@ describe('Container', () => {
 
       describe('Keyboard', () => {
 
-        // test('Moving canvas within bounds by keyboard navigation', async () => {
+        test('Arrow keys move the canvas the correct amount', async () => {
 
-        //   const { container } = await renderGame();
+          const { container } = await renderGame();
 
-        //   const sights = container.querySelector('.magnifying-glass');
-        //   const canvas = container.querySelector('canvas.findable');
+          const sights = container.querySelector('.magnifying-glass');
+          const canvas = container.querySelector('canvas.findable');
 
-        //   // expect(sights).toHaveAttribute('style', 'display: none; left: 0px; top: 0px; height: 128px; width: 128px;');
-        //   expect(sights).not.toBeVisible();
-        //   // expect(canvas).not.toHaveFocus();
+          expect(sights).not.toBeVisible();
+          expect(canvas).not.toHaveFocus();
 
-        //   // await userEvent.tab();
-        //   // expect(sights).toBeVisible();
-        //   // expect(canvas).toHaveFocus();
+          await user.tab();
+          expect(sights).toBeVisible();
+          expect(canvas).toHaveFocus();
 
-        //   // await userEvent.type(document.activeElement, '{shift}{arrowright}{/shift}');
-        //   // // await userEvent.type(canvas, '{shift}{arrowright}{/shift}');
-        //   // expect(sights).toHaveAttribute('style', 'display: block; left: 20px; top: 0px; height: 128px; width: 128px;');
+          // arrow keys move the canvas 2px in each direction
+          await user.keyboard('{ArrowRight}');
+          expect(sights).toHaveStyle({ left: '2px', top: '0px' });
 
-        //   // await userEvent.type(canvas, '{shift}{arrowright}{/shift}');
-        //   // expect(sights).toHaveAttribute('style', 'display: block; left: 22px; top: 0px; height: 128px; width: 128px;')
+          await user.keyboard('{ArrowDown}');
+          expect(sights).toHaveStyle({ left: '2px', top: '2px' });
 
-        //   // await userEvent.tab();
-        //   // await userEvent.keyboard('{Enter}');
+          await user.keyboard('{ArrowLeft}');
+          expect(sights).toHaveStyle({ left: '0px', top: '2px' });
 
-        //   // expect(container.querySelector('.overlay-container')).toBeVisible();
+          await user.keyboard('{ArrowUp}');
+          expect(sights).toHaveStyle({ left: '0px', top: '0px' });
 
-        //   // const closeButton = getByLabelText('Close instructions');
-        //   // const readyButton = getByText("I'm ready to play!");
+          // shift + arrow keys move the canvas 20px in each direction
+          await user.keyboard('{Shift>}{ArrowRight}{/Shift}');
+          expect(sights).toHaveStyle({ left: '20px', top: '0px' });
 
-        //   // expect(closeButton).toHaveFocus();
+          await user.keyboard('{Shift>}{ArrowDown}{/Shift}');
+          expect(sights).toHaveStyle({ left: '20px', top: '20px' });
 
-        //   // await userEvent.tab();
-        //   // expect(readyButton).toHaveFocus();
+          await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
+          expect(sights).toHaveStyle({ left: '0px', top: '20px' });
 
-        //   // // we don't trab the tab in the overlay
-        //   // await userEvent.tab();
-        //   // expect(document.body).toHaveFocus()
+          await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
+          expect(sights).toHaveStyle({ left: '0px', top: '0px' });
+
+        });
+
+        test('With buffer: when sights reaches the edge of the viewable canvas, it automatically pans', async () => {
+
+          const { container } = await renderGame();
+
+          const game = container.querySelector('.game');
+          const sights = container.querySelector('.magnifying-glass');
+          const canvas = container.querySelector('canvas.findable');
+
+          expect(sights).not.toBeVisible();
+          expect(canvas).not.toHaveFocus();
+
+          await user.tab();
+          expect(sights).toBeVisible();
+          expect(canvas).toHaveFocus();
+
+          // starting point
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
 
 
-        //   // await userEvent.tab();
-        //   // expect(closeButton).toHaveFocus();
+          // left
+          
+          // moves into buffer
+          await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
+          expect(game).toHaveStyle({ left: '60px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '-20px', top: '0px' });
 
-        //   // // close the overlay
-        //   // await userEvent.keyboard('{Enter}');
-        //   // expect(container.querySelector('.overlay-container')).not.toBeInTheDocument();
+          // move sights (+) all the way to the edge of the image
+          // note: image does not move anymore
+          await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
+          expect(game).toHaveStyle({ left: '60px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '-40px', top: '0px' });
 
-        //   // // instructions button regains focus
-        //   // expect(container.querySelector('button.instructions')).toHaveFocus();
+          await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
+          expect(game).toHaveStyle({ left: '60px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '-50px', top: '0px' });
 
-        // });
+          // cannot move any further
+          await user.keyboard('{ArrowLeft}');
+          expect(game).toHaveStyle({ left: '60px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '-50px', top: '0px' });
+
+          
+          // up
+          
+          // moves into buffer
+          await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
+          expect(game).toHaveStyle({ left: '60px', top: '60px' });
+          expect(sights).toHaveStyle({ left: '-50px', top: '-20px' });
+
+          // move sights (+) all the way to the edge of the image
+          // note: image does not move anymore
+          await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
+          expect(game).toHaveStyle({ left: '60px', top: '60px' });
+          expect(sights).toHaveStyle({ left: '-50px', top: '-40px' });
+
+          await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
+          expect(game).toHaveStyle({ left: '60px', top: '60px' });
+          expect(sights).toHaveStyle({ left: '-50px', top: '-50px' });
+
+          // cannot move any further
+          await user.keyboard('{ArrowUp}');
+          expect(game).toHaveStyle({ left: '60px', top: '60px' });
+          expect(sights).toHaveStyle({ left: '-50px', top: '-50px' });
+
+
+          // right
+          
+          // canvas will move when the right edge of the sights (128px wide)
+          // reaches 540 on the x-axis. the calculation:
+          // this.props.containerWidth - threshold <= this.state.canvasX + x + size
+          // current values: 600 - 60 <= 60 + (-50) + 128 ---> 540 <= 138
+          // 402 pixels to travel ---> 20 Shift+ArrowRight + 1 ArrowRight
+
+          await user.keyboard('{Shift>}{ArrowRight>20/}{/Shift}');
+          expect(game).toHaveStyle({ left: '60px', top: '60px' }); // canvas hasn't moved yet
+          expect(sights).toHaveStyle({ left: '350px', top: '-50px' });
+
+          // NOW it moves
+          await user.keyboard('{ArrowRight}');
+          expect(game).toHaveStyle({ left: '-60px', top: '60px' });
+          expect(sights).toHaveStyle({ left: '352px', top: '-50px' });
+
+          // when does it move again?
+          // current values: 540 <= 420
+          // 120 pixels to travel ---> 6 Shift+ArrowRight
+          await user.keyboard('{Shift>}{ArrowRight>6/}{/Shift}');
+          expect(game).toHaveStyle({ left: '-180px', top: '60px' });
+          expect(sights).toHaveStyle({ left: '472px', top: '-50px' });
+
+          // move all the way to the right
+          // 750 is the farthest the sights can go, so 278 more pixels
+          await user.keyboard('{Shift>}{ArrowRight>13/}{/Shift}');
+          await user.keyboard('{ArrowRight>9/}');
+          expect(game).toHaveStyle({ left: '-260px', top: '60px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '-50px' });
+
+          // can't move anymore
+          await user.keyboard('{ArrowRight}');
+          expect(game).toHaveStyle({ left: '-260px', top: '60px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '-50px' });
+
+
+          // down
+          
+          // canvas will move when the bottom edge of the sights (128px tall)
+          // reaches 360 on the y-axis. the calculation:
+          // this.props.containerHeight - threshold <= this.state.canvasY + y + size
+          // current values: 245 - 60 <= 60 + (-50) + 128 ---> 186 <= 138
+          // 48 pixels to travel ---> 2 Shift+ArrowDown + 4 ArrowDown
+
+          await user.keyboard('{Shift>}{ArrowDown>2/}{/Shift}');
+          expect(game).toHaveStyle({ left: '-260px', top: '60px' }); // canvas hasn't moved yet
+          expect(sights).toHaveStyle({ left: '750px', top: '-10px' });
+
+          // NOW it moves
+          await user.keyboard('{ArrowDown>4/}');
+          expect(game).toHaveStyle({ left: '-260px', top: '-60px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '-2px' });
+
+          // when does it move again?
+          // current values: 185 <= 66
+          // 119 pixels to travel ---> 6 Shift+ArrowRight + 10 ArrowRight
+          await user.keyboard('{Shift>}{ArrowDown>5/}{/Shift}');
+          await user.keyboard('{ArrowDown>10/}');
+          expect(game).toHaveStyle({ left: '-260px', top: '-180px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '118px' });
+
+          // move all the way to the bottom
+          // 550 is the farthest the sights can go, so 432 more pixels
+          await user.keyboard('{Shift>}{ArrowDown>21/}{/Shift}');
+          await user.keyboard('{ArrowDown>6/}');
+          expect(game).toHaveStyle({ left: '-260px', top: '-415px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '550px' });
+
+          // can't move anymore
+          await user.keyboard('{ArrowDown}');
+          expect(game).toHaveStyle({ left: '-260px', top: '-415px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '550px' });
+
+        });
+
+        test('Without buffer: when sights reaches the edge of the viewable canvas, it automatically pans', async () => {
+
+          const { container } = await renderGame({ buffer: false });
+
+          const game = container.querySelector('.game');
+          const sights = container.querySelector('.magnifying-glass');
+          const canvas = container.querySelector('canvas.findable');
+
+          expect(sights).not.toBeVisible();
+          expect(canvas).not.toHaveFocus();
+
+          await user.tab();
+          expect(sights).toBeVisible();
+          expect(canvas).toHaveFocus();
+
+          // starting point
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+
+
+          // left
+          
+          // canvas cannot move left, but sights can (so the + can reach the edge)
+          await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '-20px', top: '0px' });
+
+          await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '-40px', top: '0px' });
+
+          await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '-50px', top: '0px' });
+
+          
+          // up
+          
+          // canvas cannot move up, but sights can (so the + can reach the edge)
+          await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '-50px', top: '-20px' });
+
+          await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '-50px', top: '-40px' });
+
+          await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '-50px', top: '-50px' });
+
+
+          // right
+          // move all the way to the right
+
+          await user.keyboard('{Shift>}{ArrowRight>40/}{/Shift}');
+          expect(game).toHaveStyle({ left: '-200px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '-50px' });
+
+          // cannot move anymore
+          await user.keyboard('{ArrowRight}');
+          expect(game).toHaveStyle({ left: '-200px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '-50px' });
+
+
+          // down
+          // move all the way to the bottom
+
+          await user.keyboard('{Shift>}{ArrowDown>30/}{/Shift}');
+          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '550px' });
+
+          // cannot move anymore
+          await user.keyboard('{ArrowDown>}');
+          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '550px' });
+
+        });
 
       });
 
