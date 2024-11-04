@@ -11,6 +11,10 @@ module.exports = {
     // libraryTarget: 'commonjs2',
   },
   devServer: {
+    devServer: {
+      host: '0.0.0.0',
+      port: 8080,
+    },
     static: {
       directory: path.join(__dirname, 'example'),
     }

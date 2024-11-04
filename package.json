@@ -6,7 +6,7 @@
     "test": "jest",
     "coverage": "jest --coverage",
     "build": "webpack build",
-    "dev": "webpack serve --config ./webpack.dev.js --host 0.0.0.0",
+    "dev": "webpack serve --config ./webpack.dev.js",
     "stats": "webpack --json > stats.json",
     "watch": "webpack watch"
   },
