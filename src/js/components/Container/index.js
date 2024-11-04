@@ -109,9 +109,8 @@ class Game extends Component {
     const styles = window.getComputedStyle(this.container);
     const width = this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0);
 
-    // 50 pixel buffer on top/bottom of user's screen
-    const height = document.documentElement.clientHeight - 100;
-
+    const height = document.documentElement.clientHeight;
+    
     // base breakpoint on the width of the container, not the user's screen
     const breakpoint = this.getBreakpoint(width);
 
@@ -124,15 +123,8 @@ class Game extends Component {
     const maxZoomOutHeight = (height >= this.props.imageHeight ? 1 : height / this.props.imageHeight) * 100;
     const maxZoomOut = Math.max(maxZoomOutWidth, maxZoomOutHeight);
 
-    // round to nearest 10 and add 20 so the zoom isn't too close to the max zoom out
-    let scale = (Math.ceil(maxZoomOut / 10) * 10) + 20;
-
-    // don't show the imag TOO small on first load
-    if (scale < 60) {
-      scale = 60;
-    } else if (scale > 100) {
-      scale = 100;
-    }
+    // set scale to the max zoom out, unless an override was passed
+    let scale = maxZoomOut;
 
     return {
       breakpoint,
