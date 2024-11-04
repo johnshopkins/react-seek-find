@@ -52,9 +52,10 @@ const circleObject = new FindableObject(
 const getProps = (override) => {
   return {
     imageWidth: 800,
-    imageHeight: 600,
-    image: 'https://picsum.photos/800/600',
+    imageHeight: 700,
+    image: 'https://picsum.photos/800/700',
     objects: [boxObject, circleObject],
+    test: true,
     ...override
   }
 };
@@ -632,37 +633,37 @@ describe('Container', () => {
           // canvas will move when the bottom edge of the sights (128px tall)
           // reaches 360 on the y-axis. the calculation:
           // this.props.containerHeight - threshold <= this.state.canvasY + y + size
-          // current values: 245 - 60 <= 60 + (-50) + 128 ---> 186 <= 138
-          // 48 pixels to travel ---> 2 Shift+ArrowDown + 4 ArrowDown
+          // current values: 345 - 60 <= 60 + (-50) + 128 ---> 285 <= 138
+          // 147 pixels to travel ---> 7 Shift+ArrowDown + 4 ArrowDown
 
-          await user.keyboard('{Shift>}{ArrowDown>2/}{/Shift}');
+          await user.keyboard('{Shift>}{ArrowDown>7/}{/Shift}');
           expect(game).toHaveStyle({ left: '-260px', top: '60px' }); // canvas hasn't moved yet
-          expect(sights).toHaveStyle({ left: '750px', top: '-10px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '90px' });
 
           // NOW it moves
           await user.keyboard('{ArrowDown>4/}');
           expect(game).toHaveStyle({ left: '-260px', top: '-60px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '-2px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '98px' });
 
           // when does it move again?
-          // current values: 185 <= 66
-          // 119 pixels to travel ---> 6 Shift+ArrowRight + 10 ArrowRight
-          await user.keyboard('{Shift>}{ArrowDown>5/}{/Shift}');
-          await user.keyboard('{ArrowDown>10/}');
-          expect(game).toHaveStyle({ left: '-260px', top: '-180px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '118px' });
+          // current values: 345 - 60 <= -60 + 118 + 128 ---> 285 <= 186
+          // 99 pixels to travel ---> 4 Shift+ArrowDown + 9 ArrowDown
+          await user.keyboard('{Shift>}{ArrowDown>4/}{/Shift}');
+          await user.keyboard('{ArrowDown>9/}');
+          expect(game).toHaveStyle({ left: '-260px', top: '-60px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '196px' });
 
           // move all the way to the bottom
-          // 550 is the farthest the sights can go, so 432 more pixels
-          await user.keyboard('{Shift>}{ArrowDown>21/}{/Shift}');
-          await user.keyboard('{ArrowDown>6/}');
+          // 650 is the farthest the sights can go, so 454 more pixels
+          await user.keyboard('{Shift>}{ArrowDown>22/}{/Shift}');
+          await user.keyboard('{ArrowDown>7/}');
           expect(game).toHaveStyle({ left: '-260px', top: '-415px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '550px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
           // can't move anymore
           await user.keyboard('{ArrowDown}');
           expect(game).toHaveStyle({ left: '-260px', top: '-415px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '550px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
         });
 
@@ -733,14 +734,14 @@ describe('Container', () => {
           // down
           // move all the way to the bottom
 
-          await user.keyboard('{Shift>}{ArrowDown>30/}{/Shift}');
+          await user.keyboard('{Shift>}{ArrowDown>35/}{/Shift}');
           expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '550px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
           // cannot move anymore
           await user.keyboard('{ArrowDown>}');
           expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '550px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
         });
 

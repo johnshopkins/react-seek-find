@@ -126,6 +126,10 @@ class Game extends Component {
     // set scale to the max zoom out, unless an override was passed
     let scale = maxZoomOut;
 
+    if (this.props.test) {
+      scale = 100;
+    }
+
     return {
       breakpoint,
       emToPixel,
