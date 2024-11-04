@@ -18,4 +18,13 @@ root.render(
     objects={[Beanie, Football]}
     onGameComplete={() => console.log('hooray!')}
   />
+  // <Game
+  //   buffer={true}
+  //   container={elem} // image should always be wider than this element
+  //   image={'https://picsum.photos/800/700'}
+  //   imageHeight={700}
+  //   imageWidth={800}
+  //   onGameComplete={() => console.log('hooray!')}
+  //   initialScale={100}
+  // />
 );
