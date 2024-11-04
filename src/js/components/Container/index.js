@@ -105,8 +105,6 @@ class Game extends Component {
       emToPixel = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size').replace('px', ''));
     }
 
-    // console.log('emToPixel', emToPixel);
-
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
     const width = this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0);

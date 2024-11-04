@@ -312,7 +312,6 @@ class Illustration extends Component {
     // do not limit this event to 2-touch events because an event
     // can go from 1-touch to 2-touch without triggering touchstart again
 
-    // touch events do not give offset relative to target element,
     const { offsetX, offsetY } = getOffsetCoords(e, true);
 
     this.setState({
@@ -482,8 +481,6 @@ class Illustration extends Component {
   }
 
   render() {
-
-    console.log('illustration render');
 
     const containerStyles = {
       height: `${this.props.containerHeight}px`,
