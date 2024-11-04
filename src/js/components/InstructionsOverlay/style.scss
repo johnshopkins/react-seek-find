@@ -1,7 +1,7 @@
 @use '../../../css/main' as *;
 
 .overlay-container {
-    align-items: center;
+  align-items: center;
   background: rgb(0, 0, 0, .75);
   display: flex;
   justify-content: center;
@@ -21,15 +21,61 @@
     z-index: calc(var(--overlay) + 1);
   }
 
-  .close {
-    float: right;
-    @include round_button;
-    &:hover {
-      cursor: pointer;
+  .header {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+
+    h1 {
+      margin: 0;
+    }
+
+    .close {
+      @include round_button;
+      margin-left: auto;
+      order: 2;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 
-  .ready {
-    @include button;
+  .content {
+
+  }
+
+  .footer {
+    .ready {
+      @include button;
+    }
+  }
+
+  &.small,
+  &.medium {
+    .overlay {
+      padding: 0.25em;
+
+      h1 {
+        font-size: 1.5em;
+      }
+
+      h2 {
+        font-size: 1.25em;
+      }
+
+      h3 {
+        font-size: 1em;
+      }
+
+      ul {
+        font-size: 0.85em;
+        padding-left: 1em;
+      };
+    }
+  }
+
+  &.medium {
+    
   }
 }

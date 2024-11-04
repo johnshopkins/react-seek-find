@@ -310,6 +310,7 @@ class Game extends Component {
       <>
         {this.state.openInstructions &&
           <InstructionsOverlay
+            breakpoint={this.state.breakpoint}
             isAutoOpen={!this.state.seenInstructions}
             isOpen={this.state.openInstructions}
             onClose={this.closeInstructions}
