@@ -120,7 +120,7 @@ class Game extends Component {
     const illustrationContainerWidth = width;
 
     const maxZoomOutWidth = (width >= this.props.imageWidth ? 1 : width / this.props.imageWidth) * 100;
-    const maxZoomOutHeight = (height >= this.props.imageHeight ? 1 : height / this.props.imageHeight) * 100;
+    const maxZoomOutHeight = (illustrationContainerHeight >= this.props.imageHeight ? 1 : illustrationContainerHeight / this.props.imageHeight) * 100;
     const maxZoomOut = Math.max(maxZoomOutWidth, maxZoomOutHeight);
 
     // set scale to the max zoom out, unless an override was passed
