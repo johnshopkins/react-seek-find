@@ -503,14 +503,6 @@ describe('Container', () => {
 
         });
 
-        test('Moving the canvas to the edges with a buffer', () => {
-
-        });
-
-        test('Moving the canvas to the edges without a buffer', () => {
-
-        });
-
       });
 
       describe('Keyboard', () => {
@@ -784,6 +776,80 @@ describe('Container', () => {
 
     });
 
+    test('Zooming', async () => {
+
+      const { container } = await renderGame({ objects: [boxObject] });
+
+      const game = container.querySelector('.game');
+      const image = screen.getByAltText('Seek and find');
+
+      const canvas = container.querySelector('canvas.findable');
+
+      // initial placement of canvas, relative to the document
+      jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
+
+      const zoomInButton = screen.getByRole('button', { name: 'Zoom in' });
+      const zoomOutButton = screen.getByRole('button', { name: 'Zoom out' });
+
+      expect(zoomInButton).toBeDisabled();
+      expect(zoomOutButton).not.toBeDisabled();
+
+      // starting point
+      expect(game).toHaveStyle({ height: '700px', left: '0px', top: '0px', width: '800px' });
+      expect(image).toHaveAttribute('height', '700');
+      expect(image).toHaveAttribute('width', '800');
+
+      // move into the center of the canvas
+      fireEvent(canvas, getMouseEvent('mousedown', { clientX: 423, clientY: 339 }));
+      fireEvent(canvas, getMouseEvent('mousemove', { clientX: 323, clientY: 189 }));
+      expect(game).toHaveStyle({ height: '700px', left: '-100px', top: '-150px', width: '800px' });
+
+      // zoom out to 90%
+      await user.click(zoomOutButton);
+      expect(game).toHaveStyle({ height: '700px', left: '-60px', top: '-117.75px', width: '800px' });
+      expect(image).toHaveAttribute('height', '630');
+      expect(image).toHaveAttribute('width', '720');
+
+      expect(zoomInButton).not.toBeDisabled();
+
+      // zoom out to 80%
+      await user.click(zoomOutButton);
+      expect(game).toHaveStyle({ height: '700px', left: '-20px', top: '-85.5px', width: '800px' });
+      expect(image).toHaveAttribute('height', '560');
+      expect(image).toHaveAttribute('width', '640');
+
+      // zoom out to 75% (max zoom out)
+      await user.click(zoomOutButton);
+      expect(game).toHaveStyle({ height: '700px', left: '0px', top: '-69.375px', width: '800px' });
+      expect(image).toHaveAttribute('height', '525');
+      expect(image).toHaveAttribute('width', '600');
+
+      expect(zoomInButton).not.toBeDisabled();
+      expect(zoomOutButton).toBeDisabled();
+
+      // zoom back in to 80%
+      await user.click(zoomInButton);
+      expect(game).toHaveStyle({ height: '700px', left: '-20px', top: '-85.5px', width: '800px' });
+      expect(image).toHaveAttribute('height', '560');
+      expect(image).toHaveAttribute('width', '640');
+
+      // zoom back in to 90%
+      await user.click(zoomInButton);
+      expect(game).toHaveStyle({ height: '700px', left: '-60px', top: '-117.75px', width: '800px' });
+      expect(image).toHaveAttribute('height', '630');
+      expect(image).toHaveAttribute('width', '720');
+
+      // zoom back in to 100%
+      await user.click(zoomInButton);
+      expect(game).toHaveStyle({ height: '700px', left: '-100px', top: '-150px', width: '800px' });
+      expect(image).toHaveAttribute('height', '700');
+      expect(image).toHaveAttribute('width', '800');
+
+      expect(zoomInButton).toBeDisabled();
+      expect(zoomOutButton).not.toBeDisabled();
+
+    });
+
     test('Hint', async () => {
 
       const { container } = await renderGame({ objects: [boxObject] });
@@ -849,22 +915,6 @@ describe('Container', () => {
       const legendImages = await within(legend).findAllByRole('img');
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: not found');
-
-    });
-
-    test('Zoom in', async () => {
-
-    });
-
-    test('Zoom out', async () => {
-
-    });
-
-    describe('Keyboard navigation', () => {
-
-    });
-
-    describe('Touch navigation', () => {
 
     });
 

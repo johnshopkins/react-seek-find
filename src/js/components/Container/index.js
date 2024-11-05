@@ -94,6 +94,10 @@ class Game extends Component {
     return Math.floor(num / 10) * 10;
   }
 
+  roundUp(num) {
+    return Math.ceil(num / 10) * 10;
+  }
+
   getComputedPixelValue(styles, key) {
     return parseInt(styles[key].replace('px', ''));
   }
@@ -234,7 +238,14 @@ class Game extends Component {
   }
   
   zoomIn(callback = () => {}) {
-    this.zoomTo(this.round(this.state.scale + 10), callback);
+
+    const newZoom = !this.state.zoomOutLimitReached ?
+      // go up to the next 10
+      this.round(this.state.scale + 10) :
+      // round the current scale up to the nearest 10
+      this.roundUp(this.state.scale);
+
+    this.zoomTo(newZoom, callback);
   }
 
   zoomOut(callback = () => {}) {
@@ -249,12 +260,14 @@ class Game extends Component {
     if (value >= 100) {
       newState = {
         scale: 100,
-        zoomInLimitReached: true
+        zoomInLimitReached: true,
+        zoomOutLimitReached: false,
       };
       limitReached = true;
     } else if (value < this.state.maxZoomOut) {
       newState = {
         scale: this.state.maxZoomOut,
+        zoomInLimitReached: false,
         zoomOutLimitReached: true,
       }
       limitReached = true;
