@@ -94,16 +94,16 @@ class Game extends Component {
     return Math.floor(num / 10) * 10;
   }
 
+  getComputedPixelValue(styles, key) {
+    return parseInt(styles[key].replace('px', ''));
+  }
+
   getViewState() {
 
-    let emToPixel;
-
     // add !== 0 condition to aid in testing
-    if (this.em.current && this.em.current.clientWidth !== 0) {
-      emToPixel = this.em.current.clientWidth;
-    } else {
-      emToPixel = parseInt(window.getComputedStyle(document.body).getPropertyValue('font-size').replace('px', ''));
-    }
+    const emToPixel = this.em.current && this.em.current.clientWidth !== 0 ?
+      this.em.current.clientWidth :
+      this.getComputedPixelValue(window.getComputedStyle(document.body), 'font-size');
 
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
