@@ -287,11 +287,13 @@ class Game extends Component {
     const containerHeight = this.state.illustrationContainerHeight;
     const containerWidth = this.state.illustrationContainerWidth;
 
-    const scaledHeight = height * this.state.scale;
-    const scaledWidth = width * this.state.scale;
+    const scale = this.state.scale / 100;
 
-    const zoomOutHeight = (containerHeight >= scaledHeight + buffer ? 1 : containerHeight / (scaledHeight  + buffer)) * 100;
-    const zoomOutWidth = (containerWidth >= scaledWidth + buffer ? 1 : containerWidth / (scaledWidth + buffer)) * 100;
+    const scaledHeight = (height + buffer) * scale;
+    const scaledWidth = (width + buffer) * scale;
+
+    const zoomOutHeight = containerHeight >= scaledHeight ? this.state.scale : (containerHeight / scaledHeight) * this.state.scale;
+    const zoomOutWidth = containerWidth >= scaledWidth ? this.state.scale : (containerWidth / scaledWidth) * this.state.scale;
 
     const newZoom = this.roundDown(Math.min(zoomOutHeight, zoomOutWidth));
 
