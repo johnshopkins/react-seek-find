@@ -424,6 +424,23 @@ describe('Container', () => {
 
         test('Moving the canvas via the minimap', async () => {
 
+          const { container } = await renderGame();
+
+          const game = container.querySelector('.game');
+          const minimap = container.querySelector('.mini-map');
+          const grabbable = container.querySelector('.mini-map .shown');
+
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+          expect(minimap).toHaveStyle({ height: '43.75px', width: '50px' });
+          expect(grabbable).toHaveStyle({ height: '21.5625px', left: '-2px', top: '-2px', width: '37.5px' });
+
+          // move the minimap
+          fireEvent(grabbable, getMouseEvent('mousedown', { clientX: 730, clientY: 85 }));
+          fireEvent(grabbable, getMouseEvent('mousemove', { clientX: 737, clientY: 93 }));
+
+          expect(game).toHaveStyle({ left: '-112px', top: '-128px' });
+          expect(grabbable).toHaveStyle({ height: '21.5625px', left: '5px', top: '6px', width: '37.5px' });
+
         });
 
       });
