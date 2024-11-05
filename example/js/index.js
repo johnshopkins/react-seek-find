@@ -5,6 +5,9 @@ import image from '../images/background.png';
 import Beanie from './objects/Beanie';
 import Football from './objects/Football';
 
+import Box from './objects/Box';
+import Circle from './objects/Circle';
+
 const elem = document.getElementById('root');
 const root = createRoot(elem);
 
@@ -24,6 +27,10 @@ root.render(
   //   image={'https://picsum.photos/800/700'}
   //   imageHeight={700}
   //   imageWidth={800}
+  //   objects={[
+  //     Box,
+  //     // Circle
+  //   ]}
   //   onGameComplete={() => console.log('hooray!')}
   //   initialScale={100}
   // />
