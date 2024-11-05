@@ -33,5 +33,6 @@ root.render(
   //   ]}
   //   onGameComplete={() => console.log('hooray!')}
   //   initialScale={100}
+  //   test={true}
   // />
 );
