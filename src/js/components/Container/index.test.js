@@ -364,13 +364,13 @@ describe('Container', () => {
           // move into bottom-left buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 800 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 200 }));
-          expect(game).toHaveStyle({ left: '66px', top: '-421px' });
+          expect(game).toHaveStyle({ left: '66px', top: '-441px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // move into bottom-right buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 800 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 800 }));
-          expect(game).toHaveStyle({ left: '-266px', top: '-421px' });
+          expect(game).toHaveStyle({ left: '-266px', top: '-441px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // move into top-right buffer
@@ -403,13 +403,13 @@ describe('Container', () => {
           // move into bottom-left buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 800 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 200 }));
-          expect(game).toHaveStyle({ left: '0px', top: '-355px' });
+          expect(game).toHaveStyle({ left: '0px', top: '-375px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // move into bottom-right buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 800 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 800 }));
-          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
+          expect(game).toHaveStyle({ left: '-200px', top: '-375px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // move into top-right buffer
@@ -644,36 +644,37 @@ describe('Container', () => {
           
           // the calculation:
           // this.props.containerHeight - threshold <= this.state.canvasY + y + size
-          // current values: 345 - 66 <= 66 + (-50) + 128 ---> 279 <= 144
-          // 135 pixels to travel ---> 6 Shift+ArrowDown + 8 ArrowDown
+          // current values: 325 - 66 <= 66 + (-50) + 128 ---> 259 <= 144
+          // 115 pixels to travel ---> 5 Shift+ArrowDown + 8 ArrowDown
 
-          await user.keyboard('{Shift>}{ArrowDown>6/}{/Shift}');
+          await user.keyboard('{Shift>}{ArrowDown>5/}{/Shift}');
           expect(game).toHaveStyle({ left: '-266px', top: '66px' }); // canvas hasn't moved yet
-          expect(sights).toHaveStyle({ left: '750px', top: '70px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '50px' });
 
           // NOW it moves
           await user.keyboard('{ArrowDown>8/}');
           expect(game).toHaveStyle({ left: '-266px', top: '-54px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '86px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '66px' });
 
           // when does it move again?
-          // current values: 345 - 66 <= (-54) + 86 + 128 ---> 279 <= 160
-          // 119 pixels to travel ---> 5 Shift+ArrowDown + 9 ArrowDown
-          await user.keyboard('{Shift>}{ArrowDown>5/}{/Shift}');
-          await user.keyboard('{ArrowDown>10/}');
+          // current values: 345 - 66 <= (-54) + 66 + 128 ---> 279 <= 140
+          // 139 pixels to travel ---> 6 Shift+ArrowDown + 9 ArrowDown
+
+          await user.keyboard('{Shift>}{ArrowDown>6/}{/Shift}');
+          await user.keyboard('{ArrowDown>9/}');
           expect(game).toHaveStyle({ left: '-266px', top: '-174px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '206px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '204px' });
 
           // move all the way to the bottom
-          // 650 is the farthest the sights can go, so 447 more pixels
+          // 650 is the farthest the sights can go, so 446 more pixels
           await user.keyboard('{Shift>}{ArrowDown>22/}{/Shift}');
-          await user.keyboard('{ArrowDown>4/}');
-          expect(game).toHaveStyle({ left: '-266px', top: '-421px' });
+          await user.keyboard('{ArrowDown>3/}');
+          expect(game).toHaveStyle({ left: '-266px', top: '-441px' });
           expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
           // can't move anymore
           await user.keyboard('{ArrowDown}');
-          expect(game).toHaveStyle({ left: '-266px', top: '-421px' });
+          expect(game).toHaveStyle({ left: '-266px', top: '-441px' });
           expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
         });
@@ -746,12 +747,12 @@ describe('Container', () => {
           // move all the way to the bottom
 
           await user.keyboard('{Shift>}{ArrowDown>35/}{/Shift}');
-          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
+          expect(game).toHaveStyle({ left: '-200px', top: '-375px' });
           expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
           // cannot move anymore
           await user.keyboard('{ArrowDown>}');
-          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
+          expect(game).toHaveStyle({ left: '-200px', top: '-375px' });
           expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
         });

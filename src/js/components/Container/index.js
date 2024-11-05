@@ -109,7 +109,8 @@ class Game extends Component {
     const styles = window.getComputedStyle(this.container);
     const width = this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0);
 
-    const height = document.documentElement.clientHeight;
+    // small buffer around the game
+    const height = document.documentElement.clientHeight - 20;
     
     // base breakpoint on the width of the container, not the user's screen
     const breakpoint = this.getBreakpoint(width);
