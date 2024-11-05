@@ -19,16 +19,17 @@ const boxObject = new FindableObject(
   'https://picsum.photos/143/143',
   () => {
     const path = new Path2D();
-    path.moveTo(236.0, 236.0);
-    path.lineTo(64.0, 236.0);
-    path.lineTo(64.0, 64.0);
-    path.lineTo(236.0, 64.0);
-    path.lineTo(236.0, 236.0);
+    path.moveTo(400.0, 400.0);
+    path.lineTo(300.0, 400.0);
+    path.lineTo(300.0, 300.0);
+    path.lineTo(400.0, 300.0);
+    path.lineTo(400.0, 400.0);
     path.closePath()
     path.name = 'box'; // for mocking mockImplementation
     return path;
   },
-  { x: 10, y: 10 }
+  { x: 250, y: 250 },
+  200
 );
 
 const circleObject = new FindableObject(
@@ -46,7 +47,8 @@ const circleObject = new FindableObject(
     path.name = 'circle'; // for mocking mockImplementation
     return path;
   },
-  { x: 10, y: 10 }
+  { x: 10, y: 10 },
+  200
 );
 
 const getProps = (override) => {
@@ -287,8 +289,8 @@ describe('Container', () => {
 
       // mock a click on box
       context.isPointInPath.mockImplementation(path => path.name === 'box');
-      fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 100 }, true));
-      fireEvent(canvas, getMouseEvent('mouseup', { clientX: 100, clientY: 100 }));
+      fireEvent(canvas, getMouseEvent('mousedown', { clientX: 350, clientY: 350 }, true));
+      fireEvent(canvas, getMouseEvent('mouseup', { clientX: 350, clientY: 350 }));
 
       // object found
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: found');
