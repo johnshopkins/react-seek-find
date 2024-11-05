@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
-import React, { act } from 'react';
+import React from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 
-import Game from './index';
-import FindableObject from '../../objects/FindableObject';
-import getMouseEvent from '../../../../tests/helpers/getMouseEvent';
-import getTouchEvent from '../../../../tests/helpers/getTouchEvent';
-import { saveGameState } from '../../lib/persistance';
+import { Game } from '../../src/js/main';
+import { FindableObject } from '../../src/js/main';
+import getMouseEvent from '../helpers/getMouseEvent';
+import getTouchEvent from '../helpers/getTouchEvent';
+import { saveGameState } from '../../src/js/lib/persistance';
 
 const boxObject = new FindableObject(
   'box',
