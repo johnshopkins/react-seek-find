@@ -7,13 +7,13 @@ class FindableObject {
    * @param {*} createFunction Function that creates the path
    * @param {*} hintCoords     Top-left coordinate of hint area { x: 123, y: 123 }
    */
-  constructor(id, alt_text, thumbnail, createFunction = () => {}, hintCoords = {}) {
+  constructor(id, alt_text, thumbnail, createFunction = () => {}, hintCoords = {}, hintSize = 746) {
     this.id = id;
     this.alt_text = alt_text;
     this.thumbnail = thumbnail;
     this.createFunction = createFunction;
     this.hintCoords = hintCoords;
-    this.hintSize = 746;
+    this.hintSize = hintSize;
 
     this.create = this.create.bind(this);
     this.hint = this.hint.bind(this);
