@@ -29,7 +29,7 @@ const boxObject = new FindableObject(
     return path;
   },
   { x: 250, y: 250 },
-  200
+  425
 );
 
 const circleObject = new FindableObject(
@@ -768,6 +768,26 @@ describe('Container', () => {
     });
 
     test('Hint', async () => {
+
+      const { container } = await renderGame({ objects: [boxObject] });
+
+      const game = container.querySelector('.game');
+      const image = screen.getByAltText('Seek and find');
+
+      // starting point
+      expect(game).toHaveStyle({ height: '700px', left: '0px', top: '0px', width: '800px' });
+      expect(image).toHaveAttribute('height', '700');
+      expect(image).toHaveAttribute('width', '800');
+
+      const hintButton = screen.getByRole('button', { name: 'Give me a hint' });
+      await user.click(hintButton);
+      
+      // canvas moves to the hint
+      expect(game).toHaveStyle({ height: '700px', left: '-46.875px', top: '-174.375px', width: '800px' });
+
+      // image resizes
+      expect(image).toHaveAttribute('height', '525');
+      expect(image).toHaveAttribute('width', '600');
 
     });
 
