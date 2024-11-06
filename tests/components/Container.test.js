@@ -3,9 +3,9 @@
  */
 
 import React from 'react';
-import { fireEvent, render, screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event'
-import '@testing-library/jest-dom'
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 
 import { Game } from '../../src/js/main';
 import { FindableObject } from '../../src/js/main';
@@ -783,7 +783,36 @@ describe('Container', () => {
 
     });
 
-    describe('Scaling and sizing', () => {
+    test('Scaling and sizing', async () => {
+
+      const { container } = await renderGame({
+        containerHeight: null,
+        containerWidth: null
+      });
+
+      const outerContainer = container.querySelector('.container');
+      const gameContainer = container.querySelector('.game-container')
+      const game = container.querySelector('.game');
+      const canvas = container.querySelector('canvas.findable');
+
+      expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
+      expect(gameContainer).toHaveStyle({ height: '325px', width: '600px' });
+
+      // initial position
+      expect(game).toHaveStyle({ height: '700px', left: '0px', top: '0px', width: '800px' });
+
+      // move into the center of the canvas
+      fireEvent(canvas, getMouseEvent('mousedown', { clientX: 423, clientY: 339 }));
+      fireEvent(canvas, getMouseEvent('mousemove', { clientX: 323, clientY: 189 }));
+      expect(game).toHaveStyle({ height: '700px', left: '-100px', top: '-150px', width: '800px' });
+
+      act(() => {
+        window.resizeTo(500, 300);
+      });
+
+      expect(outerContainer).toHaveStyle({ height: '280px', width: '500px' });
+      expect(gameContainer).toHaveStyle({ height: '225px', width: '500px' });
+      expect(game).toHaveStyle({ height: '700px', left: '-150px', top: '-200px', width: '800px' });
 
     });
 
