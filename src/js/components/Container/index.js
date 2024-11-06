@@ -335,10 +335,6 @@ class Game extends Component {
           />
         }
         <div className={['container', this.state.breakpoint].join(' ')} style={containerStyles} aria-hidden={this.state.openInstructions}>
-          <Legend
-            found={this.state.found}
-            objects={Object.values(this.objects)}
-          />
           <Illustration
             buffer={this.props.buffer}
             containerHeight={this.state.illustrationContainerHeight}
@@ -361,6 +357,10 @@ class Game extends Component {
             zoomOut={this.zoomOut}
             zoomInLimitReached={this.state.zoomInLimitReached}
             zoomOutLimitReached={this.state.zoomOutLimitReached}
+          />
+          <Legend
+            found={this.state.found}
+            objects={Object.values(this.objects)}
           />
         </div>
       </>
