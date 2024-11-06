@@ -1,3 +1,4 @@
+/*global dataLayer*/
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 
 import MagnifyingGlassIcon from '../Icons/MagnifyingGlass';
@@ -41,6 +42,11 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
       let direction;
 
       if (e.key === ' ') {
+
+        dataLayer.push({
+          event: 'keyboard_interaction',
+          type: 'guess_submitted',
+        });
 
         checkGuess(positionX + iconOffsetLeft, positionY + iconOffsetTop);
 
