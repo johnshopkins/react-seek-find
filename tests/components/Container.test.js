@@ -257,7 +257,10 @@ describe('Container', () => {
 
       // legend images show a status of not found
       const legend = container.querySelector('.legend');
+      const legendImageContainers = container.querySelectorAll('.legend .thumbnail');
       const legendImages = await within(legend).findAllByRole('img');
+      expect(within(legendImageContainers[0]).queryByTitle('Found')).not.toBeInTheDocument();
+      expect(within(legendImageContainers[1]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: not found');
 
@@ -273,6 +276,8 @@ describe('Container', () => {
       fireEvent(canvas, getMouseEvent('mouseup', { clientX: 450, clientY: 250 }));
 
       // object found
+      expect(within(legendImageContainers[0]).queryByTitle('Found')).not.toBeInTheDocument();
+      expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: found');
       dataLayer.push({ event: 'level_up', level: 1 });
@@ -284,6 +289,8 @@ describe('Container', () => {
       fireEvent(canvas, getMouseEvent('mouseup', { clientX: 5, clientY: 5 }));
 
       // found objects are still the same
+      expect(within(legendImageContainers[0]).queryByTitle('Found')).not.toBeInTheDocument();
+      expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: found');
 
@@ -293,6 +300,8 @@ describe('Container', () => {
       fireEvent(canvas, getMouseEvent('mouseup', { clientX: 350, clientY: 350 }));
 
       // object found
+      expect(within(legendImageContainers[0]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: found');
       dataLayer.push({ event: 'level_up', level: 2 }, { event: 'unlock_achievement', achievement_id: 'game_complete' });

@@ -14,15 +14,10 @@ export default function Legend({ found, objects }) {
     <div className="legend-container" tabIndex="-1">
       <div className="legend">
         {objects.map((object, i) => {
-          const classes = ['thumbnail'];
-          if (object.found) {
-            classes.push('found')
-          }
-
           const status = found.includes(object.id) ? 'found' : 'not found';
           return (
-            <div className={classes.join(' ')} key={i}>
-              {status === 'found' && <CheckIcon />}
+            <div className="thumbnail" key={i}>
+              {status === 'found' && <CheckIcon tooltip="Found" aria-hidden="true" />}
               <img
                 src={object.thumbnail}
                 alt={`Object to find: ${object.alt_text}; Status: ${status}`}
