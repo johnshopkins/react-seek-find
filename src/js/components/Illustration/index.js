@@ -52,10 +52,9 @@ class Illustration extends Component {
       isDragging: false,
       dragStartX: null,
       dragStartY: null,
+      found: [],
       hint: null,
       hintActive: false,
-      found: null,
-      foundActive: false,
     };
 
     this.moveCanvas = this.moveCanvas.bind(this);
@@ -116,7 +115,6 @@ class Illustration extends Component {
       'canvasX',
       'canvasY',
       'found',
-      'foundActive',
       'hint',
       'hintActive',
       'isDragging',
@@ -473,15 +471,10 @@ class Illustration extends Component {
   }
 
   showFound(object) {
-
-    this.setState({ found: object, foundActive: true }, () => {
-      setTimeout(() => this.removeFound(), settings.foundFadeIn + this.props.foundKeepAlive);
-    });
-  }
-
-  removeFound() {
-    this.setState({ found: null }, () => {
-      setTimeout(() => this.setState({ foundActive: false }), settings.foundFadeOut);
+    this.setState(state => {
+      const found = [...state.found]; // handle immutably to prevent bugs
+      found.push(object);
+      return { found }
     });
   }
 
@@ -545,7 +538,7 @@ class Illustration extends Component {
               <Found
                 height={this.props.imageHeight}
                 width={this.props.imageWidth}
-                object={this.state.found}
+                found={this.state.found}
                 scale={this.props.scale}
               />
               <Findable

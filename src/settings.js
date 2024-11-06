@@ -2,8 +2,6 @@
 module.exports = {
 
   // animations (in ms)
-  foundFadeIn: 500,
-  foundFadeOut: 2000,
   hintFadeIn: 500,
   hintFadeOut: 5000,
 

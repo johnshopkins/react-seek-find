@@ -224,7 +224,7 @@ describe('Container', () => {
       expect(container.querySelector('.game-container .magnifying-glass')).not.toBeInTheDocument();
       expect(container.querySelector('.game-container .instructions')).not.toBeInTheDocument();
       expect(container.querySelector('.game-container .hint')).not.toBeInTheDocument();
-      expect(container.querySelector('.game-container .found')).not.toBeInTheDocument();
+      expect(container.querySelector('.game-container .found-container')).not.toBeInTheDocument();
       expect(container.querySelector('.game-container .findable')).not.toBeInTheDocument();
 
       // load image
@@ -236,7 +236,7 @@ describe('Container', () => {
       expect(container.querySelector('.game-container .magnifying-glass')).not.toBeVisible();
       expect(container.querySelector('.game-container .instructions')).toBeVisible();
       expect(container.querySelector('.game-container .hint')).toBeVisible();
-      expect(container.querySelector('.game-container .found')).toBeVisible();
+      expect(container.querySelector('.game-container .found-container')).toBeVisible();
       expect(container.querySelector('.game-container .findable')).toBeVisible();
     });
 

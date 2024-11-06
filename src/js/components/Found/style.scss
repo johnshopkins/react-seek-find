@@ -4,11 +4,13 @@ canvas.found {
   opacity: 0;
   pointer-events: none;
   position: absolute;
-  transition: opacity #{$hintFadeOut}ms;
+  animation: fade 6000ms;
   z-index: var(--stack-found);
+}
 
-  &.show {
-    opacity: 1;
-    transition: opacity #{$hintFadeIn}ms;
-  }
+@keyframes fade {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  60% { opacity: 1; }
+  100% { opacity: 0; }
 }
