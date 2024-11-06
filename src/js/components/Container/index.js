@@ -9,6 +9,10 @@ import settings from '../../../settings';
 import { clearGameState, loadGameState, saveGameState } from '../../lib/persistance';
 import './style.scss';
 
+if (!window.dataLayer) {
+  window.dataLayer = [];
+}
+
 /**
  * The container of the game, which manages the game state.
  */
