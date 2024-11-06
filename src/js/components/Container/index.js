@@ -111,10 +111,10 @@ class Game extends Component {
 
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
-    const width = this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0);
+    const width = !this.props.containerWidth ? this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0) : this.props.containerWidth;
 
     // small buffer around the game
-    const height = document.documentElement.clientHeight - 20;
+    const height = !this.props.containerHeight ? document.documentElement.clientHeight - 20 : this.props.containerHeight;
     
     // base breakpoint on the width of the container, not the user's screen
     const breakpoint = this.getBreakpoint(width);
@@ -379,6 +379,8 @@ Game.defaultProps = {
 
 Game.propTypes = {
   buffer: PropTypes.bool,
+  containerHeight: PropTypes.number, // for testing convenience
+  containerWidth: PropTypes.number, // for testing convenience
   foundKeepAlive: PropTypes.number,
   height: PropTypes.number,
   hintKeepAlive: PropTypes.number,

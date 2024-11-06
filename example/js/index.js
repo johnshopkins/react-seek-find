@@ -18,6 +18,8 @@ root.render(
     image={image}
     imageHeight={2448}
     imageWidth={1584}
+    // containerHeight={400}
+    // containerWidth={600}
     objects={[Beanie, Football]}
     onGameComplete={() => console.log('hooray!')}
   />

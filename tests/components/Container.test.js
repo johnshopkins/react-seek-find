@@ -53,6 +53,8 @@ const circleObject = new FindableObject(
 
 const getProps = (override) => {
   return {
+    containerWidth: 600,
+    containerHeight: 400,
     imageWidth: 800,
     imageHeight: 700,
     image: 'https://picsum.photos/800/700',
@@ -62,36 +64,36 @@ const getProps = (override) => {
   }
 };
 
+const updateDimensions = (width, height) => {
+  Object.defineProperty(document.documentElement, 'clientHeight', { value: height, writable: true });
+  Object.defineProperty(document.documentElement, 'clientWidth', { value: width, writable: true });
+  Object.defineProperty(GameContainer, 'clientHeight', { value: height, writable: true });
+  Object.defineProperty(GameContainer, 'clientWidth', { value: width, writable: true });
+}
+
 let GameContainer;
 let user;
 
 beforeAll(() => {
 
-  GameContainer = null;
+  // for em calculation
   document.body.innerHTML = '';
   document.body.style.fontSize = '16px';
 
   GameContainer = document.createElement('div');
-  GameContainer.setAttribute('max-width', '400px');
 
   window.screen.orientation = { type: 'portrait-primary' };
 
   Element.prototype.scroll = jest.fn();
 
-  Object.defineProperty(document.documentElement, 'clientHeight', { value: 400, writable: true });
-  Object.defineProperty(document.documentElement, 'clientWidth', { value: 600, writable: true });
-
-  Object.defineProperty(GameContainer, 'clientWidth', { value: 600, writable: true });
+  updateDimensions(600, 400);
 
   window.resizeTo = function (width, height) {
 
     const orientation = height >= width ? 'landscape-primary' : 'portrait-primary';
     window.screen.orientation = { type: orientation };
 
-    document.documentElement.clientHeight = height;
-    document.documentElement.clientWidth = width;
-
-    GameContainer.clientWidth = width;
+    updateDimensions(width, height);
 
     window.dispatchEvent(new Event('jhu:winresize:done'))
   }
@@ -375,13 +377,13 @@ describe('Container', () => {
           // move into bottom-left buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 800 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 200 }));
-          expect(game).toHaveStyle({ left: '66px', top: '-441px' });
+          expect(game).toHaveStyle({ left: '66px', top: '-421px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // move into bottom-right buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 800 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 800 }));
-          expect(game).toHaveStyle({ left: '-266px', top: '-441px' });
+          expect(game).toHaveStyle({ left: '-266px', top: '-421px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // move into top-right buffer
@@ -414,13 +416,13 @@ describe('Container', () => {
           // move into bottom-left buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 800 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 200 }));
-          expect(game).toHaveStyle({ left: '0px', top: '-375px' });
+          expect(game).toHaveStyle({ left: '0px', top: '-355px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // move into bottom-right buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 800 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 800 }));
-          expect(game).toHaveStyle({ left: '-200px', top: '-375px' });
+          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // move into top-right buffer
@@ -664,37 +666,37 @@ describe('Container', () => {
           
           // the calculation:
           // this.props.containerHeight - threshold <= this.state.canvasY + y + size
-          // current values: 325 - 66 <= 66 + (-50) + 128 ---> 259 <= 144
-          // 115 pixels to travel ---> 5 Shift+ArrowDown + 8 ArrowDown
+          // current values: 345 - 66 <= 66 + (-50) + 128 ---> 279 <= 144
+          // 135 pixels to travel ---> 6 Shift+ArrowDown + 8 ArrowDown
 
-          await user.keyboard('{Shift>}{ArrowDown>5/}{/Shift}');
+          await user.keyboard('{Shift>}{ArrowDown>6/}{/Shift}');
           expect(game).toHaveStyle({ left: '-266px', top: '66px' }); // canvas hasn't moved yet
-          expect(sights).toHaveStyle({ left: '750px', top: '50px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '70px' });
 
           // NOW it moves
           await user.keyboard('{ArrowDown>8/}');
           expect(game).toHaveStyle({ left: '-266px', top: '-54px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '66px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '86px' });
 
           // when does it move again?
-          // current values: 345 - 66 <= (-54) + 66 + 128 ---> 279 <= 140
-          // 139 pixels to travel ---> 6 Shift+ArrowDown + 9 ArrowDown
+          // current values: 345 - 66 <= (-54) + 86 + 128 ---> 279 <= 160
+          // 119 pixels to travel ---> 5 Shift+ArrowDown + 10 ArrowDown
 
-          await user.keyboard('{Shift>}{ArrowDown>6/}{/Shift}');
-          await user.keyboard('{ArrowDown>9/}');
+          await user.keyboard('{Shift>}{ArrowDown>5/}{/Shift}');
+          await user.keyboard('{ArrowDown>10/}');
           expect(game).toHaveStyle({ left: '-266px', top: '-174px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '204px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '206px' });
 
           // move all the way to the bottom
-          // 650 is the farthest the sights can go, so 446 more pixels
-          await user.keyboard('{Shift>}{ArrowDown>22/}{/Shift}');
-          await user.keyboard('{ArrowDown>3/}');
-          expect(game).toHaveStyle({ left: '-266px', top: '-441px' });
+          // 650 is the farthest the sights can go, so 544 more pixels
+          await user.keyboard('{Shift>}{ArrowDown>27/}{/Shift}');
+          await user.keyboard('{ArrowDown>2/}');
+          expect(game).toHaveStyle({ left: '-266px', top: '-421px' });
           expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
           // can't move anymore
           await user.keyboard('{ArrowDown}');
-          expect(game).toHaveStyle({ left: '-266px', top: '-441px' });
+          expect(game).toHaveStyle({ left: '-266px', top: '-421px' });
           expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
         });
@@ -767,12 +769,12 @@ describe('Container', () => {
           // move all the way to the bottom
 
           await user.keyboard('{Shift>}{ArrowDown>35/}{/Shift}');
-          expect(game).toHaveStyle({ left: '-200px', top: '-375px' });
+          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
           expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
           // cannot move anymore
           await user.keyboard('{ArrowDown>}');
-          expect(game).toHaveStyle({ left: '-200px', top: '-375px' });
+          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
           expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
         });
