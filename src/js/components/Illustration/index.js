@@ -273,20 +273,29 @@ class Illustration extends Component {
     }, { once: true });
   }
 
+  /**
+   * React to the user moving the mouse after mousedown triggered.
+   * Make sure the mouse has moved at least 5 pixels in one direction
+   * before initiating click and drag. This prevents users that move
+   * the mouse a couple pixels during the click from triggering a
+   * click and drag when they actually wanted to submit a guess.
+   * @param {MouseEvent} e 
+   */
   onMouseMove(e) {
-    this.setState({ isDragging: true}, () => {
 
-      const { offsetX, offsetY } = getOffsetCoords(e);
+    const { offsetX, offsetY } = getOffsetCoords(e);
+    const diffX = this.state.dragStartX - offsetX;
+    const diffY = this.state.dragStartY - offsetY;
 
-      const diffX = this.state.dragStartX - offsetX;
-      const diffY = this.state.dragStartY - offsetY;
-
+    if (this.state.isDragging) {
       let newX = this.state.canvasX - diffX;
       let newY = this.state.canvasY - diffY;
-
       this.moveCanvas(newX, newY);
-      
-    });
+    } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
+      this.setState({ isDragging: true}, () => {
+        this.onMouseMove(e);
+      });
+    }
   }
 
   onTouchMove(e) {
