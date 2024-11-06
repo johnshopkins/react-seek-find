@@ -40,13 +40,13 @@ export default function InstructionsOverlay({ breakpoint, isAutoOpen, onClose, s
   return (
     <div className={`overlay-container ${breakpoint}`} style={style}>
       <div className="overlay" ref={overlay}>
-        <div className="header">
+        <div className="overlay-header">
           <button className="close" aria-label="Close instructions" onClick={close} ref={closeButton}>
             <XMarkIcon />
           </button>
           <h1>How to play</h1>
         </div>
-        <div className="content">
+        <div className="overlay-content">
           {Modernizr.touchevents ? 
             <ul>
               <li>To move the image, use two fingers.</li>
@@ -76,7 +76,7 @@ export default function InstructionsOverlay({ breakpoint, isAutoOpen, onClose, s
             <li>To read these instructions again, press the book icon.</li>
           </ul>
         </div>
-        <div className="footer">
+        <div className="overlay-footer">
           <button className="ready" onClick={close}>
             I'm ready to play!
           </button>

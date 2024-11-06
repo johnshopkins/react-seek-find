@@ -21,14 +21,10 @@
     z-index: calc(var(--overlay) + 1);
   }
 
-  .header {
+  .overlay-header {
     align-items: center;
     display: flex;
     flex-direction: row;
-
-    h1 {
-      margin: 0;
-    }
 
     .close {
       @include round_button;
@@ -41,11 +37,7 @@
     }
   }
 
-  .content {
-
-  }
-
-  .footer {
+  .overlay-footer {
     .ready {
       @include button;
     }
@@ -55,27 +47,6 @@
   &.medium {
     .overlay {
       padding: 0.25em;
-
-      h1 {
-        font-size: 1.5em;
-      }
-
-      h2 {
-        font-size: 1.25em;
-      }
-
-      h3 {
-        font-size: 1em;
-      }
-
-      ul {
-        font-size: 0.85em;
-        padding-left: 1em;
-      };
     }
-  }
-
-  &.medium {
-    
   }
 }
