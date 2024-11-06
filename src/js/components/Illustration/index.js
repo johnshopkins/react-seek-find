@@ -63,7 +63,8 @@ class Illustration extends Component {
     this.onFocus = this.onFocus.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseMove = throttle(this.onMouseMove.bind(this), 30);
+    this.onMouseMoveNotThrottled = this.onMouseMove.bind(this);
+    this.onMouseMoveThrottled = throttle(this.onMouseMove.bind(this), 30);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onSightsMove = this.onSightsMove.bind(this);
     this.showFound = this.showFound.bind(this);
@@ -262,11 +263,11 @@ class Illustration extends Component {
     });
 
     const target = e.target;
-    target.addEventListener('mousemove', this.onMouseMove);
+    target.addEventListener('mousemove', this.onMouseMoveThrottled);
 
     window.addEventListener('mouseup', e => {
-      this.onMouseMove.cancel();
-      target.removeEventListener('mousemove', this.onMouseMove);
+      this.onMouseMoveThrottled.cancel();
+      target.removeEventListener('mousemove', this.onMouseMoveThrottled);
       this.onMouseUp(e);
     }, { once: true });
   }
@@ -291,7 +292,7 @@ class Illustration extends Component {
       this.moveCanvas(newX, newY);
     } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
       this.setState({ isDragging: true}, () => {
-        this.onMouseMove(e);
+        this.onMouseMoveNotThrottled(e);
       });
     }
   }
