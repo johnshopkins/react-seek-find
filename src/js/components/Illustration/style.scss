@@ -11,8 +11,8 @@
       @include round_button;
 
       svg {
-        height: #{$utilitiesIconHeight}em;
-        width: #{$utilitiesIconHeight}em;
+        height: #{$utilitiesIconHeight}px;
+        width: #{$utilitiesIconHeight}px;
       }
     }
 
@@ -27,13 +27,13 @@
     }
 
     .navigation {
-      right: #{$utilitiesEdgeSpace}em;
-      top: #{$utilitiesEdgeSpace}em;
+      right: #{$utilitiesEdgeSpace}px;
+      top: #{$utilitiesEdgeSpace}px;
     }
 
     .instructions-and-hint {
-      bottom: #{$utilitiesEdgeSpace}em;
-      left: #{$utilitiesEdgeSpace}em;
+      bottom: #{$utilitiesEdgeSpace}px;
+      left: #{$utilitiesEdgeSpace}px;
     }
   }
 

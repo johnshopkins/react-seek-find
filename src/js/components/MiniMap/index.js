@@ -8,7 +8,7 @@ const throttle = require('lodash.throttle');
 /**
  * Manages the mini-map utility.
  */
-export default function MiniMap({ canvasX, canvasY, containerHeight, containerWidth, emToPixel, imageHeight, imageWidth, moveCanvas }) {
+export default function MiniMap({ canvasX, canvasY, containerHeight, containerWidth, imageHeight, imageWidth, moveCanvas }) {
 
   // note: minimap click+drag works only for mouse users...
   // the minimap is too small to be usable for click+drag purposes on mobile.
@@ -18,10 +18,8 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartY, setDragStartY] = useState(null);
 
-  const miniMapWidth = settings.miniMap * emToPixel;
-
-  const sizeDown = miniMapWidth / imageWidth;
-  const sizeUp = imageWidth/ miniMapWidth;
+  const sizeDown = settings.miniMap / imageWidth;
+  const sizeUp = imageWidth/ settings.miniMap;
 
   const onMouseDown = (e) => {
 
@@ -59,7 +57,7 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
   }, 15); // set to 15 to keep up with mousemove in a smaller space
 
   const mapHeight = imageHeight * sizeDown
-  const mapWidth = miniMapWidth;
+  const mapWidth = settings.miniMap;
 
   const mapStyle = {
     height: `${mapHeight}px`,

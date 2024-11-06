@@ -104,11 +104,6 @@ class Game extends Component {
 
   getViewState() {
 
-    // add !== 0 condition to aid in testing
-    const emToPixel = this.em.current && this.em.current.clientWidth !== 0 ?
-      this.em.current.clientWidth :
-      this.getComputedPixelValue(window.getComputedStyle(document.body), 'font-size');
-
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
     const width = !this.props.containerWidth ? this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0) : this.props.containerWidth;
@@ -119,7 +114,7 @@ class Game extends Component {
     // base breakpoint on the width of the container, not the user's screen
     const breakpoint = this.getBreakpoint(width);
 
-    const legendHeight = (settings[`legendThumbnailHeight_${breakpoint}`] + settings[`legendGap_${breakpoint}`]) * emToPixel;
+    const legendHeight = settings[`legendThumbnailHeight_${breakpoint}`] + settings[`legendGap_${breakpoint}`];
 
     const illustrationContainerHeight = height - legendHeight;
     const illustrationContainerWidth = width;
@@ -139,7 +134,6 @@ class Game extends Component {
 
     return {
       breakpoint,
-      emToPixel,
       height,
       illustrationContainerHeight,
       illustrationContainerWidth,
@@ -333,7 +327,6 @@ class Game extends Component {
           />
         }
         <div className={['container', this.state.breakpoint].join(' ')} style={containerStyles} aria-hidden={this.state.openInstructions}>
-          <div ref={this.em} aria-hidden style={{ position: 'absolute', visibility: 'hidden', width: '1em' }} />
           <Legend
             found={this.state.found}
             objects={Object.values(this.objects)}
@@ -343,7 +336,6 @@ class Game extends Component {
             containerHeight={this.state.illustrationContainerHeight}
             containerWidth={this.state.illustrationContainerWidth}
             disableTabbing={this.state.openInstructions}
-            emToPixel={this.state.emToPixel}
             found={this.state.found}
             foundKeepAlive={this.props.foundKeepAlive}
             gameComplete={this.state.gameComplete}

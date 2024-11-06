@@ -131,7 +131,6 @@ class Illustration extends Component {
     }
 
     const propVars = [
-      'emToPixel',
       'disableTabbing',
       'found',
       'gameComplete',
@@ -346,13 +345,10 @@ class Illustration extends Component {
       // adds buffer area around image for allow for utilities
       // replaces "uses edges of image" code below
 
-      const utilityEdgeSpace = settings.utilitiesEdgeSpace * this.props.emToPixel;
-      const miniMapWidth = settings.miniMap * this.props.emToPixel;
-
-      const xMin = miniMapWidth + (utilityEdgeSpace * 2);
-      const xMax = -Math.abs(scaledWidth - this.props.containerWidth) - miniMapWidth - (utilityEdgeSpace * 2);
+      const xMin = settings.miniMap + (settings.utilitiesEdgeSpace * 2);
+      const xMax = -Math.abs(scaledWidth - this.props.containerWidth) - settings.miniMap - (settings.utilitiesEdgeSpace * 2);
       const yMin = xMin;
-      const yMax = -Math.abs(scaledHeight - this.props.containerHeight) - miniMapWidth - (utilityEdgeSpace * 2);
+      const yMax = -Math.abs(scaledHeight - this.props.containerHeight) - settings.miniMap - (settings.utilitiesEdgeSpace * 2);
 
       // adds buffer for icons
       if (newX > xMin) {
@@ -401,7 +397,7 @@ class Illustration extends Component {
   onSightsMove(x, y, size, direction) {
 
     // size of minimap + utility edge
-    const threshold = (settings.miniMap + (settings.utilitiesEdgeSpace * 2)) * this.props.emToPixel;
+    const threshold = settings.miniMap + (settings.utilitiesEdgeSpace * 2);
     
     // move 1/5 of either the container height or width (whichever is largest)
     // but don't scroll more than the smallest
@@ -594,7 +590,6 @@ class Illustration extends Component {
                 canvasY={this.state.canvasY}
                 containerHeight={this.props.containerHeight}
                 containerWidth={this.props.containerWidth}
-                emToPixel={this.props.emToPixel}
                 imageHeight={this.props.imageHeight * this.props.scale}
                 imageWidth={this.props.imageWidth * this.props.scale}
                 moveCanvas={this.moveCanvas}
@@ -646,7 +641,6 @@ Illustration.propTypes = {
   containerHeight: PropTypes.number.isRequired,
   containerWidth: PropTypes.number.isRequired,
   disableTabbing: PropTypes.bool,
-  emToPixel: PropTypes.number.isRequired,
   found: PropTypes.array,
   foundKeepAlive: PropTypes.number.isRequired,
   gameComplete: PropTypes.bool,

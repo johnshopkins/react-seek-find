@@ -78,7 +78,7 @@ beforeAll(() => {
 
   // for em calculation
   document.body.innerHTML = '';
-  document.body.style.fontSize = '16px';
+  document.body.style.fontSize = '18px';
 
   GameContainer = document.createElement('div');
 

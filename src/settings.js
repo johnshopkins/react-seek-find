@@ -12,19 +12,19 @@ module.exports = {
   breakpoint_medium: 768,
   breakpoint_large: 1001, // captures 1000
 
-  // sizing (in ems)
-  legendThumbnailHeight_small: 3,
-  legendThumbnailHeight_medium: 3.125,
-  legendThumbnailHeight_large: 4.5,
-  legendThumbnailHeight_xlarge: 4.5,
+  // sizing (in pixels)
+  legendThumbnailHeight_small: 48,
+  legendThumbnailHeight_medium: 50,
+  legendThumbnailHeight_large: 72,
+  legendThumbnailHeight_xlarge: 72,
 
-  legendGap: 0.3125,
-  legendGap_small: 0.3125,
-  legendGap_medium: 0.3125,
-  legendGap_large: 0.3125,
-  legendGap_xlarge: 0.3125,
+  legendGap: 5,
+  legendGap_small: 5,
+  legendGap_medium: 5,
+  legendGap_large: 5,
+  legendGap_xlarge: 5,
 
-  miniMap: 3.125,
-  utilitiesIconHeight: 2,
-  utilitiesEdgeSpace: 0.5,
+  miniMap: 50,
+  utilitiesIconHeight: 32,
+  utilitiesEdgeSpace: 8,
 }

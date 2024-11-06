@@ -1,9 +1,9 @@
 @mixin button {
   border: none;
   background: var(--jhu-brand-gold);
-  border-radius: 3em;
+  border-radius: 48px;
   color: var(--jhu-brand-heritage-blue);
-  padding: 0.8em 2em;
+  padding: 10px;
   pointer-events: auto;
 
   &:hover {
@@ -26,7 +26,7 @@
   background: var(--jhu-brand-gold);
   border-radius: 50%;
   color: var(--jhu-brand-heritage-blue);
-  padding: 0.8em;
+  padding: 10px;
   pointer-events: auto;
 
   &:hover {
