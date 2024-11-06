@@ -281,7 +281,11 @@ class Game extends Component {
   }
 
   closeInstructions() {
-    this.setState({ openInstructions: false });
+    this.setState({
+      openInstructions: false,
+      seenInstructions: true,
+    });
+
     this.saveGame({ seenInstructions: true });
   }
 
