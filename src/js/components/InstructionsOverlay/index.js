@@ -50,23 +50,18 @@ export default function InstructionsOverlay({ breakpoint, isAutoOpen, onClose, s
           {Modernizr.touchevents ? 
             <ul>
               <li>To move the image, use two fingers.</li>
-              <li>To zoom the image in or out, press the zoom buttons just below the minimap on the right side of the game.</li>
-              <li>When you find an object, press on it to confirm. The object will light up for a few seconds if you are correct. The object will also be checked off in the legend.</li>
             </ul>
             : 
             <>
-              <h3>Using the mouse</h3>
+              <h3>Using a mouse?</h3>
               <ul>
-                <li>To move the image, click and drag on the image. You can also click and drag on red highlighted area in the minimap.</li>
-                <li>To zoom the image in or out, click the zoom buttons just below the minimap on the right side of the game.</li>
-                <li>When you find an object, press on it to confirm. The object will light up for a few seconds if you are correct. The object will also be checked off in the legend.</li>
+                <li>To move the image, click and drag on the image.</li>
+                <li>When you find an object, click on it. It will light up if you are correct.</li>
               </ul>
-              <h3>Using the keyboard</h3>
+              <h3>Using a keyboard?</h3>
               <ul>
                 <li>Navigate to the game by pressing the Tab key until the game area is active. You will see a magnifying class appear. Use the keyboard's arrow keys to move the magnifying glass around. To move faster, press Shift + arrow keys.</li>
-                <li>As you move the magnifying glass, the image will automatically pan as you get close to the edge.</li>
-                <li>To zoom the image in or out, press Tab until either the zoom in or zoom out button is in focus. Press Return or Enter to press the button to zoom in or out.</li>
-                <li>When you find an object, line up the crosshairs within the magnifying glass on the object and press the Spacebar. The object will light up for a few seconds if you are correct. The object will also be checked off in the legend.</li>
+                <li>When you find an object, line up the crosshairs within the magnifying glass on the object and press the Spacebar. It will light up if you are correct.</li>
               </ul>
             </>
           }
