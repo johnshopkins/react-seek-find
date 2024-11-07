@@ -1,8 +1,7 @@
 /*global dataLayer*/
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
-
 import MagnifyingGlassIcon from '../Icons/MagnifyingGlass';
-
+import settings from '../../../settings';
 import './style.scss';
 
 /**
@@ -23,6 +22,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
 
   const [positionX, setPositionX] = useState(0);
   const [positionY, setPositionY] = useState(0);
+  const [useTransition, setUseTransition] = useState(false);
 
   useImperativeHandle(ref, () => ({
     moveSights: (e) => {
@@ -33,6 +33,8 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
 
       e.stopPropagation();
       e.preventDefault();
+
+      setUseTransition(false);
 
       const increment = e.shiftKey ? 20 : 2;
 
@@ -100,10 +102,28 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
       onSightsMove(newPositionX, newPositionY, iconSize, direction);
     },
     moveSightsTo(x, y) {
+      setUseTransition(false);
       setPositionX(x);
       setPositionY(y);
     },
+    calibrateSights(scaleDiff) {
+
+      setUseTransition(true);
+
+      // get position of crosshairs
+      const x = positionX + iconOffsetLeft;
+      const y = positionY + iconOffsetTop;
+
+      // where the crosshairs are on the newly scale image
+      const newX = x * scaleDiff;
+      const newY = y * scaleDiff;
+
+      // add offset back
+      setPositionX(newX - iconOffsetLeft);
+      setPositionY(newY - iconOffsetTop);
+    },
     resetSights() {
+      setUseTransition(false);
       setPositionX(0);
       setPositionY(0);
     }
@@ -116,6 +136,10 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
     height: `${iconSize}px`,
     width: `${iconSize}px`
   };
+
+  if (useTransition) {
+    style.transition = settings.canvasTransition;
+  }
 
   return <MagnifyingGlassIcon className="magnifying-glass" style={style} />
 });

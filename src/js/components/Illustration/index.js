@@ -172,6 +172,9 @@ class Illustration extends Component {
 
       const scaleDiff = (this.props.scale * 100) / (prevProps.scale * 100);
 
+      // move the sights
+      this.sights.current.calibrateSights(scaleDiff);
+
       // new (x, y) coordinates to the center of the canvas' current location
       let newX = this.state.anchorX * scaleDiff;
       let newY = this.state.anchorY * scaleDiff;
