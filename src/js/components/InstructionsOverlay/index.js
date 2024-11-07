@@ -50,6 +50,7 @@ export default function InstructionsOverlay({ breakpoint, isAutoOpen, onClose, s
           {Modernizr.touchevents ? 
             <ul>
               <li>To move the image, use two fingers.</li>
+              <li>When you find an object, click on it. It will light up if you are correct.</li>
             </ul>
             : 
             <>
