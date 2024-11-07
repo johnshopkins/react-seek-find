@@ -502,7 +502,7 @@ class Illustration extends Component {
     if (this.state.isDragging) {
       gameStyles.cursor = 'grabbing';
     } else {
-      gameStyles.transition = 'all 300ms ease-out';
+      gameStyles.transition = settings.canvasTransition;
     }
 
     return (
