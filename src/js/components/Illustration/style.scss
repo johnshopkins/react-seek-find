@@ -39,7 +39,9 @@
 
   .game {
     cursor: crosshair;
+    left: 0px;
     position: absolute;
+    top: 0px;
     user-select: none;
 
     &:focus {
