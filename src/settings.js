@@ -26,5 +26,5 @@ module.exports = {
 
   miniMap: 50,
   utilitiesIconHeight: 32,
-  utilitiesEdgeSpace: 8,
+  utilitiesEdgeSpace: 14,
 }
