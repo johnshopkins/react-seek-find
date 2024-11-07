@@ -3,7 +3,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: #{$legendGap_small}px;
+  // gap: #{$legendGap_small}px;
 
   .game-container {
     overflow: hidden;
@@ -11,14 +11,14 @@
   }
 
   &.medium {
-    gap: #{$legendGap_medium}px;
+    // gap: #{$legendGap_medium}px;
   }
 
   &.large {
-    gap: #{$legendGap_large}px;
+    // gap: #{$legendGap_large}px;
   }
 
   &.xlarge {
-    gap: #{$legendGap_xlarge}px;
+    // gap: #{$legendGap_xlarge}px;
   }
 }
