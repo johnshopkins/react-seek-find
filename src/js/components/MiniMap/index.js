@@ -79,8 +79,8 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
   }
 
   // border offset for absolute positioning
-  left = left - 2;
-  top = top - 2;
+  left = left - 4;
+  top = top - 4;
 
   const cursor = isDragging ? 'grabbing' : 'grab';
 
