@@ -6,10 +6,13 @@ $iconRatio: 0.4;
 
   .legend-container {
     background: var(--jhu-brand-heritage-blue);
+    bottom: 0;
     display: flex;
     flex: 1;
     overflow-x: auto;
     overflow-y: hidden;
+    position: sticky;
+    z-index: 100;
   }
 
   .legend {
