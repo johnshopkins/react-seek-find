@@ -29,6 +29,8 @@ root.render(
   //   image={'https://picsum.photos/800/700'}
   //   imageHeight={700}
   //   imageWidth={800}
+  //   containerHeight={400}
+  //   containerWidth={600}
   //   objects={[
   //     Box,
   //     // Circle
