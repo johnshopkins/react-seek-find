@@ -12,6 +12,7 @@ import ReplayIcon from '../Icons/Replay';
 import ZoomInIcon from '../Icons/ZoomIn';
 import ZoomOutIcon from '../Icons/ZoomOut';
 import getOffsetCoords from '../../lib/get-offset-coords';
+import roundToThousandth from '../../lib/roundToThousandth';
 import settings from '../../../settings';
 import './style.scss';
 
@@ -33,6 +34,7 @@ class Illustration extends Component {
     const canvasY = 0;
 
     const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
+    const { gamePlacementX, gamePlacementY } = this.getGameOffset();
 
     this.state = {
 
@@ -46,6 +48,9 @@ class Illustration extends Component {
       anchorX,
       anchorY,
 
+      gamePlacementX,
+      gamePlacementY,
+
       isClick: false,
       isKeyboardFocused: false,
       loading: true,
@@ -57,6 +62,7 @@ class Illustration extends Component {
       hintActive: false,
     };
 
+    this.getGameOffset = this.getGameOffset.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFind = this.onFind.bind(this);
@@ -116,6 +122,8 @@ class Illustration extends Component {
       'canvasX',
       'canvasY',
       'found',
+      'gamePlacementX',
+      'gamePlacementY',
       'hint',
       'hintActive',
       'isDragging',
@@ -172,8 +180,10 @@ class Illustration extends Component {
 
       const scaleDiff = (this.props.scale * 100) / (prevProps.scale * 100);
 
-      // move the sights
+      // calibrate the sights
       this.sights.current.calibrateSights(scaleDiff);
+
+      // figure out game placement
 
       // new (x, y) coordinates to the center of the canvas' current location
       let newX = this.state.anchorX * scaleDiff;
@@ -186,9 +196,32 @@ class Illustration extends Component {
       // prevents the canvas from moving into the buffer on resize
       newX = originCoordinates.originX <= 0 ? originCoordinates.originX : 0;
       newY = originCoordinates.originY <= 0 ? originCoordinates.originY : 0;
-      
+
       this.moveCanvas(newX, newY);
     }
+  }
+
+  getGameOffset() {
+    
+    const imageWidth = this.props.imageWidth * this.props.scale;
+    const imageHeight = this.props.imageHeight * this.props.scale;
+
+    let gameOffsetLeft = 0;
+    let gameOffsetTop = 0;
+
+    if (this.props.containerWidth > imageWidth) {
+      console.log('width', this.props.containerWidth, imageWidth);
+      gameOffsetLeft = roundToThousandth((this.props.containerWidth - imageWidth) / 2);
+    }
+
+    if (this.props.containerHeight > imageHeight) {
+      gameOffsetTop = roundToThousandth((this.props.containerHeight - imageHeight) / 2);
+    }
+
+    return {
+      gamePlacementX: gameOffsetLeft,
+      gamePlacementY: gameOffsetTop,
+    };
   }
 
   /**
@@ -285,13 +318,33 @@ class Illustration extends Component {
    */
   onMouseMove(e) {
 
+    let lockX = false;
+    let lockY = false;
+
+    const imageWidth = this.props.imageWidth * this.props.scale;
+    const imageHeight = this.props.imageHeight * this.props.scale;
+
+    if (this.props.containerWidth > imageWidth) {
+      lockX = true;
+    }
+
+    if (this.props.containerHeight > imageHeight) {
+      lockY = true;
+    }
+
+    console.log({ lockX, lockY });
+
+    if (lockX && lockY) {
+      return;
+    }
+
     const { offsetX, offsetY } = getOffsetCoords(e);
     const diffX = this.state.dragStartX - offsetX;
     const diffY = this.state.dragStartY - offsetY;
 
     if (this.state.isDragging) {
-      let newX = this.state.canvasX - diffX;
-      let newY = this.state.canvasY - diffY;
+      let newX = !lockX ? this.state.canvasX - diffX : this.state.canvasX;
+      let newY = !lockY ? this.state.canvasY - diffY : this.state.canvasY;
       this.moveCanvas(newX, newY);
     } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
       this.setState({ isDragging: true}, () => {
@@ -352,41 +405,114 @@ class Illustration extends Component {
     const scaledHeight = this.props.imageHeight * this.props.scale;
     const scaledWidth = this.props.imageWidth * this.props.scale;
 
+    let { gamePlacementX, gamePlacementY } = this.getGameOffset();
+
+    console.log({ gamePlacementX, gamePlacementY });
+
+    const bufferSize = (settings.utilitiesEdgeSpace * 2);
+    const doubleBufferSize = bufferSize * 2;
+
+    if (gamePlacementX <= bufferSize) {
+      gamePlacementX = 0;
+    }
+
+    if (gamePlacementY <= bufferSize) {
+      gamePlacementY = 0;
+    }
+
+    console.log({ gamePlacementX, gamePlacementY });
+    console.log('---');
+
+    const useBufferX = gamePlacementX <= bufferSize;
+    const useBufferY = gamePlacementY <= bufferSize;
+
+    if (useBufferX) {
+      gamePlacementX = 0
+    }
+
+    if (useBufferY) {
+      gamePlacementY = 0;
+    }
+
     if (this.props.buffer) {
-      // adds buffer area around image for allow for utilities
-      // replaces "uses edges of image" code below
+      if (useBufferX) {
+        const xMin = settings.miniMap + bufferSize;
+        const xMax = -Math.abs(scaledWidth - this.props.containerWidth) - settings.miniMap - bufferSize;
 
-      const xMin = settings.miniMap + (settings.utilitiesEdgeSpace * 2);
-      const xMax = -Math.abs(scaledWidth - this.props.containerWidth) - settings.miniMap - (settings.utilitiesEdgeSpace * 2);
-      const yMin = xMin;
-      const yMax = -Math.abs(scaledHeight - this.props.containerHeight) - settings.miniMap - (settings.utilitiesEdgeSpace * 2);
-
-      // adds buffer for icons
-      if (newX > xMin) {
-        newX = xMin;
-      } else if (newX < xMax) {
-        newX = xMax;
+        if (newX > xMin) {
+          newX = xMin;
+        } else if (newX < xMax) {
+          newX = xMax;
+        }
+      } else {
+        newX = 0;
       }
 
-      if (newY > yMin) {
-        newY = yMin;
-      } else if (newY < yMax) {
-        newY = yMax;
+      if (useBufferY) {
+        const yMin = settings.miniMap + bufferSize;
+        const yMax = -Math.abs(scaledHeight - this.props.containerHeight) - settings.miniMap - bufferSize;
+
+        if (newY > yMin) {
+          newY = yMin;
+        } else if (newY < yMax) {
+          newY = yMax;
+        }
+      } else {
+        newY = 0;
       }
     } else {
-      // uses edges of image
-      if (newX > 0) {
-        newX = 0
-      } else if (newX < -Math.abs(scaledWidth - this.props.containerWidth)) {
-        newX = -Math.abs(scaledWidth - this.props.containerWidth);
-      }
 
-      if (newY > 0) {
-        newY = 0
-      } else if (newY < -Math.abs(scaledHeight - this.props.containerHeight)) {
-        newY = -Math.abs(scaledHeight - this.props.containerHeight);
-      }
+        if (newX > 0) {
+          newX = 0
+        } else if (newX < -Math.abs(scaledWidth - this.props.containerWidth)) {
+          newX = -Math.abs(scaledWidth - this.props.containerWidth);
+        }
+
+        if (newY > 0) {
+          newY = 0
+        } else if (newY < -Math.abs(scaledHeight - this.props.containerHeight)) {
+          newY = -Math.abs(scaledHeight - this.props.containerHeight);
+        }
+
     }
+
+    // if (this.props.buffer) {
+    //   // adds buffer area around image for allow for utilities
+    //   // replaces "uses edges of image" code below
+
+    //   const xMin = settings.miniMap + bufferSize;
+    //   const xMax = -Math.abs(scaledWidth - this.props.containerWidth) - settings.miniMap - bufferSize;
+    //   const yMin = xMin;
+    //   const yMax = -Math.abs(scaledHeight - this.props.containerHeight) - settings.miniMap - bufferSize;
+
+    //   // adds buffer for icons
+    //   if (newX > xMin) {
+    //     newX = xMin;
+    //   } else if (newX < xMax) {
+    //     newX = xMax;
+    //   }
+
+    //   if (newY > yMin) {
+    //     newY = yMin;
+    //   } else if (newY < yMax) {
+    //     newY = yMax;
+    //   }
+    // } else {
+    //   // uses edges of image
+    //   if (newX > 0) {
+    //     newX = 0
+    //   } else if (newX < -Math.abs(scaledWidth - this.props.containerWidth)) {
+    //     newX = -Math.abs(scaledWidth - this.props.containerWidth);
+    //   }
+
+    //   if (newY > 0) {
+    //     newY = 0
+    //   } else if (newY < -Math.abs(scaledHeight - this.props.containerHeight)) {
+    //     newY = -Math.abs(scaledHeight - this.props.containerHeight);
+    //   }
+    // }
+
+    console.log({ newX, newY });
 
     const { anchorX, anchorY } = this.getCenterAnchor(newX, newY);
 
@@ -395,6 +521,8 @@ class Illustration extends Component {
       canvasY: newY,
       anchorX,
       anchorY,
+      gamePlacementX,
+      gamePlacementY
     });
   }
 
@@ -482,10 +610,6 @@ class Illustration extends Component {
     });
   }
 
-  roundToThousandth(num) {
-    return Math.round(num * 1000) / 1000;
-  }
-
   render() {
 
     const containerStyles = {
@@ -496,16 +620,22 @@ class Illustration extends Component {
     const gameStyles = {
       height: `${this.props.imageHeight}px`,
       width: `${this.props.imageWidth}px`,
-      left: this.roundToThousandth(this.state.canvasX),
-      top: this.roundToThousandth(this.state.canvasY),
+      left: roundToThousandth(this.state.canvasX),
+      top: roundToThousandth(this.state.canvasY),
       // left: this.state.canvasX,
       // top: this.state.canvasY,
     };
+
+    const gamePlacementStyles = {
+      left: `${this.state.gamePlacementX}px`,
+      top: `${this.state.gamePlacementY}px`,
+    }
 
     if (this.state.isDragging) {
       gameStyles.cursor = 'grabbing';
     } else {
       gameStyles.transition = settings.canvasTransition;
+      gamePlacementStyles.transition = settings.canvasTransition;
     }
 
     return (
@@ -524,51 +654,53 @@ class Illustration extends Component {
           });
         }}
       >
-        <div className="game" style={gameStyles}>
-          {!this.state.loading &&
-            <>
-              <Sights
-                ref={this.sights}
-                checkGuess={(x, y) => this.findable.current.checkGuess(x, y)}
-                height={this.props.imageHeight * this.props.scale}
-                onSightsMove={this.onSightsMove}
-                show={this.state.isKeyboardFocused}
-                width={this.props.imageWidth * this.props.scale}
+        <div className="game-placement" style={gamePlacementStyles}>
+          <div className="game" style={gameStyles}>
+            {!this.state.loading &&
+              <>
+                <Sights
+                  ref={this.sights}
+                  checkGuess={(x, y) => this.findable.current.checkGuess(x, y)}
+                  height={this.props.imageHeight * this.props.scale}
+                  onSightsMove={this.onSightsMove}
+                  show={this.state.isKeyboardFocused}
+                  width={this.props.imageWidth * this.props.scale}
+                />
+                <Hint
+                  height={this.props.imageHeight}
+                  width={this.props.imageWidth}
+                  object={this.state.hint}
+                  scale={this.props.scale}
+                />
+                <Found
+                  height={this.props.imageHeight}
+                  width={this.props.imageWidth}
+                  found={this.state.found}
+                  scale={this.props.scale}
+                />
+                <Findable
+                  disableTabbing={this.props.disableTabbing}
+                  onFind={this.onFind}
+                  objects={this.props.objects}
+                  ref={this.findable}
+                  scale={this.props.scale}
+                  height={this.props.imageHeight}
+                  width={this.props.imageWidth}
+                  onMouseDown={this.onMouseDown}
+                  onTouchStart={this.onTouchStart}
               />
-              <Hint
-                height={this.props.imageHeight}
-                width={this.props.imageWidth}
-                object={this.state.hint}
-                scale={this.props.scale}
-              />
-              <Found
-                height={this.props.imageHeight}
-                width={this.props.imageWidth}
-                found={this.state.found}
-                scale={this.props.scale}
-              />
-              <Findable
-                disableTabbing={this.props.disableTabbing}
-                onFind={this.onFind}
-                objects={this.props.objects}
-                ref={this.findable}
-                scale={this.props.scale}
-                height={this.props.imageHeight}
-                width={this.props.imageWidth}
-                onMouseDown={this.onMouseDown}
-                onTouchStart={this.onTouchStart}
+              </>
+            }
+            <Background
+              imageSrc={this.props.imageSrc}
+              containerHeight={this.props.containerHeight}
+              containerWidth={this.props.containerWidth}
+              onReady={() => this.setState({ loading: false })}
+              height={this.props.imageHeight}
+              width={this.props.imageWidth}
+              scale={this.props.scale}
             />
-            </>
-          }
-          <Background
-            imageSrc={this.props.imageSrc}
-            containerHeight={this.props.containerHeight}
-            containerWidth={this.props.containerWidth}
-            onReady={() => this.setState({ loading: false })}
-            height={this.props.imageHeight}
-            width={this.props.imageWidth}
-            scale={this.props.scale}
-          />
+          </div>
         </div>
         {!this.state.loading &&
           <div className="utilities" style={containerStyles}>

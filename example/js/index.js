@@ -11,6 +11,8 @@ import Circle from './objects/Circle';
 const elem = document.getElementById('root');
 const root = createRoot(elem);
 
+const test = false;
+
 root.render(
   <Game
     buffer={true}
@@ -18,6 +20,7 @@ root.render(
     image={image}
     imageHeight={2448}
     imageWidth={1584}
+    // test={true}
     // containerHeight={400}
     // containerWidth={600}
     objects={[Beanie, Football]}
@@ -26,6 +29,8 @@ root.render(
   // <Game
   //   buffer={true}
   //   container={elem} // image should always be wider than this element
+  //   containerHeight={400}
+  //   containerWidth={600}
   //   image={'https://picsum.photos/800/700'}
   //   imageHeight={700}
   //   imageWidth={800}

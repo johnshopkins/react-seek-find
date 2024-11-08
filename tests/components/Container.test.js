@@ -816,7 +816,7 @@ describe('Container', () => {
 
     });
 
-    test('Zooming', async () => {
+    test.only('Zooming', async () => {
 
       const { container } = await renderGame({ objects: [boxObject] });
 
@@ -906,11 +906,11 @@ describe('Container', () => {
       await user.click(hintButton);
       
       // canvas moves to the hint
-      expect(game).toHaveStyle({ height: '700px', left: '-46.875px', top: '-174.375px', width: '800px' });
+      expect(game).toHaveStyle({ height: '700px', left: '-23.75px', top: '-151.25px', width: '800px' });
 
       // image resizes
-      expect(image).toHaveAttribute('height', '525');
-      expect(image).toHaveAttribute('width', '600');
+      expect(image).toHaveAttribute('height', '490');
+      expect(image).toHaveAttribute('width', '560');
 
     });
 

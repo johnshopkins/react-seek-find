@@ -88,6 +88,8 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
     cursor: cursor,
     left: `${left}px`,
     height: `${shownHeight}px`,
+    // maxHeight: `${mapHeight}px`,
+    // maxWidth: `${mapWidth}px`,
     top: `${top}px`,
     width: `${shownWidth}px`,
   }

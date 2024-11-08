@@ -125,16 +125,22 @@ class Game extends Component {
 
     const maxZoomOutWidth = (width >= this.props.imageWidth ? 1 : width / this.props.imageWidth) * 100;
     const maxZoomOutHeight = (illustrationContainerHeight >= this.props.imageHeight ? 1 : illustrationContainerHeight / this.props.imageHeight) * 100;
-    const maxZoomOut = Math.max(maxZoomOutWidth, maxZoomOutHeight);
-    // const maxZoomOut = Math.min(maxZoomOutWidth, maxZoomOutHeight); // allow to zoom out to max width AND height
+    // const maxZoomOut = Math.max(maxZoomOutWidth, maxZoomOutHeight);
+    const maxZoomOut = Math.min(maxZoomOutWidth, maxZoomOutHeight); // allow to zoom out to max width AND height
 
-    // set scale to the the largest of the min/max to avoid white space on initial view
-    let scale = maxZoomOut;
-    // let scale = Math.max(maxZoomOutWidth, maxZoomOutHeight); // allow to zoom out to max width AND height
+    let scale; 
 
-    if (this.props.test) {
-      scale = 100;
-    }
+    // only set the scale once. resizing the window should not adjust the scale
+    // if (!this.state) {
+      // set scale to the the largest of the min/max to avoid white space on initial view
+      // scale = maxZoomOut;
+      scale = Math.min(maxZoomOutWidth, maxZoomOutHeight); // allow to zoom out to max width AND height
+      if (this.props.test) {
+        scale = 100;
+      }
+    // } else {
+    //   scale = this.state.scale;
+    // }
 
     return {
       breakpoint,
@@ -297,7 +303,7 @@ class Game extends Component {
   scaleToFit(height, width, callback = () => {}) {
 
     // add a little buffer around the area to scale to fit to
-    const buffer = 50;
+    const buffer = 30;
 
     const containerHeight = this.state.illustrationContainerHeight;
     const containerWidth = this.state.illustrationContainerWidth;
