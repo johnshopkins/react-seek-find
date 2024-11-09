@@ -300,7 +300,7 @@ class Game extends Component {
   scaleToFit(height, width, callback = () => {}) {
 
     // add a little buffer around the area to scale to fit to
-    const buffer = 50;
+    const buffer = 30;
 
     const containerHeight = this.state.illustrationContainerHeight;
     const containerWidth = this.state.illustrationContainerWidth;
