@@ -118,7 +118,7 @@ class Game extends Component {
     // base breakpoint on the width of the container, not the user's screen
     const breakpoint = this.getBreakpoint(width);
 
-    const legendHeight = settings[`legendThumbnailHeight_${breakpoint}`] + settings[`legendGap_${breakpoint}`];
+    const legendHeight = settings[`legendThumbnailHeight_${breakpoint}`];
 
     const illustrationContainerHeight = height - legendHeight;
     const illustrationContainerWidth = width;
