@@ -355,7 +355,7 @@ describe('Container', () => {
 
         });
 
-        test('Moving the canvas to the edges with a buffer', async () => {
+        test('Moving the canvas to the edges', async () => {
 
           const { container } = await renderGame();
 
@@ -371,64 +371,25 @@ describe('Container', () => {
           // move into top-left buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 100 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 200, clientY: 200 }));
-          expect(game).toHaveStyle({ left: '78px', top: '78px' });
+          expect(game).toHaveStyle({ left: '83px', top: '83px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // move into bottom-left buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 800 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 200 }));
-          expect(game).toHaveStyle({ left: '78px', top: '-433px' });
+          expect(game).toHaveStyle({ left: '83px', top: '-433px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // move into bottom-right buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 800 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 800 }));
-          expect(game).toHaveStyle({ left: '-278px', top: '-433px' });
+          expect(game).toHaveStyle({ left: '-283px', top: '-433px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // move into top-right buffer
           fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 100 }));
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 800, clientY: 800 }));
-          expect(game).toHaveStyle({ left: '-278px', top: '78px' });
-          fireEvent(canvas, getMouseEvent('mouseup'));
-
-        });
-
-        test('Moving the canvas to the edges without a buffer', async () => {
-
-          const { container } = await renderGame({ buffer: false });
-
-          const game = container.querySelector('.game');
-          const canvas = container.querySelector('canvas.findable');
-
-          // original positioning
-          expect(game).toHaveStyle({ left: '0px', top: '0px' });
-
-          // initial placement of canvas, relative to the document
-          jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
-
-          // move into top-left buffer
-          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 100 }));
-          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 200, clientY: 200 }));
-          expect(game).toHaveStyle({ left: '0px', top: '0px' });
-          fireEvent(canvas, getMouseEvent('mouseup'));
-
-          // move into bottom-left buffer
-          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 800 }));
-          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 200 }));
-          expect(game).toHaveStyle({ left: '0px', top: '-355px' });
-          fireEvent(canvas, getMouseEvent('mouseup'));
-
-          // move into bottom-right buffer
-          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 800 }));
-          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 100, clientY: 800 }));
-          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
-          fireEvent(canvas, getMouseEvent('mouseup'));
-
-          // move into top-right buffer
-          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 100 }));
-          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 800, clientY: 800 }));
-          expect(game).toHaveStyle({ left: '-200px', top: '0px' });
+          expect(game).toHaveStyle({ left: '-283px', top: '83px' });
           fireEvent(canvas, getMouseEvent('mouseup'));
 
         });
@@ -442,15 +403,15 @@ describe('Container', () => {
           const grabbable = container.querySelector('.mini-map .shown');
 
           expect(game).toHaveStyle({ left: '0px', top: '0px' });
-          expect(minimap).toHaveStyle({ height: '43.75px', width: '50px' });
-          expect(grabbable).toHaveStyle({ height: '21.5625px', left: '-4px', top: '-4px', width: '37.5px' });
+          expect(minimap).toHaveStyle({ height: '41.125px', width: '47px' });
+          expect(grabbable).toHaveStyle({ height: '20.563px', left: '0px', top: '0px', width: '35.25px' });
 
           // move the minimap
           fireEvent(grabbable, getMouseEvent('mousedown', { clientX: 730, clientY: 85 }));
           fireEvent(grabbable, getMouseEvent('mousemove', { clientX: 737, clientY: 93 }));
 
-          expect(game).toHaveStyle({ left: '-112px', top: '-128px' });
-          expect(grabbable).toHaveStyle({ height: '21.5625px', left: '3px', top: '4px', width: '37.5px' });
+          expect(game).toHaveStyle({ left: '-119.149px', top: '-136.17px' });
+          expect(grabbable).toHaveStyle({ height: '20.563px', left: '7px', top: '8px', width: '35.25px' });
 
         });
 
@@ -560,7 +521,7 @@ describe('Container', () => {
 
         });
 
-        test('With buffer: when sights reaches the edge of the viewable canvas, it automatically pans', async () => {
+        test('When sights reaches the edge of the viewable canvas, it automatically pans', async () => {
 
           const { container } = await renderGame();
 
@@ -583,22 +544,22 @@ describe('Container', () => {
           
           // moves into buffer
           await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
-          expect(game).toHaveStyle({ left: '78px', top: '0px' });
+          expect(game).toHaveStyle({ left: '83px', top: '0px' });
           expect(sights).toHaveStyle({ left: '-20px', top: '0px' });
 
           // move sights (+) all the way to the edge of the image
           // note: image does not move anymore
           await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
-          expect(game).toHaveStyle({ left: '78px', top: '0px' });
+          expect(game).toHaveStyle({ left: '83px', top: '0px' });
           expect(sights).toHaveStyle({ left: '-40px', top: '0px' });
 
           await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
-          expect(game).toHaveStyle({ left: '78px', top: '0px' });
+          expect(game).toHaveStyle({ left: '83px', top: '0px' });
           expect(sights).toHaveStyle({ left: '-50px', top: '0px' });
 
           // cannot move any further
           await user.keyboard('{ArrowLeft}');
-          expect(game).toHaveStyle({ left: '78px', top: '0px' });
+          expect(game).toHaveStyle({ left: '83px', top: '0px' });
           expect(sights).toHaveStyle({ left: '-50px', top: '0px' });
 
           
@@ -606,22 +567,22 @@ describe('Container', () => {
           
           // moves into buffer
           await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
-          expect(game).toHaveStyle({ left: '78px', top: '78px' });
+          expect(game).toHaveStyle({ left: '83px', top: '83px' });
           expect(sights).toHaveStyle({ left: '-50px', top: '-20px' });
 
           // move sights (+) all the way to the edge of the image
           // note: image does not move anymore
           await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
-          expect(game).toHaveStyle({ left: '78px', top: '78px' });
+          expect(game).toHaveStyle({ left: '83px', top: '83px' });
           expect(sights).toHaveStyle({ left: '-50px', top: '-40px' });
 
           await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
-          expect(game).toHaveStyle({ left: '78px', top: '78px' });
+          expect(game).toHaveStyle({ left: '83px', top: '83px' });
           expect(sights).toHaveStyle({ left: '-50px', top: '-50px' });
 
           // cannot move any further
           await user.keyboard('{ArrowUp}');
-          expect(game).toHaveStyle({ left: '78px', top: '78px' });
+          expect(game).toHaveStyle({ left: '83px', top: '83px' });
           expect(sights).toHaveStyle({ left: '-50px', top: '-50px' });
 
 
@@ -629,37 +590,36 @@ describe('Container', () => {
           
           // the calculation:
           // this.props.containerWidth - threshold <= this.state.canvasX + x + size
-          // current values: 600 - 78 <= 78 + (-50) + 128 ---> 522 <= 153
-          // 369 pixels to travel ---> 18 Shift+ArrowRight + 5 ArrowRight
+          // current values: 600 - 83 <= 83 + (-50) + 128 ---> 517 <= 161
+          // 356 pixels to travel ---> 17 Shift+ArrowRight + 8 ArrowRight
 
-          await user.keyboard('{Shift>}{ArrowRight>18/}{/Shift}');
-          expect(game).toHaveStyle({ left: '78px', top: '78px' }); // canvas hasn't moved yet
-          expect(sights).toHaveStyle({ left: '310px', top: '-50px' });
+          await user.keyboard('{Shift>}{ArrowRight>17/}{/Shift}');
+          expect(game).toHaveStyle({ left: '83px', top: '83px' }); // canvas hasn't moved yet
+          expect(sights).toHaveStyle({ left: '290px', top: '-50px' });
 
           // NOW it moves
-          await user.keyboard('{ArrowRight>5/}');
-          expect(game).toHaveStyle({ left: '-42px', top: '78px' });
-          expect(sights).toHaveStyle({ left: '320px', top: '-50px' });
+          await user.keyboard('{ArrowRight>8/}');
+          expect(game).toHaveStyle({ left: '-37px', top: '83px' });
+          expect(sights).toHaveStyle({ left: '306px', top: '-50px' });
 
           // when does it move again?
           // current values: 534 <= 420
-          // current values: 600 - 78 <= (-42) + 320 + 128 ---> 522 <= 406
-          // 116 pixels to travel ---> 5 Shift+ArrowRight + 8 ArrowRight
-          await user.keyboard('{Shift>}{ArrowRight>5/}{/Shift}');
-          await user.keyboard('{ArrowRight>8/}');
-          expect(game).toHaveStyle({ left: '-162px', top: '78px' });
-          expect(sights).toHaveStyle({ left: '436px', top: '-50px' });
+          // current values: 600 - 83 <= (-37) + 306 + 128 ---> 517 <= 397
+          // 120 pixels to travel ---> 6 Shift+ArrowRight
+          await user.keyboard('{Shift>}{ArrowRight>6/}{/Shift}');
+          expect(game).toHaveStyle({ left: '-157px', top: '83px' });
+          expect(sights).toHaveStyle({ left: '426px', top: '-50px' });
 
           // move all the way to the right
-          // 750 is the farthest the sights can go, so 314 more pixels
-          await user.keyboard('{Shift>}{ArrowRight>15/}{/Shift}');
-          await user.keyboard('{ArrowRight>7/}');
-          expect(game).toHaveStyle({ left: '-278px', top: '78px' });
+          // 750 is the farthest the sights can go, so 324 more pixels
+          await user.keyboard('{Shift>}{ArrowRight>16/}{/Shift}');
+          await user.keyboard('{ArrowRight>2/}');
+          expect(game).toHaveStyle({ left: '-283px', top: '83px' });
           expect(sights).toHaveStyle({ left: '750px', top: '-50px' });
 
-          // can't move anymore
+          // // can't move anymore
           await user.keyboard('{ArrowRight}');
-          expect(game).toHaveStyle({ left: '-278px', top: '78px' });
+          expect(game).toHaveStyle({ left: '-283px', top: '83px' });
           expect(sights).toHaveStyle({ left: '750px', top: '-50px' });
 
 
@@ -667,115 +627,37 @@ describe('Container', () => {
           
           // the calculation:
           // this.props.containerHeight - threshold <= this.state.canvasY + y + size
-          // current values: 345 - 78 <= 78 + (-50) + 128 ---> 267 <= 156
-          // 111 pixels to travel ---> 5 Shift+ArrowDown + 6 ArrowDown
+          // current values: 350 - 83 <= 83 + (-50) + 128 ---> 267 <= 161
+          // 106 pixels to travel ---> 5 Shift+ArrowDown + 3 ArrowDown
 
           await user.keyboard('{Shift>}{ArrowDown>5/}{/Shift}');
-          expect(game).toHaveStyle({ left: '-278px', top: '78px' }); // canvas hasn't moved yet
+          expect(game).toHaveStyle({ left: '-283px', top: '83px' }); // canvas hasn't moved yet
           expect(sights).toHaveStyle({ left: '750px', top: '50px' });
 
           // NOW it moves
-          await user.keyboard('{ArrowDown>6/}');
-          expect(game).toHaveStyle({ left: '-278px', top: '-42px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '62px' });
+          await user.keyboard('{ArrowDown>3/}');
+          expect(game).toHaveStyle({ left: '-283px', top: '-37px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '56px' });
 
           // when does it move again?
-          // current values: 345 - 78 <= -42 + 62 + 128 ---> 267 <= 148
-          // 119 pixels to travel ---> 5 Shift+ArrowDown + 10 ArrowDown
+          // current values: 345 - 83 <= -37 + 52 + 128 ---> 267 <= 143
+          // 124 pixels to travel ---> 5 Shift+ArrowDown + 10 ArrowDown
 
-          await user.keyboard('{Shift>}{ArrowDown>5/}{/Shift}');
-          await user.keyboard('{ArrowDown>10/}');
-          expect(game).toHaveStyle({ left: '-278px', top: '-162px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '182px' });
+          await user.keyboard('{Shift>}{ArrowDown>6/}{/Shift}');
+          await user.keyboard('{ArrowDown>2/}');
+          expect(game).toHaveStyle({ left: '-283px', top: '-157px' });
+          expect(sights).toHaveStyle({ left: '750px', top: '180px' });
 
           // move all the way to the bottom
-          // 650 is the farthest the sights can go, so 544 more pixels
-          await user.keyboard('{Shift>}{ArrowDown>27/}{/Shift}');
-          await user.keyboard('{ArrowDown>2/}');
-          expect(game).toHaveStyle({ left: '-278px', top: '-433px' });
+          // 650 is the farthest the sights can go, so 470 more pixels
+          await user.keyboard('{Shift>}{ArrowDown>23/}{/Shift}');
+          await user.keyboard('{ArrowDown>5/}');
+          expect(game).toHaveStyle({ left: '-283px', top: '-433px' });
           expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
           // can't move anymore
           await user.keyboard('{ArrowDown}');
-          expect(game).toHaveStyle({ left: '-278px', top: '-433px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '650px' });
-
-        });
-
-        test('Without buffer: when sights reaches the edge of the viewable canvas, it automatically pans', async () => {
-
-          const { container } = await renderGame({ buffer: false });
-
-          const game = container.querySelector('.game');
-          const sights = container.querySelector('.magnifying-glass');
-          const canvas = container.querySelector('canvas.findable');
-
-          expect(sights).not.toBeVisible();
-          expect(canvas).not.toHaveFocus();
-
-          await user.tab();
-          expect(sights).toBeVisible();
-          expect(canvas).toHaveFocus();
-
-          // starting point
-          expect(game).toHaveStyle({ left: '0px', top: '0px' });
-
-
-          // left
-          
-          // canvas cannot move left, but sights can (so the + can reach the edge)
-          await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
-          expect(game).toHaveStyle({ left: '0px', top: '0px' });
-          expect(sights).toHaveStyle({ left: '-20px', top: '0px' });
-
-          await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
-          expect(game).toHaveStyle({ left: '0px', top: '0px' });
-          expect(sights).toHaveStyle({ left: '-40px', top: '0px' });
-
-          await user.keyboard('{Shift>}{ArrowLeft}{/Shift}');
-          expect(game).toHaveStyle({ left: '0px', top: '0px' });
-          expect(sights).toHaveStyle({ left: '-50px', top: '0px' });
-
-          
-          // up
-          
-          // canvas cannot move up, but sights can (so the + can reach the edge)
-          await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
-          expect(game).toHaveStyle({ left: '0px', top: '0px' });
-          expect(sights).toHaveStyle({ left: '-50px', top: '-20px' });
-
-          await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
-          expect(game).toHaveStyle({ left: '0px', top: '0px' });
-          expect(sights).toHaveStyle({ left: '-50px', top: '-40px' });
-
-          await user.keyboard('{Shift>}{ArrowUp}{/Shift}');
-          expect(game).toHaveStyle({ left: '0px', top: '0px' });
-          expect(sights).toHaveStyle({ left: '-50px', top: '-50px' });
-
-
-          // right
-          // move all the way to the right
-
-          await user.keyboard('{Shift>}{ArrowRight>40/}{/Shift}');
-          expect(game).toHaveStyle({ left: '-200px', top: '0px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '-50px' });
-
-          // cannot move anymore
-          await user.keyboard('{ArrowRight}');
-          expect(game).toHaveStyle({ left: '-200px', top: '0px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '-50px' });
-
-
-          // down
-          // move all the way to the bottom
-
-          await user.keyboard('{Shift>}{ArrowDown>35/}{/Shift}');
-          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
-          expect(sights).toHaveStyle({ left: '750px', top: '650px' });
-
-          // cannot move anymore
-          await user.keyboard('{ArrowDown>}');
-          expect(game).toHaveStyle({ left: '-200px', top: '-355px' });
+          expect(game).toHaveStyle({ left: '-283px', top: '-433px' });
           expect(sights).toHaveStyle({ left: '750px', top: '650px' });
 
         });
@@ -797,23 +679,23 @@ describe('Container', () => {
       const canvas = container.querySelector('canvas.findable');
 
       expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
-      expect(gameContainer).toHaveStyle({ height: '325px', width: '600px' });
+      expect(gameContainer).toHaveStyle({ height: '330px', width: '600px' });
 
       // initial position
-      expect(game).toHaveStyle({ height: '700px', left: '0px', top: '0px', width: '800px' });
+      expect(game).toHaveStyle({ left: '0px', top: '0px' });
 
       // move into the center of the canvas
       fireEvent(canvas, getMouseEvent('mousedown', { clientX: 423, clientY: 339 }));
       fireEvent(canvas, getMouseEvent('mousemove', { clientX: 323, clientY: 189 }));
-      expect(game).toHaveStyle({ height: '700px', left: '-100px', top: '-150px', width: '800px' });
+      expect(game).toHaveStyle({ left: '-100px', top: '-150px' });
 
       act(() => {
         window.resizeTo(500, 300);
       });
 
       expect(outerContainer).toHaveStyle({ height: '280px', width: '500px' });
-      expect(gameContainer).toHaveStyle({ height: '225px', width: '500px' });
-      expect(game).toHaveStyle({ height: '700px', left: '-150px', top: '-200px', width: '800px' });
+      expect(gameContainer).toHaveStyle({ height: '230px', width: '500px' });
+      expect(game).toHaveStyle({ left: '-150px', top: '-200px' });
 
     });
 
@@ -821,9 +703,9 @@ describe('Container', () => {
 
       const { container } = await renderGame({ objects: [boxObject] });
 
+      const gamePlacement = container.querySelector('.game-placement');
       const game = container.querySelector('.game');
       const image = screen.getByAltText('Seek and find');
-
       const canvas = container.querySelector('canvas.findable');
 
       // initial placement of canvas, relative to the document
@@ -836,18 +718,20 @@ describe('Container', () => {
       expect(zoomOutButton).not.toBeDisabled();
 
       // starting point
-      expect(game).toHaveStyle({ height: '700px', left: '0px', top: '0px', width: '800px' });
+      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+      expect(game).toHaveStyle({ left: '0px', top: '0px' });
       expect(image).toHaveAttribute('height', '700');
       expect(image).toHaveAttribute('width', '800');
 
       // move into the center of the canvas
       fireEvent(canvas, getMouseEvent('mousedown', { clientX: 423, clientY: 339 }));
-      fireEvent(canvas, getMouseEvent('mousemove', { clientX: 323, clientY: 189 }));
-      expect(game).toHaveStyle({ height: '700px', left: '-100px', top: '-150px', width: '800px' });
+      fireEvent(canvas, getMouseEvent('mousemove', { clientX: 323, clientY: 164 }));
+      expect(game).toHaveStyle({ left: '-100px', top: '-175px'  });
 
       // zoom out to 90%
       await user.click(zoomOutButton);
-      expect(game).toHaveStyle({ height: '700px', left: '-60px', top: '-117.75px', width: '800px' });
+      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+      expect(game).toHaveStyle({ left: '-60px', top: '-140px' });
       expect(image).toHaveAttribute('height', '630');
       expect(image).toHaveAttribute('width', '720');
 
@@ -855,34 +739,109 @@ describe('Container', () => {
 
       // zoom out to 80%
       await user.click(zoomOutButton);
-      expect(game).toHaveStyle({ height: '700px', left: '-20px', top: '-85.5px', width: '800px' });
+      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+      expect(game).toHaveStyle({  left: '-20px', top: '-105px' });
       expect(image).toHaveAttribute('height', '560');
       expect(image).toHaveAttribute('width', '640');
 
-      // zoom out to 75% (max zoom out)
+      // zoom out to 70%
       await user.click(zoomOutButton);
-      expect(game).toHaveStyle({ height: '700px', left: '0px', top: '-69.375px', width: '800px' });
-      expect(image).toHaveAttribute('height', '525');
-      expect(image).toHaveAttribute('width', '600');
+      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+      expect(game).toHaveStyle({  left: '20px', top: '-70px' });
+      expect(image).toHaveAttribute('height', '490');
+      expect(image).toHaveAttribute('width', '560');
+
+      // zoom out to 60%
+      await user.click(zoomOutButton);
+      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+      expect(game).toHaveStyle({  left: '60px', top: '-35px' });
+      expect(image).toHaveAttribute('height', '420');
+      expect(image).toHaveAttribute('width', '480');
+
+      // zoom out to 50%
+      await user.click(zoomOutButton);
+      expect(gamePlacement).toHaveStyle({ left: '100px', top: '0px' });
+      expect(game).toHaveStyle({  left: '0px', top: '0px' });
+      expect(image).toHaveAttribute('height', '350');
+      expect(image).toHaveAttribute('width', '400');
+
+      // zoom out to 40%
+      await user.click(zoomOutButton);
+      expect(gamePlacement).toHaveStyle({ left: '140px', top: '0px' });
+      expect(game).toHaveStyle({  left: '0px', top: '35px' });
+      expect(image).toHaveAttribute('height', '280');
+      expect(image).toHaveAttribute('width', '320');
+
+      // zoom out to 30%
+      await user.click(zoomOutButton);
+      expect(gamePlacement).toHaveStyle({ left: '180px', top: '0px' });
+      expect(game).toHaveStyle({  left: '0px', top: '70px' });
+      expect(image).toHaveAttribute('height', '210');
+      expect(image).toHaveAttribute('width', '240');
+
+      // zoom out to 26% (full zoom out)
+      await user.click(zoomOutButton);
+      expect(gamePlacement).toHaveStyle({ left: '194.857px', top: '0px' });
+      expect(game).toHaveStyle({  left: '0px', top: '83px' });
+      expect(image).toHaveAttribute('height', '184');
+      expect(image).toHaveAttribute('width', '210.286');
 
       expect(zoomInButton).not.toBeDisabled();
       expect(zoomOutButton).toBeDisabled();
 
+      // zoom back in to 30%
+      await user.click(zoomInButton);
+      expect(gamePlacement).toHaveStyle({ left: '180px', top: '0px' });
+      expect(game).toHaveStyle({  left: '0px', top: '70px' });
+      expect(image).toHaveAttribute('height', '210');
+      expect(image).toHaveAttribute('width', '240');
+
+      // zoom back in to 40%
+      await user.click(zoomInButton);
+      expect(gamePlacement).toHaveStyle({ left: '140px', top: '0px' });
+      expect(game).toHaveStyle({  left: '0px', top: '35px' });
+      expect(image).toHaveAttribute('height', '280');
+      expect(image).toHaveAttribute('width', '320');
+
+      // zoom back in to 50%
+      await user.click(zoomInButton);
+      expect(gamePlacement).toHaveStyle({ left: '100px', top: '0px' });
+      expect(game).toHaveStyle({  left: '0px', top: '0px' });
+      expect(image).toHaveAttribute('height', '350');
+      expect(image).toHaveAttribute('width', '400');
+
+      // zoom back in to 60%
+      await user.click(zoomInButton);
+      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+      expect(game).toHaveStyle({  left: '60px', top: '-35px' });
+      expect(image).toHaveAttribute('height', '420');
+      expect(image).toHaveAttribute('width', '480');
+
+      // zoom back in to 70%
+      await user.click(zoomInButton);
+      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+      expect(game).toHaveStyle({  left: '20px', top: '-70px' });
+      expect(image).toHaveAttribute('height', '490');
+      expect(image).toHaveAttribute('width', '560');
+      
       // zoom back in to 80%
       await user.click(zoomInButton);
-      expect(game).toHaveStyle({ height: '700px', left: '-20px', top: '-85.5px', width: '800px' });
+      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+      expect(game).toHaveStyle({  left: '-20px', top: '-105px' });
       expect(image).toHaveAttribute('height', '560');
       expect(image).toHaveAttribute('width', '640');
 
       // zoom back in to 90%
       await user.click(zoomInButton);
-      expect(game).toHaveStyle({ height: '700px', left: '-60px', top: '-117.75px', width: '800px' });
+      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+      expect(game).toHaveStyle({ left: '-60px', top: '-140px' });
       expect(image).toHaveAttribute('height', '630');
       expect(image).toHaveAttribute('width', '720');
 
       // zoom back in to 100%
       await user.click(zoomInButton);
-      expect(game).toHaveStyle({ height: '700px', left: '-100px', top: '-150px', width: '800px' });
+      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+      expect(game).toHaveStyle({ left: '-100px', top: '-175px'  });
       expect(image).toHaveAttribute('height', '700');
       expect(image).toHaveAttribute('width', '800');
 
@@ -899,7 +858,7 @@ describe('Container', () => {
       const image = screen.getByAltText('Seek and find');
 
       // starting point
-      expect(game).toHaveStyle({ height: '700px', left: '0px', top: '0px', width: '800px' });
+      expect(game).toHaveStyle({ left: '0px', top: '0px' });
       expect(image).toHaveAttribute('height', '700');
       expect(image).toHaveAttribute('width', '800');
 
@@ -907,11 +866,11 @@ describe('Container', () => {
       await user.click(hintButton);
       
       // canvas moves to the hint
-      expect(game).toHaveStyle({ height: '700px', left: '-46.875px', top: '-174.375px', width: '800px' });
+      expect(game).toHaveStyle({ left: '-23.75px', top: '-148.75px' });
 
       // image resizes
-      expect(image).toHaveAttribute('height', '525');
-      expect(image).toHaveAttribute('width', '600');
+      expect(image).toHaveAttribute('height', '490');
+      expect(image).toHaveAttribute('width', '560');
 
     });
 
