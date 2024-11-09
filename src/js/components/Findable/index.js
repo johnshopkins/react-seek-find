@@ -23,24 +23,23 @@ export default forwardRef(({
     
     const context = canvasRef.current.getContext('2d');
 
-    context.clearRect(0, 0, width, height);
-    context.resetTransform();
-    context.scale(scale, scale);
-
     objects.map(object => {
       object.plotted = object.create.call(this, context);
       return object;
     });
 
-  }, [height, objects, scale, width]);
+  }, [objects]);
 
   useImperativeHandle(ref, () => ({
     checkGuess: (positionX, positionY) => {
 
       const context = canvasRef.current.getContext('2d');
 
+      const x = positionX / scale;
+      const y = positionY / scale;
+
       for (const object of objects) {
-        if (context.isPointInPath(object.plotted, positionX, positionY)) {
+        if (context.isPointInPath(object.plotted, x, y)) {
           onFind(object);
           break;
         }
@@ -50,7 +49,7 @@ export default forwardRef(({
     focusCanvas: () => {
       canvasRef.current.focus();
     }
-  }), [objects, onFind]);
+  }), [objects, onFind, scale]);
 
   return (
     <canvas
@@ -63,7 +62,9 @@ export default forwardRef(({
       tabIndex={disableTabbing ? '-1' : '0'}
       style={{
         // stops the browser from its scrolling on the element
-        touchAction: 'none'
+        touchAction: 'none',
+        height: `${height * scale}px`,
+        width: `${width * scale}px`
       }}
     />
   )

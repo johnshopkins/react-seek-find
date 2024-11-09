@@ -3,5 +3,6 @@
 canvas.findable {
   outline: 0;
   position: absolute;
+  transition: all #{$canvasTransition};
   z-index: var(--stack-findable);
 }

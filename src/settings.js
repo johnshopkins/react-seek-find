@@ -5,7 +5,6 @@ module.exports = {
   hintFadeIn: 500,
   hintFadeOut: 5000,
 
-  canvasTransition: 'all 300ms ease-out',
 
   // breakpoints (up to given pixel width)
   breakpoint_small: 430,

@@ -461,16 +461,17 @@ class Illustration extends Component {
         this.sights.current.moveSightsTo(coords.x * scale, coords.y * scale);
       });
 
-      setTimeout(() => this.removeHint(), settings.hintFadeIn + this.props.hintKeepAlive);
+      setTimeout(() => this.removeHint(), 15000);
 
       this.findable.current.focusCanvas();
 
     });
   }
 
-  removeHint(now = false) {
-    this.setState({ hint: null }, () => {
-      setTimeout(() => this.setState({ hintActive: false }), now ? 0 : settings.hintFadeOut);
+  removeHint() {
+    this.setState({
+      hint: null,
+      hintActive: false
     });
   }
 
@@ -505,7 +506,7 @@ class Illustration extends Component {
     if (this.state.isDragging) {
       gameStyles.cursor = 'grabbing';
     } else {
-      gameStyles.transition = settings.canvasTransition;
+      gameStyles.transition = `all ${settings.canvasTransition}`;
     }
 
     return (
@@ -535,12 +536,14 @@ class Illustration extends Component {
                 show={this.state.isKeyboardFocused}
                 width={this.props.imageWidth * this.props.scale}
               />
-              <Hint
-                height={this.props.imageHeight}
-                width={this.props.imageWidth}
-                object={this.state.hint}
-                scale={this.props.scale}
-              />
+              {this.state.hint &&
+                <Hint
+                  height={this.props.imageHeight}
+                  width={this.props.imageWidth}
+                  object={this.state.hint}
+                  scale={this.props.scale}
+                />
+              }
               <Found
                 height={this.props.imageHeight}
                 width={this.props.imageWidth}
@@ -645,7 +648,6 @@ Illustration.defaultProps = {
 };
 
 Illustration.propTypes = {
-  buffer: PropTypes.bool.isRequired,
   containerHeight: PropTypes.number.isRequired,
   containerWidth: PropTypes.number.isRequired,
   disableTabbing: PropTypes.bool,
