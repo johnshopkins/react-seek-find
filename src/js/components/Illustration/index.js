@@ -63,7 +63,6 @@ class Illustration extends Component {
     };
 
     this.getGameOffset = this.getGameOffset.bind(this);
-    this.getMoveLock = this.getMoveLock.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onFind = this.onFind.bind(this);
@@ -303,19 +302,6 @@ class Illustration extends Component {
     }, { once: true });
   }
 
-  getMoveLock() {
-    const scaledHeight = this.props.imageHeight * this.props.scale;
-    const scaledWidth = this.props.imageWidth * this.props.scale;
-
-    // buffer on both left and right
-    const bufferSize = (settings.utilitiesEdgeSpace * 2) + (settings.miniMap * 2);
-
-    const lockX = this.state.gamePlacementX > 0 || scaledWidth <= this.props.containerWidth - bufferSize;
-    const lockY = this.state.gamePlacementY > 0 || scaledHeight <= this.props.containerHeight;
-
-    return { lockX, lockY };
-  }
-
   /**
    * React to the user moving the mouse after mousedown triggered.
    * Make sure the mouse has moved at least 5 pixels in one direction
@@ -326,19 +312,13 @@ class Illustration extends Component {
    */
   onMouseMove(e) {
 
-    const { lockX, lockY } = this.getMoveLock();
-
-    if (lockX && lockY) {
-      return;
-    }
-
     const { offsetX, offsetY } = getOffsetCoords(e);
     const diffX = this.state.dragStartX - offsetX;
     const diffY = this.state.dragStartY - offsetY;
 
     if (this.state.isDragging) {
-      let newX = !lockX ? this.state.canvasX - diffX : this.state.canvasX;
-      let newY = !lockY ? this.state.canvasY - diffY : this.state.canvasY;
+      const newX = this.state.canvasX - diffX;
+      const newY = this.state.canvasY - diffY;
       this.moveCanvas(newX, newY);
     } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
       this.setState({ isDragging: true}, () => {
@@ -350,12 +330,6 @@ class Illustration extends Component {
   onTouchMove(e) {
 
     if (e.targetTouches.length !== 2 || e.changedTouches.length !== 2) {
-      return;
-    }
-
-    const { lockX, lockY } = this.getMoveLock();
-
-    if (lockX && lockY) {
       return;
     }
 
