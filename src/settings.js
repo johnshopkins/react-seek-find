@@ -2,9 +2,9 @@
 module.exports = {
 
   // animations (in ms)
-  hintFadeIn: 500,
-  hintFadeOut: 5000,
+  foundKeepAlive: 2000,
 
+  canvasTransition: '300ms ease-out',
 
   // breakpoints (up to given pixel width)
   breakpoint_small: 430,
@@ -23,7 +23,7 @@ module.exports = {
   legendGap_large: 5,
   legendGap_xlarge: 5,
 
-  miniMap: 50,
+  miniMap: 55,
   utilitiesIconHeight: 32,
   utilitiesEdgeSpace: 14,
 }

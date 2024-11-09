@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import getOffsetCoords from '../../lib/get-offset-coords';
+import roundToThousandth from '../../lib/roundToThousandth';
 import settings from '../../../settings';
 import './style.scss';
 
@@ -18,8 +19,10 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartY, setDragStartY] = useState(null);
 
-  const sizeDown = settings.miniMap / imageWidth;
-  const sizeUp = imageWidth/ settings.miniMap;
+  const miniMapSize = settings.miniMap - 8;
+
+  const sizeDown = miniMapSize / imageWidth;
+  const sizeUp = imageWidth / miniMapSize;
 
   const onMouseDown = (e) => {
 
@@ -57,30 +60,19 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
   }, 15); // set to 15 to keep up with mousemove in a smaller space
 
   const mapHeight = imageHeight * sizeDown
-  const mapWidth = settings.miniMap;
+  const mapWidth = miniMapSize;
 
   const mapStyle = {
     height: `${mapHeight}px`,
     width: `${mapWidth}px`,
   }
 
-  const shownHeight = (sizeDown * containerHeight);
-  const shownWidth = (sizeDown * containerWidth);
+  const shownHeight = roundToThousandth(Math.min(sizeDown * containerHeight, mapHeight));
+  const shownWidth = roundToThousandth(Math.min(sizeDown * containerWidth, mapWidth));
 
   // adjustments for CSS absolute positioning
-  let left = Math.abs(canvasX * sizeDown);
-  if (canvasX > 0) {
-    left = -Math.abs(left);
-  }
-
-  let top = Math.abs(canvasY * sizeDown);
-  if (canvasY > 0) {
-    top = -Math.abs(top);
-  }
-
-  // border offset for absolute positioning
-  left = left - 4;
-  top = top - 4;
+  const left = canvasX <= 0 ? roundToThousandth(Math.min(Math.abs(canvasX * sizeDown), mapWidth - shownWidth)) : 0;
+  const top = canvasY <= 0 ? roundToThousandth(Math.min(Math.abs(canvasY * sizeDown), mapHeight - shownHeight)) : 0;
 
   const cursor = isDragging ? 'grabbing' : 'grab';
 

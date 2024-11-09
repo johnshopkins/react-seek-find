@@ -3,6 +3,7 @@
 img.game-background {
   position: relative;
   z-index: var(--stack-background);
+  transition: all #{$canvasTransition};
 }
 
 .loading {

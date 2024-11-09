@@ -138,7 +138,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
   };
 
   if (useTransition) {
-    style.transition = settings.canvasTransition;
+    style.transition = `all ${settings.canvasTransition}`;
   }
 
   return <MagnifyingGlassIcon className="magnifying-glass" style={style} />

@@ -123,15 +123,18 @@ class Game extends Component {
     const illustrationContainerHeight = height - legendHeight;
     const illustrationContainerWidth = width;
 
-    const maxZoomOutWidth = (width >= this.props.imageWidth ? 1 : width / this.props.imageWidth) * 100;
-    const maxZoomOutHeight = (illustrationContainerHeight >= this.props.imageHeight ? 1 : illustrationContainerHeight / this.props.imageHeight) * 100;
-    const maxZoomOut = Math.max(maxZoomOutWidth, maxZoomOutHeight);
-    // const maxZoomOut = Math.min(maxZoomOutWidth, maxZoomOutHeight); // allow to zoom out to max width AND height
+    // factor in the buffer size to figure out max zoom ou
+    const bufferSize = (settings.utilitiesEdgeSpace * 4) + (settings.miniMap * 2);
 
-    // set scale to the the largest of the min/max to avoid white space on initial view
-    let scale = maxZoomOut;
-    // let scale = Math.max(maxZoomOutWidth, maxZoomOutHeight); // allow to zoom out to max width AND height
+    const maxZoomOutWidth = (illustrationContainerWidth - bufferSize >= this.props.imageWidth ? 1 : (illustrationContainerWidth  - bufferSize) / this.props.imageWidth) * 100;
+    const maxZoomOutHeight = (illustrationContainerHeight - bufferSize >= this.props.imageHeight ? 1 : (illustrationContainerHeight - bufferSize) / this.props.imageHeight) * 100;
+    const maxZoomOut = Math.min(maxZoomOutWidth, maxZoomOutHeight); // allow to zoom out to max width AND height
 
+    // start zoom out (do not take buffer into account)
+    const startZoomOutWidth = illustrationContainerWidth >= this.props.imageWidth ? 1 : (illustrationContainerWidth / this.props.imageWidth) * 100;
+    const startZoomOutHeight = illustrationContainerHeight >= this.props.imageHeight ? 1 : (illustrationContainerHeight / this.props.imageHeight) * 100;
+    let scale = Math.min(startZoomOutWidth, startZoomOutHeight);
+    
     if (this.props.test) {
       scale = 100;
     }
@@ -336,7 +339,6 @@ class Game extends Component {
         }
         <div className={['container', this.state.breakpoint].join(' ')} style={containerStyles} aria-hidden={this.state.openInstructions}>
           <Illustration
-            buffer={this.props.buffer}
             containerHeight={this.state.illustrationContainerHeight}
             containerWidth={this.state.illustrationContainerWidth}
             disableTabbing={this.state.openInstructions}
@@ -369,7 +371,6 @@ class Game extends Component {
 }
 
 Game.defaultProps = {
-  buffer: true,
   foundKeepAlive: 2000,
   hintKeepAlive: 10000,
   objects: [],
@@ -378,7 +379,6 @@ Game.defaultProps = {
 };
 
 Game.propTypes = {
-  buffer: PropTypes.bool,
   containerHeight: PropTypes.number, // for testing convenience
   containerWidth: PropTypes.number, // for testing convenience
   foundKeepAlive: PropTypes.number,

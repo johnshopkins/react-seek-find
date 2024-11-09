@@ -3,7 +3,7 @@
 .mini-map {
   background: var(--jhu-brand-heritage-blue);
   border: 4px solid var(--jhu-brand-white);
-  box-sizing: border-box;
+  box-sizing: content-box;
   outline: 2px solid var(--jhu-brand-double-black);
   position: relative;
   pointer-events: auto;
