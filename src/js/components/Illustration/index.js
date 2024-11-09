@@ -563,10 +563,6 @@ class Illustration extends Component {
     });
   }
 
-  roundToThousandth(num) {
-    return Math.round(num * 1000) / 1000;
-  }
-
   render() {
 
     const containerStyles = {
@@ -575,10 +571,10 @@ class Illustration extends Component {
     };
 
     const gameStyles = {
-      left: this.roundToThousandth(this.state.canvasX),
-      top: this.roundToThousandth(this.state.canvasY),
       // height: `${this.props.imageHeight}px`,
       // width: `${this.props.imageWidth}px`,
+      left: roundToThousandth(this.state.canvasX),
+      top: roundToThousandth(this.state.canvasY),
       // left: this.state.canvasX,
       // top: this.state.canvasY,
     };

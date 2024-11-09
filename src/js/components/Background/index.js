@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import LoadingIcon from '../Icons/Loading'
+import roundToThousandth from '../../lib/roundToThousandth';
 import './style.scss';
 
 /**
@@ -9,8 +10,8 @@ export default function Background({ containerHeight, containerWidth, height, im
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const scaledWidth = width * scale;
-  const scaledHeight = height * scale;
+  const scaledWidth = roundToThousandth(width * scale);
+  const scaledHeight = roundToThousandth(height * scale);
 
   const loadingIconSize = 30;
 
