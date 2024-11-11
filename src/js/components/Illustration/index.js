@@ -33,6 +33,9 @@ class Illustration extends Component {
     const canvasX = 0;
     const canvasY = 0;
 
+    this.scaledImageHeight = this.props.imageHeight * this.props.scale;
+    this.scaledImageWidth = this.props.imageWidth * this.props.scale;
+
     const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
     const { gamePlacementX, gamePlacementY } = this.getGameOffset();
 
@@ -180,6 +183,9 @@ class Illustration extends Component {
 
       const scaleDiff = (this.props.scale * 100) / (prevProps.scale * 100);
 
+      this.scaledImageHeight = this.props.imageHeight * this.props.scale;
+      this.scaledImageWidth = this.props.imageWidth * this.props.scale;
+
       // calibrate the sights
       this.sights.current.calibrateSights(scaleDiff);
 
@@ -195,21 +201,18 @@ class Illustration extends Component {
   }
 
   getGameOffset() {
-    
-    const imageWidth = this.props.imageWidth * this.props.scale;
-    const imageHeight = this.props.imageHeight * this.props.scale;
 
     const bufferSize = (settings.utilitiesEdgeSpace * 4) + (settings.miniMap * 2);
 
     let gameOffsetLeft = 0;
     let gameOffsetTop = 0;
 
-    if (this.props.containerWidth > imageWidth + bufferSize) {
-      gameOffsetLeft = roundToThousandth((this.props.containerWidth - imageWidth) / 2);
+    if (this.props.containerWidth > this.scaledImageWidth + bufferSize) {
+      gameOffsetLeft = roundToThousandth((this.props.containerWidth - this.scaledImageWidth) / 2);
     }
 
-    if (this.props.containerHeight > imageHeight) {
-      gameOffsetTop = roundToThousandth((this.props.containerHeight - imageHeight) / 2);
+    if (this.props.containerHeight > this.scaledImageHeight) {
+      gameOffsetTop = roundToThousandth((this.props.containerHeight - this.scaledImageHeight) / 2);
     }
 
     return {
@@ -375,10 +378,6 @@ class Illustration extends Component {
    */
   moveCanvas(newX, newY) {
 
-    // scaled dimensions of image
-    const scaledHeight = this.props.imageHeight * this.props.scale;
-    const scaledWidth = this.props.imageWidth * this.props.scale;
-
     // should the game be offset?
     // centers the image within the game space when the height or width
     // is smaller than the container height or width
@@ -399,15 +398,14 @@ class Illustration extends Component {
     } else if (gamePlacementX === 0 && this.state.gamePlacementX > 0 && !this.state.hintActive) {
 
       // game was previous placed. adjust newX to move the canvas to the center
-      const imageWidth = this.props.imageWidth * this.props.scale;
-      newX = roundToThousandth((this.props.containerWidth - imageWidth) / 2);
+      newX = roundToThousandth((this.props.containerWidth - this.scaledImageWidth) / 2);
 
     } else {
 
       const xMin = bufferSize;
 
-      const xMaxCalc = this.props.containerWidth - (scaledWidth + bufferSize);
-      const xMax = this.props.containerWidth < scaledWidth ? -Math.abs(xMaxCalc) : xMaxCalc;
+      const xMaxCalc = this.props.containerWidth - (this.scaledImageWidth + bufferSize);
+      const xMax = this.props.containerWidth < this.scaledImageWidth ? -Math.abs(xMaxCalc) : xMaxCalc;
 
       if (newX > xMin) {
         newX = xMin;
@@ -422,15 +420,14 @@ class Illustration extends Component {
     } else if (gamePlacementY === 0 && this.state.gamePlacementY > 0 && !this.state.hintActive) {
 
       // game was previous placed. adjust newX to move the canvas to the center
-      const imageHeight = this.props.imageHeight * this.props.scale;
-      newY = roundToThousandth((this.props.containerHeight - imageHeight) / 2);
+      newY = roundToThousandth((this.props.containerHeight - this.scaledImageHeight) / 2);
 
     } else {
 
       const yMin = bufferSize;
 
-      const yMaxCalc = this.props.containerHeight - (scaledHeight + bufferSize);
-      const yMax = this.props.containerHeight < scaledHeight ? -Math.abs(yMaxCalc) : yMaxCalc;
+      const yMaxCalc = this.props.containerHeight - (this.scaledImageHeight + bufferSize);
+      const yMax = this.props.containerHeight < this.scaledImageHeight ? -Math.abs(yMaxCalc) : yMaxCalc;
 
        if (newY > yMin) {
         newY = yMin;
@@ -587,10 +584,10 @@ class Illustration extends Component {
                 <Sights
                   ref={this.sights}
                   checkGuess={(x, y) => this.findable.current.checkGuess(x, y)}
-                  height={this.props.imageHeight * this.props.scale}
+                  height={this.scaledImageHeight}
                   onSightsMove={this.onSightsMove}
                   show={this.state.isKeyboardFocused}
-                  width={this.props.imageWidth * this.props.scale}
+                  width={this.scaledImageWidth}
                 />
                 {this.state.hint &&
                   <Hint
@@ -660,8 +657,8 @@ class Illustration extends Component {
                 canvasY={this.state.canvasY}
                 containerHeight={this.props.containerHeight}
                 containerWidth={this.props.containerWidth}
-                imageHeight={this.props.imageHeight * this.props.scale}
-                imageWidth={this.props.imageWidth * this.props.scale}
+                imageHeight={this.scaledImageHeight}
+                imageWidth={this.scaledImageWidth}
                 moveCanvas={this.moveCanvas}
               />
               
