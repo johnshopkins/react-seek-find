@@ -624,6 +624,8 @@ class Illustration extends Component {
               imageSrc={this.props.imageSrc}
               containerHeight={this.props.containerHeight}
               containerWidth={this.props.containerWidth}
+              gamePlacementX={this.state.gamePlacementX}
+              gamePlacementY={this.state.gamePlacementY}
               onReady={() => this.setState({ loading: false })}
               height={this.props.imageHeight}
               width={this.props.imageWidth}

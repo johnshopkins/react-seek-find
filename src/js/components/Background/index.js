@@ -6,7 +6,7 @@ import './style.scss';
 /**
  * The background image
  */
-export default function Background({ containerHeight, containerWidth, height, imageSrc, onReady, scale, width }) {
+export default function Background({ containerHeight, containerWidth, gamePlacementX, gamePlacementY, height, imageSrc, onReady, scale, width }) {
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,9 +17,9 @@ export default function Background({ containerHeight, containerWidth, height, im
 
   const loadingStyle = {
     height: `${loadingIconSize}px`,
-    left: (containerWidth / 2) - (loadingIconSize / 2),
-    top: (containerHeight / 2) - (loadingIconSize / 2),
     width: `${loadingIconSize}px`,
+    left: `${(containerWidth / 2) - (loadingIconSize / 2) - gamePlacementX}px`,
+    top: `${(containerHeight / 2) - (loadingIconSize / 2) - gamePlacementY}px`,
   }
 
   return (
