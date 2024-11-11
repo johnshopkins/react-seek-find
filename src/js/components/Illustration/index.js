@@ -396,7 +396,7 @@ class Illustration extends Component {
 
     if (gamePlacementX > 0 ) {
       newX = 0
-    } else if (gamePlacementX === 0 && this.state.gamePlacementX > 0) {
+    } else if (gamePlacementX === 0 && this.state.gamePlacementX > 0 && !this.state.hintActive) {
 
       // game was previous placed. adjust newX to move the canvas to the center
       const imageWidth = this.props.imageWidth * this.props.scale;
@@ -419,7 +419,7 @@ class Illustration extends Component {
     if (gamePlacementY > 0 ) {
       newY = 0
 
-    } else if (gamePlacementY === 0 && this.state.gamePlacementY > 0) {
+    } else if (gamePlacementY === 0 && this.state.gamePlacementY > 0 && !this.state.hintActive) {
 
       // game was previous placed. adjust newX to move the canvas to the center
       const imageHeight = this.props.imageHeight * this.props.scale;
@@ -498,20 +498,18 @@ class Illustration extends Component {
     const newY = coords.y * this.props.scale;
 
     this.setState({
-
       // set the center anchor to be the center of the hint
       // on componentDidUpdate, the new canvas position will be based on that
       anchorX: -Math.abs(newX + hintOffset),
       anchorY: -Math.abs(newY + hintOffset),
-
-      // activate hint
-      hint: hint,
-      hintActive: true
-
+      hint, // get the hint in the DOM
     }, () => {
 
       this.props.scaleToFit(hint.hintSize, hint.hintSize, (scale) => {
         this.sights.current.moveSightsTo(coords.x * scale, coords.y * scale);
+        this.setState({ hintActive: true }, () => {
+          this.sights.current.moveSightsTo(coords.x * scale, coords.y * scale);
+        })
       });
 
       setTimeout(() => this.removeHint(), 15000);
