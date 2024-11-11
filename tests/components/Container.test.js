@@ -137,8 +137,11 @@ describe('Container', () => {
       const instructionsOverlay = container.querySelector('.overlay-container');
       expect(instructionsOverlay).toBeVisible();
 
+      // close button is not present
+      expect(container.querySelector('.overlay-container .close')).not.toBeInTheDocument();
+
       // close the overlay
-      await user.click(within(instructionsOverlay).getByRole('button', { name: 'Close instructions' }));
+      await user.click(within(instructionsOverlay).getByRole('button', { name: 'I\'m ready to play!' }));
       expect(container.querySelector('.overlay-container')).not.toBeInTheDocument();
 
     });
