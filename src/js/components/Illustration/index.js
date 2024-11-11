@@ -555,8 +555,10 @@ class Illustration extends Component {
       top: `${this.state.gamePlacementY}px`,
     }
 
+    const gameClasses = ['game'];
+
     if (this.state.isDragging) {
-      gameStyles.cursor = 'grabbing';
+      gameClasses.push('grabbing');
     } else {
       gameStyles.transition = `all ${settings.canvasTransition}`;
       gamePlacementStyles.transition = `all ${settings.canvasTransition}`;
@@ -579,7 +581,7 @@ class Illustration extends Component {
         }}
       >
         <div className="game-placement" style={gamePlacementStyles}>
-          <div className="game" style={gameStyles}>
+          <div className={gameClasses.join(' ')} style={gameStyles}>
             {!this.state.loading &&
               <>
                 <Sights

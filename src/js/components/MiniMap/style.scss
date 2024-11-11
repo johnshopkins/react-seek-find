@@ -11,6 +11,11 @@
   .shown {
     border: 2px solid var(--jhu-red-50);
     box-sizing: border-box;
+    cursor: url('../../../images/grab.svg') 16 16, grab;
     position: absolute;
+
+    &:active {
+      cursor: url('../../../images/grabbing.svg') 4 15, grabbing;
+    }
   }
 }

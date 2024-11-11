@@ -74,10 +74,7 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
   const left = canvasX <= 0 ? roundToThousandth(Math.min(Math.abs(canvasX * sizeDown), mapWidth - shownWidth)) : 0;
   const top = canvasY <= 0 ? roundToThousandth(Math.min(Math.abs(canvasY * sizeDown), mapHeight - shownHeight)) : 0;
 
-  const cursor = isDragging ? 'grabbing' : 'grab';
-
   const shownStyle = {
-    cursor: cursor,
     left: `${left}px`,
     height: `${shownHeight}px`,
     top: `${top}px`,

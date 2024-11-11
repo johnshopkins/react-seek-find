@@ -1,6 +1,7 @@
 @use '../../../css/main' as *;
 
 .container {
+  cursor: url('../../../images/arrow.svg'), pointer;
   display: flex;
   flex-direction: column;
 

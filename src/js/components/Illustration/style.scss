@@ -52,11 +52,8 @@
     top: 0px;
     user-select: none;
 
-    &:focus {
-      // canvas element hides this?
-      // from: https://css-tricks.com/copy-the-browsers-native-focus-styles/
-      outline: medium auto Highlight;
-      outline: 5px auto -webkit-focus-ring-color;
+    &.grabbing {
+      cursor: url('../../../images/grabbing.svg'), grabbing;
     }
   }
 }

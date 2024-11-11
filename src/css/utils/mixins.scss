@@ -10,13 +10,13 @@
   &:focus,
   &:hover {
     background: var(--jhu-gold-20);
-    cursor: pointer;
+    cursor: url('../../../images/pointer.svg'), pointer;
   }
 
   &:disabled {
     background: var(--jhu-grayscale-20);
     color: var(--jhu-grayscale-70);
-    cursor: default;
+    cursor: url('../../../images/arrow.svg'), pointer;
   }
 
   @if ($style == rounded) {
