@@ -396,6 +396,12 @@ class Illustration extends Component {
 
     if (gamePlacementX > 0 ) {
       newX = 0
+    } else if (gamePlacementX === 0 && this.state.gamePlacementX > 0) {
+
+      // game was previous placed. adjust newX to move the canvas to the center
+      const imageWidth = this.props.imageWidth * this.props.scale;
+      newX = roundToThousandth((this.props.containerWidth - imageWidth) / 2);
+
     } else {
 
       const xMin = bufferSize;
@@ -412,6 +418,13 @@ class Illustration extends Component {
 
     if (gamePlacementY > 0 ) {
       newY = 0
+
+    } else if (gamePlacementY === 0 && this.state.gamePlacementY > 0) {
+
+      // game was previous placed. adjust newX to move the canvas to the center
+      const imageHeight = this.props.imageHeight * this.props.scale;
+      newY = roundToThousandth((this.props.containerHeight - imageHeight) / 2);
+
     } else {
 
       const yMin = bufferSize;
@@ -426,27 +439,13 @@ class Illustration extends Component {
       }
     }
 
-    if (gamePlacementX === 0 && this.state.gamePlacementX > 0) {
-      // game was previous placed. adjust newX to move the canvas
-      // to the center
-      const imageWidth = this.props.imageWidth * this.props.scale;
-      newX = roundToThousandth((this.props.containerWidth - imageWidth) / 2);
-    }
-
-    if (gamePlacementY === 0 && this.state.gamePlacementY > 0) {
-      // game was previous placed. adjust newX to move the canvas
-      // to the center
-      const imageHeight = this.props.imageHeight * this.props.scale;
-      newY = roundToThousandth((this.props.containerHeight - imageHeight) / 2);
-    }
-
     const { anchorX, anchorY } = this.getCenterAnchor(newX, newY);
 
     this.setState({
-      canvasX: newX,
-      canvasY: newY,
       anchorX,
       anchorY,
+      canvasX: newX,
+      canvasY: newY,
       gamePlacementX,
       gamePlacementY
     });
