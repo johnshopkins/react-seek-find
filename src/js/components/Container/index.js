@@ -246,17 +246,27 @@ class Game extends Component {
   
   zoomIn(callback = () => {}) {
 
-    const newZoom = !this.state.zoomOutLimitReached ?
+    let newZoom = !this.state.zoomOutLimitReached ?
       // go up to the next 10
       this.round(this.state.scale + 10) :
       // round the current scale up to the nearest 10
       this.roundUp(this.state.scale);
 
+    if (newZoom - this.state.scale < 3) {
+      newZoom = this.round(this.state.scale + 10);
+    }
+
     this.zoomTo(newZoom, callback);
   }
 
   zoomOut(callback = () => {}) {
-    this.zoomTo(this.round(this.state.scale - 10), callback);
+    let newZoom = this.round(this.state.scale - 10);
+
+    if (newZoom - this.state.maxZoomOut < 3) {
+      newZoom = this.state.maxZoomOut;
+    }
+
+    this.zoomTo(newZoom, callback);
   }
 
   zoomTo(value, callback = () => {}) {
@@ -271,7 +281,7 @@ class Game extends Component {
         zoomOutLimitReached: false,
       };
       limitReached = true;
-    } else if (value < this.state.maxZoomOut) {
+    } else if (value <= this.state.maxZoomOut) {
       newState = {
         scale: this.state.maxZoomOut,
         zoomInLimitReached: false,

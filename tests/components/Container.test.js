@@ -699,154 +699,298 @@ describe('Container', () => {
 
     });
 
-    test('Zooming', async () => {
+    describe('Zooming', () => {
 
-      const { container } = await renderGame({ objects: [boxObject] });
+      test('Zooming - max zoom out is 26%', async () => {
 
-      const gamePlacement = container.querySelector('.game-placement');
-      const game = container.querySelector('.game');
-      const image = screen.getByAltText('Seek and find');
-      const canvas = container.querySelector('canvas.findable');
+        const { container } = await renderGame({ objects: [boxObject] });
 
-      // initial placement of canvas, relative to the document
-      jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
+        const gamePlacement = container.querySelector('.game-placement');
+        const game = container.querySelector('.game');
+        const image = screen.getByAltText('Seek and find');
+        const canvas = container.querySelector('canvas.findable');
 
-      const zoomInButton = screen.getByRole('button', { name: 'Zoom in' });
-      const zoomOutButton = screen.getByRole('button', { name: 'Zoom out' });
+        // initial placement of canvas, relative to the document
+        jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
 
-      expect(zoomInButton).toBeDisabled();
-      expect(zoomOutButton).not.toBeDisabled();
+        const zoomInButton = screen.getByRole('button', { name: 'Zoom in' });
+        const zoomOutButton = screen.getByRole('button', { name: 'Zoom out' });
 
-      // starting point
-      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
-      expect(game).toHaveStyle({ left: '0px', top: '0px' });
-      expect(image).toHaveAttribute('height', '700');
-      expect(image).toHaveAttribute('width', '800');
+        expect(zoomInButton).toBeDisabled();
+        expect(zoomOutButton).not.toBeDisabled();
 
-      // move into the center of the canvas
-      fireEvent(canvas, getMouseEvent('mousedown', { clientX: 423, clientY: 339 }));
-      fireEvent(canvas, getMouseEvent('mousemove', { clientX: 323, clientY: 164 }));
-      expect(game).toHaveStyle({ left: '-100px', top: '-175px'  });
+        // starting point
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({ left: '0px', top: '0px' });
+        expect(image).toHaveAttribute('height', '700');
+        expect(image).toHaveAttribute('width', '800');
 
-      // zoom out to 90%
-      await user.click(zoomOutButton);
-      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
-      expect(game).toHaveStyle({ left: '-60px', top: '-140px' });
-      expect(image).toHaveAttribute('height', '630');
-      expect(image).toHaveAttribute('width', '720');
+        // move into the center of the canvas
+        fireEvent(canvas, getMouseEvent('mousedown', { clientX: 423, clientY: 339 }));
+        fireEvent(canvas, getMouseEvent('mousemove', { clientX: 323, clientY: 164 }));
+        expect(game).toHaveStyle({ left: '-100px', top: '-175px'  });
 
-      expect(zoomInButton).not.toBeDisabled();
+        // zoom out to 90%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({ left: '-60px', top: '-140px' });
+        expect(image).toHaveAttribute('height', '630');
+        expect(image).toHaveAttribute('width', '720');
 
-      // zoom out to 80%
-      await user.click(zoomOutButton);
-      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
-      expect(game).toHaveStyle({  left: '-20px', top: '-105px' });
-      expect(image).toHaveAttribute('height', '560');
-      expect(image).toHaveAttribute('width', '640');
+        expect(zoomInButton).not.toBeDisabled();
 
-      // zoom out to 70%
-      await user.click(zoomOutButton);
-      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
-      expect(game).toHaveStyle({  left: '20px', top: '-70px' });
-      expect(image).toHaveAttribute('height', '490');
-      expect(image).toHaveAttribute('width', '560');
+        // zoom out to 80%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '-20px', top: '-105px' });
+        expect(image).toHaveAttribute('height', '560');
+        expect(image).toHaveAttribute('width', '640');
 
-      // zoom out to 60%
-      await user.click(zoomOutButton);
-      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
-      expect(game).toHaveStyle({  left: '60px', top: '-35px' });
-      expect(image).toHaveAttribute('height', '420');
-      expect(image).toHaveAttribute('width', '480');
+        // zoom out to 70%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '20px', top: '-70px' });
+        expect(image).toHaveAttribute('height', '490');
+        expect(image).toHaveAttribute('width', '560');
 
-      // zoom out to 50%
-      await user.click(zoomOutButton);
-      expect(gamePlacement).toHaveStyle({ left: '100px', top: '0px' });
-      expect(game).toHaveStyle({  left: '0px', top: '0px' });
-      expect(image).toHaveAttribute('height', '350');
-      expect(image).toHaveAttribute('width', '400');
+        // zoom out to 60%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '60px', top: '-35px' });
+        expect(image).toHaveAttribute('height', '420');
+        expect(image).toHaveAttribute('width', '480');
 
-      // zoom out to 40%
-      await user.click(zoomOutButton);
-      expect(gamePlacement).toHaveStyle({ left: '140px', top: '0px' });
-      expect(game).toHaveStyle({  left: '0px', top: '35px' });
-      expect(image).toHaveAttribute('height', '280');
-      expect(image).toHaveAttribute('width', '320');
+        // zoom out to 50%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '100px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '0px' });
+        expect(image).toHaveAttribute('height', '350');
+        expect(image).toHaveAttribute('width', '400');
 
-      // zoom out to 30%
-      await user.click(zoomOutButton);
-      expect(gamePlacement).toHaveStyle({ left: '180px', top: '0px' });
-      expect(game).toHaveStyle({  left: '0px', top: '70px' });
-      expect(image).toHaveAttribute('height', '210');
-      expect(image).toHaveAttribute('width', '240');
+        // zoom out to 40%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '140px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '35px' });
+        expect(image).toHaveAttribute('height', '280');
+        expect(image).toHaveAttribute('width', '320');
 
-      // zoom out to 26% (full zoom out)
-      await user.click(zoomOutButton);
-      expect(gamePlacement).toHaveStyle({ left: '194.857px', top: '0px' });
-      expect(game).toHaveStyle({  left: '0px', top: '83px' });
-      expect(image).toHaveAttribute('height', '184');
-      expect(image).toHaveAttribute('width', '210.286');
+        // zoom out to 30%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '180px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '70px' });
+        expect(image).toHaveAttribute('height', '210');
+        expect(image).toHaveAttribute('width', '240');
 
-      expect(zoomInButton).not.toBeDisabled();
-      expect(zoomOutButton).toBeDisabled();
+        // zoom out to 26% (full zoom out)
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '194.857px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '83px' });
+        expect(image).toHaveAttribute('height', '184');
+        expect(image).toHaveAttribute('width', '210.286');
 
-      // zoom back in to 30%
-      await user.click(zoomInButton);
-      expect(gamePlacement).toHaveStyle({ left: '180px', top: '0px' });
-      expect(game).toHaveStyle({  left: '0px', top: '70px' });
-      expect(image).toHaveAttribute('height', '210');
-      expect(image).toHaveAttribute('width', '240');
+        expect(zoomInButton).not.toBeDisabled();
+        expect(zoomOutButton).toBeDisabled();
 
-      // zoom back in to 40%
-      await user.click(zoomInButton);
-      expect(gamePlacement).toHaveStyle({ left: '140px', top: '0px' });
-      expect(game).toHaveStyle({  left: '0px', top: '35px' });
-      expect(image).toHaveAttribute('height', '280');
-      expect(image).toHaveAttribute('width', '320');
+        // zoom back in to 30%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '180px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '70px' });
+        expect(image).toHaveAttribute('height', '210');
+        expect(image).toHaveAttribute('width', '240');
 
-      // zoom back in to 50%
-      await user.click(zoomInButton);
-      expect(gamePlacement).toHaveStyle({ left: '100px', top: '0px' });
-      expect(game).toHaveStyle({  left: '0px', top: '0px' });
-      expect(image).toHaveAttribute('height', '350');
-      expect(image).toHaveAttribute('width', '400');
+        // zoom back in to 40%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '140px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '35px' });
+        expect(image).toHaveAttribute('height', '280');
+        expect(image).toHaveAttribute('width', '320');
 
-      // zoom back in to 60%
-      await user.click(zoomInButton);
-      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
-      expect(game).toHaveStyle({  left: '60px', top: '-35px' });
-      expect(image).toHaveAttribute('height', '420');
-      expect(image).toHaveAttribute('width', '480');
+        // zoom back in to 50%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '100px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '0px' });
+        expect(image).toHaveAttribute('height', '350');
+        expect(image).toHaveAttribute('width', '400');
 
-      // zoom back in to 70%
-      await user.click(zoomInButton);
-      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
-      expect(game).toHaveStyle({  left: '20px', top: '-70px' });
-      expect(image).toHaveAttribute('height', '490');
-      expect(image).toHaveAttribute('width', '560');
-      
-      // zoom back in to 80%
-      await user.click(zoomInButton);
-      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
-      expect(game).toHaveStyle({  left: '-20px', top: '-105px' });
-      expect(image).toHaveAttribute('height', '560');
-      expect(image).toHaveAttribute('width', '640');
+        // zoom back in to 60%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '60px', top: '-35px' });
+        expect(image).toHaveAttribute('height', '420');
+        expect(image).toHaveAttribute('width', '480');
 
-      // zoom back in to 90%
-      await user.click(zoomInButton);
-      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
-      expect(game).toHaveStyle({ left: '-60px', top: '-140px' });
-      expect(image).toHaveAttribute('height', '630');
-      expect(image).toHaveAttribute('width', '720');
+        // zoom back in to 70%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '20px', top: '-70px' });
+        expect(image).toHaveAttribute('height', '490');
+        expect(image).toHaveAttribute('width', '560');
+        
+        // zoom back in to 80%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '-20px', top: '-105px' });
+        expect(image).toHaveAttribute('height', '560');
+        expect(image).toHaveAttribute('width', '640');
 
-      // zoom back in to 100%
-      await user.click(zoomInButton);
-      expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
-      expect(game).toHaveStyle({ left: '-100px', top: '-175px'  });
-      expect(image).toHaveAttribute('height', '700');
-      expect(image).toHaveAttribute('width', '800');
+        // zoom back in to 90%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({ left: '-60px', top: '-140px' });
+        expect(image).toHaveAttribute('height', '630');
+        expect(image).toHaveAttribute('width', '720');
 
-      expect(zoomInButton).toBeDisabled();
-      expect(zoomOutButton).not.toBeDisabled();
+        // zoom back in to 100%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({ left: '-100px', top: '-175px'  });
+        expect(image).toHaveAttribute('height', '700');
+        expect(image).toHaveAttribute('width', '800');
+
+        expect(zoomInButton).toBeDisabled();
+        expect(zoomOutButton).not.toBeDisabled();
+
+      });
+
+      test('Zooming - max zoom out is 28%', async () => {
+
+        const { container } = await renderGame({ containerHeight: 410, objects: [boxObject] });
+
+        const gamePlacement = container.querySelector('.game-placement');
+        const game = container.querySelector('.game');
+        const image = screen.getByAltText('Seek and find');
+        const canvas = container.querySelector('canvas.findable');
+
+        // initial placement of canvas, relative to the document
+        jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
+
+        const zoomInButton = screen.getByRole('button', { name: 'Zoom in' });
+        const zoomOutButton = screen.getByRole('button', { name: 'Zoom out' });
+
+        expect(zoomInButton).toBeDisabled();
+        expect(zoomOutButton).not.toBeDisabled();
+
+        // starting point
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({ left: '0px', top: '0px' });
+        expect(image).toHaveAttribute('height', '700');
+        expect(image).toHaveAttribute('width', '800');
+
+        // move into the center of the canvas 170
+        // height: (image height (700) - container height (360)) / 2 == 170 diff
+        fireEvent(canvas, getMouseEvent('mousedown', { clientX: 423, clientY: 339 }));
+        fireEvent(canvas, getMouseEvent('mousemove', { clientX: 323, clientY: 169 }));
+        expect(game).toHaveStyle({ left: '-100px', top: '-170px'  });
+
+        // zoom out to 90%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({ left: '-60px', top: '-135px' });
+        expect(image).toHaveAttribute('height', '630');
+        expect(image).toHaveAttribute('width', '720');
+
+        expect(zoomInButton).not.toBeDisabled();
+
+        // zoom out to 80%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '-20px', top: '-100px' });
+        expect(image).toHaveAttribute('height', '560');
+        expect(image).toHaveAttribute('width', '640');
+
+        // zoom out to 70%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '20px', top: '-65px' });
+        expect(image).toHaveAttribute('height', '490');
+        expect(image).toHaveAttribute('width', '560');
+
+        // zoom out to 60%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '60px', top: '-30px' });
+        expect(image).toHaveAttribute('height', '420');
+        expect(image).toHaveAttribute('width', '480');
+
+        // zoom out to 50%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '100px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '5px' });
+        expect(image).toHaveAttribute('height', '350');
+        expect(image).toHaveAttribute('width', '400');
+
+        // zoom out to 40%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '140px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '40px' });
+        expect(image).toHaveAttribute('height', '280');
+        expect(image).toHaveAttribute('width', '320');
+
+        // zoom out to 28% (full zoom out)
+        // 30% is skipped because it is too close to 26%
+        await user.click(zoomOutButton);
+        expect(gamePlacement).toHaveStyle({ left: '189.143px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '83px' });
+        expect(image).toHaveAttribute('height', '194');
+        expect(image).toHaveAttribute('width', '221.714');
+
+        expect(zoomInButton).not.toBeDisabled();
+        expect(zoomOutButton).toBeDisabled();
+
+        // zoom back in to 40%
+        // 30% is skipped because it is too close to 28%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '140px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '40px' });
+        expect(image).toHaveAttribute('height', '280');
+        expect(image).toHaveAttribute('width', '320');
+
+        // zoom back in to 50%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '100px', top: '0px' });
+        expect(game).toHaveStyle({  left: '0px', top: '5px' });
+        expect(image).toHaveAttribute('height', '350');
+        expect(image).toHaveAttribute('width', '400');
+
+        // zoom back in to 60%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '60px', top: '-30px' });
+        expect(image).toHaveAttribute('height', '420');
+        expect(image).toHaveAttribute('width', '480');
+
+        // zoom back in to 70%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '20px', top: '-65px' });
+        expect(image).toHaveAttribute('height', '490');
+        expect(image).toHaveAttribute('width', '560');
+        
+        // zoom back in to 80%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({  left: '-20px', top: '-100px' });
+        expect(image).toHaveAttribute('height', '560');
+        expect(image).toHaveAttribute('width', '640');
+
+        // zoom back in to 90%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({ left: '-60px', top: '-135px' });
+        expect(image).toHaveAttribute('height', '630');
+        expect(image).toHaveAttribute('width', '720');
+
+        // zoom back in to 100%
+        await user.click(zoomInButton);
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({ left: '-100px', top: '-170px'  });
+        expect(image).toHaveAttribute('height', '700');
+        expect(image).toHaveAttribute('width', '800');
+
+        expect(zoomInButton).toBeDisabled();
+        expect(zoomOutButton).not.toBeDisabled();
+
+      });
 
     });
 
