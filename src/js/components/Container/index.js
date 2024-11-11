@@ -44,7 +44,7 @@ class Game extends Component {
       browserHeight: document.documentElement.clientHeight,
       browserWidth: document.documentElement.clientWidth,
       openInstructions: userData.seenInstructions === false,
-      ...this.getViewState(),
+      ...this.getViewState(true),
       ...userData,
     };
 
@@ -102,7 +102,7 @@ class Game extends Component {
     return Math.ceil(num / 10) * 10;
   }
 
-  getViewState() {
+  getViewState(init = false) {
 
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
@@ -125,13 +125,24 @@ class Game extends Component {
     const maxZoomOutHeight = (illustrationContainerHeight - bufferSize >= this.props.imageHeight ? 1 : (illustrationContainerHeight - bufferSize) / this.props.imageHeight) * 100;
     const maxZoomOut = Math.min(maxZoomOutWidth, maxZoomOutHeight); // allow to zoom out to max width AND height
 
-    // start zoom out (do not take buffer into account)
-    const startZoomOutWidth = illustrationContainerWidth >= this.props.imageWidth ? 1 : (illustrationContainerWidth / this.props.imageWidth) * 100;
-    const startZoomOutHeight = illustrationContainerHeight >= this.props.imageHeight ? 1 : (illustrationContainerHeight / this.props.imageHeight) * 100;
-    let scale = Math.min(startZoomOutWidth, startZoomOutHeight);
-    
-    if (this.props.test) {
-      scale = 100;
+    // starting zoom out (do not take buffer into account)
+    let scale;
+    if (init) {
+      const startZoomOutWidth = illustrationContainerWidth >= this.props.imageWidth ? 1 : (illustrationContainerWidth / this.props.imageWidth) * 100;
+      const startZoomOutHeight = illustrationContainerHeight >= this.props.imageHeight ? 1 : (illustrationContainerHeight / this.props.imageHeight) * 100;
+      scale = Math.min(startZoomOutWidth, startZoomOutHeight);
+
+      if (this.props.test) {
+        scale = 100;
+      }
+
+    } else {
+      if (this.state.scale >= maxZoomOut) {
+        scale = this.state.scale;
+      } else {
+        // scale not available after resize. force up to new max zoom out
+        scale = maxZoomOut;
+      } 
     }
 
     return {
