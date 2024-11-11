@@ -348,12 +348,14 @@ describe('Container', () => {
           fireEvent(canvas, getMouseEvent('mousemove', { clientX: 200, clientY: 200 }));
 
           // new positioning after mousemove
-          expect(game).toHaveStyle({ left: '-128px', top: '-106px', cursor: 'grabbing' });
+          expect(game).toHaveClass('game grabbing');
+          expect(game).toHaveStyle({ left: '-128px', top: '-106px' });
 
           // mouseup
           fireEvent(canvas, getMouseEvent('mouseup'));
 
           // cursor reverted after mouseup
+          expect(game).toHaveClass('game');
           expect(game).toHaveStyle({ left: '-128px', top: '-106px' });
 
         });
