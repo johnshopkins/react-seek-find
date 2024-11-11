@@ -1,6 +1,7 @@
 @use '../../../css/main' as *;
 
 img.game-background {
+  max-width: none !important;
   position: relative;
   z-index: var(--stack-background);
   transition: all #{$canvasTransition};
