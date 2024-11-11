@@ -13,6 +13,43 @@ import getMouseEvent from '../helpers/getMouseEvent';
 import getTouchEvent from '../helpers/getTouchEvent';
 import { saveGameState } from '../../src/js/lib/persistance';
 
+// mock settings so i don't have to keep updating tests for small sizing changes
+jest.mock('../../src/settings', () => {
+  return {
+    // animations (in ms)
+    foundKeepAlive: 2000,
+
+    canvasTransition: '300ms ease-out',
+
+    // breakpoints (up to given pixel width)
+    breakpoint_small: 430,
+    breakpoint_medium: 768,
+    breakpoint_large: 1001, // captures 1000
+
+    // sizing (in pixels)
+    legendThumbnailHeight_small: 38,
+    legendThumbnailHeight_medium: 40,
+    legendThumbnailHeight_large: 62,
+    legendThumbnailHeight_xlarge: 62,
+
+    legendGap: 5,
+    legendGap_small: 5,
+    legendGap_medium: 5,
+    legendGap_large: 5,
+    legendGap_xlarge: 5,
+
+    legendPadding: 5,
+    legendPadding_small: 5,
+    legendPadding_medium: 5,
+    legendPadding_large: 5,
+    legendPadding_xlarge: 5,
+
+    miniMap: 55,
+    utilitiesIconHeight: 32,
+    utilitiesEdgeSpace: 14,
+  }
+})
+
 const boxObject = new FindableObject(
   'box',
   'box',
