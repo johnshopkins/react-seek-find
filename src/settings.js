@@ -23,6 +23,12 @@ module.exports = {
   legendGap_large: 5,
   legendGap_xlarge: 5,
 
+  legendPadding: 15,
+  legendPadding_small: 15,
+  legendPadding_medium: 15,
+  legendPadding_large: 15,
+  legendPadding_xlarge: 15,
+
   miniMap: 55,
   utilitiesIconHeight: 32,
   utilitiesEdgeSpace: 14,

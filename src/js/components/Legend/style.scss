@@ -5,14 +5,34 @@ $iconRatio: 0.4;
 .container {
 
   .legend-container {
-    background: var(--jhu-brand-heritage-blue);
     bottom: 0;
-    display: flex;
-    flex: 1;
-    overflow-x: auto;
-    overflow-y: hidden;
     position: sticky;
     z-index: var(--stack-legend);
+
+    .legend-scroll {
+      background: var(--jhu-brand-heritage-blue);
+      display: flex;
+      flex: 1;  
+      min-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: #{$legendPadding_small}px;
+    }
+
+    .label {
+      background: var(--jhu-brand-gold);
+      color: var(--jhu-brand-heritage-blue);
+      left: 15px;
+      top: -0.6rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.3rem 0.6rem;
+      line-height: 1em;
+      position: absolute;
+      text-transform: uppercase;
+      transform: rotate(-2deg);
+      z-index: 1;
+    }
   }
 
   .legend {
