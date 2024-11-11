@@ -36,6 +36,8 @@ class Illustration extends Component {
     this.scaledImageHeight = this.props.imageHeight * this.props.scale;
     this.scaledImageWidth = this.props.imageWidth * this.props.scale;
 
+    this.bufferSize = settings.miniMap + (settings.utilitiesEdgeSpace * 2);
+
     const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
     const { gamePlacementX, gamePlacementY } = this.getGameOffset();
 
@@ -383,13 +385,11 @@ class Illustration extends Component {
     // is smaller than the container height or width
     let { gamePlacementX, gamePlacementY } = this.getGameOffset();
 
-    const bufferSize = settings.miniMap +(settings.utilitiesEdgeSpace * 2);
-
-    if (gamePlacementX <= bufferSize) {
+    if (gamePlacementX <= this.bufferSize) {
       gamePlacementX = 0;
     }
 
-    if (gamePlacementY <= bufferSize) {
+    if (gamePlacementY <= this.bufferSize) {
       gamePlacementY = 0;
     }
 
@@ -402,9 +402,9 @@ class Illustration extends Component {
 
     } else {
 
-      const xMin = bufferSize;
+      const xMin = this.bufferSize;
 
-      const xMaxCalc = this.props.containerWidth - (this.scaledImageWidth + bufferSize);
+      const xMaxCalc = this.props.containerWidth - (this.scaledImageWidth + this.bufferSize);
       const xMax = this.props.containerWidth < this.scaledImageWidth ? -Math.abs(xMaxCalc) : xMaxCalc;
 
       if (newX > xMin) {
@@ -424,9 +424,9 @@ class Illustration extends Component {
 
     } else {
 
-      const yMin = bufferSize;
+      const yMin = this.bufferSize;
 
-      const yMaxCalc = this.props.containerHeight - (this.scaledImageHeight + bufferSize);
+      const yMaxCalc = this.props.containerHeight - (this.scaledImageHeight + this.bufferSize);
       const yMax = this.props.containerHeight < this.scaledImageHeight ? -Math.abs(yMaxCalc) : yMaxCalc;
 
        if (newY > yMin) {
