@@ -102,10 +102,6 @@ class Game extends Component {
     return Math.ceil(num / 10) * 10;
   }
 
-  getComputedPixelValue(styles, key) {
-    return parseInt(styles[key].replace('px', ''));
-  }
-
   getViewState() {
 
     // width of game container (minus padding)
@@ -125,7 +121,6 @@ class Game extends Component {
 
     // factor in the buffer size to figure out max zoom ou
     const bufferSize = (settings.utilitiesEdgeSpace * 4) + (settings.miniMap * 2);
-
     const maxZoomOutWidth = (illustrationContainerWidth - bufferSize >= this.props.imageWidth ? 1 : (illustrationContainerWidth  - bufferSize) / this.props.imageWidth) * 100;
     const maxZoomOutHeight = (illustrationContainerHeight - bufferSize >= this.props.imageHeight ? 1 : (illustrationContainerHeight - bufferSize) / this.props.imageHeight) * 100;
     const maxZoomOut = Math.min(maxZoomOutWidth, maxZoomOutHeight); // allow to zoom out to max width AND height
