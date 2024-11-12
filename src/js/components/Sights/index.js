@@ -1,5 +1,5 @@
 /*global dataLayer*/
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import MagnifyingGlassIcon from '../Icons/MagnifyingGlass';
 import settings from '../../../settings';
 import './style.scss';
@@ -8,6 +8,8 @@ import './style.scss';
  * Manages the keyboard navigation sights.
  */
 export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, ref) => {
+
+  const sightsRef = useRef(null);
 
   const iconSize = 128;
 
@@ -126,20 +128,34 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
       setUseTransition(false);
       setPositionX(0);
       setPositionY(0);
+    },
+    getSightsPosition() {
+      const bounds = sightsRef.current.getBoundingClientRect();
+      return {
+        x: bounds.x + iconOffsetLeft,
+        y: bounds.y + iconOffsetTop,
+      };
     }
   }), [checkGuess, iconOffsetLeft, iconOffsetTop, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
 
-  const style = {
+  const containerStyle = {
     display: show ? 'block' : 'none',
     left: `${positionX}px`,
     top: `${positionY}px`,
-    height: `${iconSize}px`,
-    width: `${iconSize}px`
   };
 
-  if (useTransition) {
-    style.transition = `all ${settings.canvasTransition}`;
+  const iconStyle = {
+    height: `${iconSize}px`,
+    width: `${iconSize}px`
   }
 
-  return <MagnifyingGlassIcon className="magnifying-glass" style={style} />
+  if (useTransition) {
+    containerStyle.transition = `all ${settings.canvasTransition}`;
+  }
+
+  return (
+    <div className="sights" ref={sightsRef} style={containerStyle} >
+      <MagnifyingGlassIcon className="magnifying-glass" style={iconStyle} />
+    </div>
+  )
 });

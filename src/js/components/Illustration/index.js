@@ -27,8 +27,10 @@ class Illustration extends Component {
   constructor(props) {
     super(props);
 
-    this.sights = createRef();
-    this.findable = createRef();
+    this.containerRef = createRef();
+    this.gameRef = createRef();
+    this.sightsRef = createRef();
+    this.findableRef = createRef();
 
     const canvasX = 0;
     const canvasY = 0;
@@ -94,10 +96,23 @@ class Illustration extends Component {
    * @returns object
    */
   getCenterAnchor(x, y) {
-    return {
-      anchorX: x - (this.props.containerWidth / 2),
-      anchorY: y - (this.props.containerHeight / 2),
-    };
+
+    let anchorX;
+    let anchorY;
+
+    if (this.containerWidth >= this.scaledImageWidth) {
+      anchorX = x - (this.scaledImageWidth / 2);
+    } else {
+      anchorX = x - (this.props.containerWidth / 2);
+    }
+
+    if (this.containerHeight >= this.scaledImageHeight) {
+      anchorY = y - (this.scaledImageHeight / 2);
+    } else {
+      anchorY = y - (this.props.containerHeight / 2);
+    }
+
+    return { anchorX, anchorY };
   }
 
   /**
@@ -109,10 +124,23 @@ class Illustration extends Component {
    * @returns object
    */
   getOriginFromCenterAnchor(x, y) {
-    return {
-      originX: x + (this.props.containerWidth / 2),
-      originY: y + (this.props.containerHeight / 2),
-    };
+
+    let originX;
+    let originY;
+
+    if (this.containerWidth >= this.scaledImageWidth) {
+      originX = x + (this.scaledImageWidth / 2);
+    } else {
+      originX = x + (this.props.containerWidth / 2);
+    }
+
+    if (this.containerHeight >= this.scaledImageHeight) {
+      originY = y + (this.scaledImageHeight / 2);
+    } else {
+      originY = y + (this.props.containerHeight / 2);
+    }
+
+    return { originX, originY };
   }
 
   /**
@@ -189,11 +217,29 @@ class Illustration extends Component {
       this.scaledImageWidth = this.props.imageWidth * this.props.scale;
 
       // calibrate the sights
-      this.sights.current.calibrateSights(scaleDiff);
+      this.sightsRef.current.calibrateSights(scaleDiff);
 
       // new (x, y) coordinates to the center of the canvas' current location
-      const newX = this.state.anchorX * scaleDiff;
-      const newY = this.state.anchorY * scaleDiff;
+      let newX = this.state.anchorX * scaleDiff;
+      let newY = this.state.anchorY * scaleDiff;
+
+      if (this.state.isKeyboardFocused) {
+        const containerBounds = this.containerRef.current.getBoundingClientRect();
+        const gameBounds = this.gameRef.current.getBoundingClientRect();
+        const sightsPosition = this.sightsRef.current.getSightsPosition(scaleDiff);
+
+        if (this.containerWidth >= this.scaledImageWidth) {
+          newX = (containerBounds.x - sightsPosition.x) * scaleDiff;
+        } else {
+          newX = (gameBounds.x - sightsPosition.x) * scaleDiff;
+        }
+
+        if (this.containerHeight >= this.scaledImageHeight) {
+          newY = (containerBounds.y - sightsPosition.y) * scaleDiff;
+        } else {
+          newY = (gameBounds.y - sightsPosition.y) * scaleDiff;
+        }
+      }
 
       // translate to coordinates that moveCanvas can use (expects (x, y) to be origin)
       const originCoordinates = this.getOriginFromCenterAnchor(newX, newY);
@@ -237,8 +283,8 @@ class Illustration extends Component {
 
     this.setState({ canvasX, canvasY, anchorX, anchorY });
 
-    this.findable.current.focusCanvas();
-    this.sights.current.resetSights();
+    this.findableRef.current.focusCanvas();
+    this.sightsRef.current.resetSights();
   }
 
   /**
@@ -261,7 +307,7 @@ class Illustration extends Component {
   onKeyDown(e) {
     this.setState({ isClick: false }, () => {
       if (this.state.isKeyboardFocused) {
-        this.sights.current.moveSights(e);
+        this.sightsRef.current.moveSights(e);
       }
     });
   }
@@ -285,7 +331,7 @@ class Illustration extends Component {
       return;
     }
 
-    this.findable.current.checkGuess(e.offsetX, e.offsetY);
+    this.findableRef.current.checkGuess(e.offsetX, e.offsetY);
   }
 
   onMouseDown(e) {
@@ -503,15 +549,15 @@ class Illustration extends Component {
     }, () => {
 
       this.props.scaleToFit(hint.hintSize, hint.hintSize, (scale) => {
-        this.sights.current.moveSightsTo(coords.x * scale, coords.y * scale);
+        this.sightsRef.current.moveSightsTo(coords.x * scale, coords.y * scale);
         this.setState({ hintActive: true }, () => {
-          this.sights.current.moveSightsTo(coords.x * scale, coords.y * scale);
+          this.sightsRef.current.moveSightsTo(coords.x * scale, coords.y * scale);
         })
       });
 
       setTimeout(() => this.removeHint(), 15000);
 
-      this.findable.current.focusCanvas();
+      this.findableRef.current.focusCanvas();
 
     });
   }
@@ -567,6 +613,7 @@ class Illustration extends Component {
         role="region"
         aria-label="Seek and Find"
         style={containerStyles}
+        ref={this.containerRef}
         onFocus={this.onFocus}
         onBlur={this.onBlur}
         onKeyDown={this.onKeyDown}
@@ -578,12 +625,12 @@ class Illustration extends Component {
         }}
       >
         <div className="game-placement" style={gamePlacementStyles}>
-          <div className={gameClasses.join(' ')} style={gameStyles}>
+          <div className={gameClasses.join(' ')} style={gameStyles} ref={this.gameRef}>
             {!this.state.loading &&
               <>
                 <Sights
-                  ref={this.sights}
-                  checkGuess={(x, y) => this.findable.current.checkGuess(x, y)}
+                  ref={this.sightsRef}
+                  checkGuess={(x, y) => this.findableRef.current.checkGuess(x, y)}
                   height={this.scaledImageHeight}
                   onSightsMove={this.onSightsMove}
                   show={this.state.isKeyboardFocused}
@@ -607,7 +654,7 @@ class Illustration extends Component {
                   disableTabbing={this.props.disableTabbing}
                   onFind={this.onFind}
                   objects={this.props.objects}
-                  ref={this.findable}
+                  ref={this.findableRef}
                   scale={this.props.scale}
                   height={this.props.imageHeight}
                   width={this.props.imageWidth}
