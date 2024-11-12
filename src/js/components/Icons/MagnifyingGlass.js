@@ -1,10 +1,9 @@
 import React from 'react';
 import IconContainer from './Container';
 
-export default function MagnifyingGlass({ className, tooltip, style }) {
-
+export default function MagnifyingGlass(props) {
   return (
-    <IconContainer viewBox="0 0 128 128" className={className} tooltip={tooltip} style={style}>
+    <IconContainer viewBox="0 0 128 128" {...props}>
       <defs>
         <style>
           {`.cls-1 {
