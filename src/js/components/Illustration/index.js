@@ -77,6 +77,7 @@ class Illustration extends Component {
     this.getGameOffset = this.getGameOffset.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
     this.onBlur = this.onBlur.bind(this);
+    this.onContainerMouseDown = this.onContainerMouseDown.bind(this);
     this.onFind = this.onFind.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
@@ -328,10 +329,12 @@ class Illustration extends Component {
    */
   onFocus() {
     this.setState({ isKeyboardFocused: !this.state.isClick });
+    this.props.onKeyboardFocusChange(!this.state.isClick)
   }
 
   onBlur() {
     this.setState({ isKeyboardFocused: false });
+    this.props.onKeyboardFocusChange(false)
   }
 
   onMouseUp(e) {
@@ -341,6 +344,14 @@ class Illustration extends Component {
     }
 
     this.findableRef.current.checkGuess(e.offsetX, e.offsetY);
+  }
+
+  onContainerMouseDown() {
+    this.setState({
+      isClick: true,
+      isKeyboardFocused: false,
+    });
+    this.props.onKeyboardFocusChange(false);
   }
 
   onMouseDown(e) {
@@ -416,6 +427,8 @@ class Illustration extends Component {
       dragStartY: offsetY,
       isKeyboardFocused: false,
     });
+
+    this.props.onKeyboardFocusChange(false)
 
     window.addEventListener('touchmove', this.onTouchMove);
 
@@ -647,12 +660,7 @@ class Illustration extends Component {
         onFocus={this.onFocus}
         onBlur={this.onBlur}
         onKeyDown={this.onKeyDown}
-        onMouseDown={() => {
-          this.setState({
-            isClick: true,
-            isKeyboardFocused: false,
-          });
-        }}
+        onMouseDown={this.onContainerMouseDown}
       >
         <div className="game-placement" style={gamePlacementStyles}>
           <div className={gameClasses.join(' ')} style={gameStyles} ref={this.gameRef}>
@@ -781,6 +789,7 @@ Illustration.propTypes = {
   imageSrc: PropTypes.string.isRequired,
   imageWidth: PropTypes.number.isRequired,
   objects: PropTypes.array,
+  onKeyboardFocusChange: PropTypes.func.isRequired,
   openInstructions: PropTypes.func.isRequired,
   onFind: PropTypes.func.isRequired,
   replay: PropTypes.func.isRequired,

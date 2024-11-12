@@ -41,6 +41,7 @@ class Game extends Component {
 
     // combine stored and default state
     this.state = {
+      isKeyboardFocused: false,
       browserHeight: document.documentElement.clientHeight,
       browserWidth: document.documentElement.clientWidth,
       openInstructions: userData.seenInstructions === false,
@@ -57,6 +58,7 @@ class Game extends Component {
     this.closeInstructions = this.closeInstructions.bind(this);
     this.getViewState = this.getViewState.bind(this);
     this.onFind = this.onFind.bind(this);
+    this.onKeyboardFocusChange = this.onKeyboardFocusChange.bind(this);
     this.openInstructions = this.openInstructions.bind(this);
     this.replay = this.replay.bind(this);
     this.saveGame = this.saveGame.bind(this);
@@ -313,6 +315,12 @@ class Game extends Component {
     this.setState({ openInstructions: true });
   }
 
+  onKeyboardFocusChange(focused) {
+    if (focused !== this.state.isKeyboardFocused) {
+      this.setState({ isKeyboardFocused: focused });
+    }
+  }
+
   scaleToFit(height, width, callback = () => {}) {
 
     // add a little buffer around the area to scale to fit to
@@ -342,6 +350,11 @@ class Game extends Component {
       width: `${this.state.width}px`,
     }
 
+    const containerClasses = ['container', this.state.breakpoint];
+    if (this.state.isKeyboardFocused) {
+      containerClasses.push('keyboard-focused');
+    }
+
     return (
       <>
         {this.state.openInstructions &&
@@ -353,7 +366,7 @@ class Game extends Component {
             style={containerStyles}
           />
         }
-        <div className={['container', this.state.breakpoint].join(' ')} style={containerStyles} aria-hidden={this.state.openInstructions}>
+        <div className={containerClasses.join(' ')} style={containerStyles} aria-hidden={this.state.openInstructions}>
           <Illustration
             containerHeight={this.state.illustrationContainerHeight}
             containerWidth={this.state.illustrationContainerWidth}
@@ -367,6 +380,7 @@ class Game extends Component {
             imageWidth={this.props.imageWidth}
             objects={Object.values(this.objects)}
             onFind={this.onFind}
+            onKeyboardFocusChange={this.onKeyboardFocusChange}
             openInstructions={this.openInstructions}
             replay={this.replay}
             scale={this.state.scale / 100}
