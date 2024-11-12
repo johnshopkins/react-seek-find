@@ -138,7 +138,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   window.dataLayer = [];
-  user = userEvent.setup();
+  user = userEvent.setup({ delay: null });
 })
 
 afterEach(() => {
@@ -1240,27 +1240,94 @@ describe('Container', () => {
 
     });
 
-    test('Hint', async () => {
+    describe('Hint', () => {
 
-      const { container } = await renderGame({ objects: [boxObject] });
+      beforeEach(() => {
+        jest.useFakeTimers();
+      });
 
-      const game = container.querySelector('.game');
-      const image = screen.getByAltText('Seek and find');
+      afterEach(() => {
+        jest.useRealTimers();
+      });
 
-      // starting point
-      expect(game).toHaveStyle({ left: '0px', top: '0px' });
-      expect(image).toHaveAttribute('height', '700');
-      expect(image).toHaveAttribute('width', '800');
+      test('Hint is removed after timeout', async () => {
 
-      const hintButton = screen.getByRole('button', { name: 'Give me a hint' });
-      await user.click(hintButton);
-      
-      // canvas moves to the hint
-      expect(game).toHaveStyle({ left: '-23.75px', top: '-148.75px' });
+        const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
 
-      // image resizes
-      expect(image).toHaveAttribute('height', '490');
-      expect(image).toHaveAttribute('width', '560');
+        const { container } = await renderGame({ objects: [boxObject] });
+
+        const game = container.querySelector('.game');
+        const image = screen.getByAltText('Seek and find');
+
+        // starting point
+        expect(game).toHaveStyle({ left: '0px', top: '0px' });
+        expect(container.querySelector('canvas.hint')).not.toBeInTheDocument();
+        expect(image).toHaveAttribute('height', '700');
+        expect(image).toHaveAttribute('width', '800');
+
+        const hintButton = screen.getByRole('button', { name: 'Give me a hint' });
+        await user.click(hintButton);
+        
+        // hint is in the document
+        expect(container.querySelector('canvas.hint')).toBeInTheDocument();
+        
+        // canvas moves to the hint
+        expect(game).toHaveStyle({ left: '-23.75px', top: '-148.75px' });
+
+        // image resizes
+        expect(image).toHaveAttribute('height', '490');
+        expect(image).toHaveAttribute('width', '560');
+
+        act(() => {
+          jest.runAllTimers();
+        });
+        
+        // hint is not in the document
+        expect(container.querySelector('canvas.hint')).not.toBeInTheDocument();
+
+        setTimeoutSpy.mockRestore();
+
+      });
+
+      test('Hint is removed after user request', async () => {
+
+        const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+
+        const { container } = await renderGame({ objects: [boxObject] });
+
+        const game = container.querySelector('.game');
+        const image = screen.getByAltText('Seek and find');
+
+        // starting point
+        expect(game).toHaveStyle({ left: '0px', top: '0px' });
+        expect(container.querySelector('canvas.hint')).not.toBeInTheDocument();
+        expect(image).toHaveAttribute('height', '700');
+        expect(image).toHaveAttribute('width', '800');
+
+        const hintButton = screen.getByRole('button', { name: 'Give me a hint' });
+        await user.click(hintButton);
+        
+        // hint is in the document
+        expect(container.querySelector('canvas.hint')).toBeInTheDocument();
+
+        // remove hint button is in the document
+        const removeHintButton = screen.getByRole('button', { name: 'Remove hint' });
+        expect(removeHintButton).toHaveFocus();
+
+        // user requests to remove hint
+        await user.click(hintButton);
+
+        // hint is not in the document
+        expect(container.querySelector('canvas.hint')).not.toBeInTheDocument();
+
+        // hint button again has focus
+        expect(hintButton).toHaveFocus();
+
+        expect(clearTimeout).toHaveBeenCalledTimes(1);
+
+        clearTimeoutSpy.mockRestore();
+
+      });
 
     });
 

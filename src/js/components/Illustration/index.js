@@ -9,6 +9,7 @@ import Sights from '../Sights';
 import InstructionsIcon from '../Icons/Instructions';
 import LightbulbIcon from '../Icons/Lightbulb';
 import ReplayIcon from '../Icons/Replay';
+import SlashIcon from '../Icons/Slash';
 import ZoomInIcon from '../Icons/ZoomIn';
 import ZoomOutIcon from '../Icons/ZoomOut';
 import getOffsetCoords from '../../lib/get-offset-coords';
@@ -33,6 +34,8 @@ class Illustration extends Component {
     this.findableRef = createRef();
     this.zoomInRef = createRef();
     this.zoomOutRef = createRef();
+
+    this.hintTimeout = null;
 
     const canvasX = 0;
     const canvasY = 0;
@@ -84,8 +87,10 @@ class Illustration extends Component {
     this.onSightsMove = this.onSightsMove.bind(this);
     this.showFound = this.showFound.bind(this);
     this.showHint = this.showHint.bind(this);
+    this.toggleHint = this.toggleHint.bind(this);
     this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
     this.onTouchStart = this.onTouchStart.bind(this);
+    this.removeHint = this.removeHint.bind(this);
     this.replay = this.replay.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
@@ -531,6 +536,10 @@ class Illustration extends Component {
     }
   }
 
+  toggleHint() {
+    !this.state.hintActive ?  this.showHint() : this.removeHint();
+  }
+
   showHint() {
 
     const notFound = Object.values(this.props.objects).filter(object => !this.props.found.includes(object.id));
@@ -558,15 +567,16 @@ class Illustration extends Component {
           this.sightsRef.current.moveSightsTo(coords.x * scale, coords.y * scale);
         })
       });
-
-      setTimeout(() => this.removeHint(), 15000);
-
-      this.findableRef.current.focusCanvas();
+      
+      this.hintTimeout = setTimeout(() => this.removeHint(), 15000);
 
     });
   }
 
   removeHint() {
+
+    clearTimeout(this.hintTimeout);
+
     this.setState({
       hint: null,
       hintActive: false
@@ -585,7 +595,6 @@ class Illustration extends Component {
     this.props.zoomIn((newScale, limitReached) => {
       if (limitReached) {
         this.zoomOutRef.current.focus();
-        // this.findableRef.current.focusCanvas();
       }
     })
   }
@@ -594,7 +603,6 @@ class Illustration extends Component {
     this.props.zoomOut((newScale, limitReached) => {
       if (limitReached) {
         this.zoomInRef.current.focus();
-        // this.findableRef.current.focusCanvas();
       }
     })
   }
@@ -707,8 +715,9 @@ class Illustration extends Component {
               </button>
 
               {!this.props.gameComplete &&
-                <button className="hint" disabled={this.state.hintActive} onClick={this.showHint} tabIndex={this.props.disableTabbing ? '-1' : null}>
-                  <LightbulbIcon tooltip="Give me a hint" />
+                <button className="hint" onClick={this.toggleHint} tabIndex={this.props.disableTabbing ? '-1' : null}>
+                  {this.state.hintActive && <SlashIcon className="slash" aria-hidden="true" />}
+                  <LightbulbIcon className="lightbulb" tooltip={!this.state.hintActive ? 'Give me a hint' : 'Remove hint'} />
                 </button>
               }
 

@@ -37,6 +37,16 @@
       bottom: #{$utilitiesEdgeSpace}px;
       left: #{$utilitiesEdgeSpace}px;
     }
+
+    .hint {
+      .lightbulb {
+        position: relative;
+      }
+      
+      .slash {
+        position: absolute;
+      }
+    }
   }
 
   .game-placement {
