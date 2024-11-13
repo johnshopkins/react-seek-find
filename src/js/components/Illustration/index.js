@@ -284,17 +284,6 @@ class Illustration extends Component {
    */
   replay() {
     this.props.replay();
-
-    // restore canvas position to (0, 0)
-    const canvasX = 0;
-    const canvasY = 0;
-
-    const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
-
-    this.setState({ canvasX, canvasY, anchorX, anchorY });
-
-    this.findableRef.current.focusCanvas();
-    this.sightsRef.current.resetSights();
   }
 
   /**
