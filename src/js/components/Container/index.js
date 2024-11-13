@@ -71,6 +71,10 @@ class Game extends Component {
 
   componentDidMount() {
 
+    // window.addEventListener('keyup', e => {
+    //   console.log('active', document.activeElement);
+    // })
+
     this.setViewState();
 
     ResizeWatcher.startWatching();
@@ -391,8 +395,10 @@ class Game extends Component {
             zoomOutLimitReached={this.state.zoomOutLimitReached}
           />
           <Legend
+            breakpoint={this.state.breakpoint}
             found={this.state.found}
             objects={Object.values(this.objects)}
+            width={this.state.width}
           />
         </div>
       </>

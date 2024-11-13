@@ -1,10 +1,13 @@
+@use 'sass:map';
+@use 'variables'  as *;
+
 @mixin button($style: square) {
   --button-radius: 0;
   background: var(--jhu-brand-gold);
   border: none;
   border-radius: var(--button-radius);
   color: var(--jhu-brand-heritage-blue);
-  padding: 10px;
+  padding: #{map.get($shared-vars, 'buttonPadding')}px;
   pointer-events: auto;
 
   &:focus,

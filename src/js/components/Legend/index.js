@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ArrowIcon from '../Icons/Arrow';
 import CheckIcon from '../Icons/Check';
 import './style.scss';
 
@@ -9,13 +10,18 @@ import './style.scss';
  * tabbed to when tabbing was disabled (due to instructions overlay
  * being opened), so I had to specify a tabIndex value to prevent that.
  */
-export default function Legend({ found, objects }) {
+export default function Legend({ breakpoint, found, objects, width }) {
+
+  const [positionX, setPositionX] = useState(0);
   return (
     <div className="legend-container" tabIndex="-1">
       <div className="label">Can you find us all?</div>
 
       <div className="legend-scroll">
-        <div className="legend" id="legend">
+        <button>
+          <ArrowIcon className="left" />
+        </button>
+        <div className="legend" id="legend" style={{ left: `${positionX}px`}}>
           {objects.map((object, i) => {
             const status = found.includes(object.id) ? 'found' : 'not found';
             return (
@@ -29,6 +35,9 @@ export default function Legend({ found, objects }) {
             )
           })}
         </div>
+        <button>
+          <ArrowIcon className="right" />
+        </button>
       </div>
     </div>
   )

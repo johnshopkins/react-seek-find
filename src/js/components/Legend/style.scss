@@ -14,10 +14,23 @@ $iconRatio: 0.4;
       background: var(--jhu-brand-heritage-blue);
       display: flex;
       flex: 1;  
+      gap: #{map.get($shared-vars, 'legendPadding_small')}px;
       min-width: 100%;
-      overflow-x: auto;
-      overflow-y: hidden;
+      overflow: hidden;
       padding: #{map.get($shared-vars, 'legendPadding_small')}px;
+
+      button {
+        @include button(round);
+
+        svg {
+          height: #{map.get($shared-vars, 'utilitiesIconHeight')}px;
+          width: #{map.get($shared-vars, 'utilitiesIconHeight')}px;
+
+          &.left {
+            transform: scaleX(-1);
+          }
+        }
+      }
     }
 
     .label {
@@ -38,7 +51,7 @@ $iconRatio: 0.4;
 
   .legend {
     display: flex;
-    gap: #{map.get($shared-vars, 'legendGap_small')}px;
+    gap: #{map.get($shared-vars, 'legendPadding_small')}px;
     
     .thumbnail {
       background: #000;
@@ -60,6 +73,12 @@ $iconRatio: 0.4;
   }
 
   &.medium {
+    .legend-container {
+      .legend-scroll {
+        gap: #{map.get($shared-vars, 'legendPadding_small')}px;
+      }
+    }
+
     .legend {
       gap: #{map.get($shared-vars, 'legendGap_medium')}px;
 
@@ -75,6 +94,12 @@ $iconRatio: 0.4;
   }
 
   &.large {
+    .legend-container {
+      .legend-scroll {
+        gap: #{map.get($shared-vars, 'legendPadding_small')}px;
+      }
+    }
+
     .legend {
       gap: #{map.get($shared-vars, 'legendGap_large')}px;
 
@@ -90,6 +115,12 @@ $iconRatio: 0.4;
   }
 
   &.xlarge {
+    .legend-container {
+      .legend-scroll {
+        gap: #{map.get($shared-vars, 'legendPadding_small')}px;
+      }
+    }
+
     .legend {
       gap: #{map.get($shared-vars, 'legendGap_xlarge')}px;
 
