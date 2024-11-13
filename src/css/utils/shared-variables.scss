@@ -1,10 +1,11 @@
-// variables that need to be shared between CSS and JS
-module.exports = {
+// variables shared between CSS and JS
+$shared-vars: (
+  buttonPadding: 10,
 
   // animations (in ms)
   foundKeepAlive: 2000,
 
-  canvasTransition: '300ms ease-out',
+  canvasTransition: 300ms ease-out,
 
   // breakpoints (up to given pixel width)
   breakpoint_small: 430,
@@ -32,4 +33,10 @@ module.exports = {
   miniMap: 55,
   utilitiesIconHeight: 32,
   utilitiesEdgeSpace: 14,
+);
+
+:export {
+  @each $key, $value in $shared-vars {
+    #{unquote($key)}: $value;
+  }
 }

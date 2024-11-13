@@ -5,7 +5,7 @@ import Illustration from '../Illustration';
 import InstructionsOverlay from '../InstructionsOverlay';
 import Legend from '../Legend';
 import ResizeWatcher from '@johnshopkins/jhu-wds/src/shared/js/utils/watch-window-resize'
-import settings from '../../../settings';
+import * as settings from '../../../css/utils/shared-variables.scss';
 import { clearGameState, loadGameState, saveGameState } from '../../lib/persistance';
 import './style.scss';
 
@@ -116,13 +116,13 @@ class Game extends Component {
     // base breakpoint on the width of the container, not the user's screen
     const breakpoint = this.getBreakpoint(width);
 
-    const legendHeight = settings[`legendThumbnailHeight_${breakpoint}`] + (settings[`legendPadding_${breakpoint}`] * 2);
+    const legendHeight = parseInt(settings[`legendThumbnailHeight_${breakpoint}`]) + (parseInt(settings[`legendPadding_${breakpoint}`]) * 2);
 
     const illustrationContainerHeight = height - legendHeight;
     const illustrationContainerWidth = width;
 
     // factor in the buffer size to figure out max zoom ou
-    const bufferSize = (settings.utilitiesEdgeSpace * 4) + (settings.miniMap * 2);
+    const bufferSize = (parseInt(settings.utilitiesEdgeSpace) * 4) + (parseInt(settings.miniMap) * 2);
     const maxZoomOutWidth = (illustrationContainerWidth - bufferSize >= this.props.imageWidth ? 1 : (illustrationContainerWidth  - bufferSize) / this.props.imageWidth) * 100;
     const maxZoomOutHeight = (illustrationContainerHeight - bufferSize >= this.props.imageHeight ? 1 : (illustrationContainerHeight - bufferSize) / this.props.imageHeight) * 100;
     const maxZoomOut = Math.min(maxZoomOutWidth, maxZoomOutHeight); // allow to zoom out to max width AND height
@@ -167,15 +167,15 @@ class Game extends Component {
 
   getBreakpoint(width) {
 
-    if (width < settings.breakpoint_small) {
+    if (width < parseInt(settings.breakpoint_small)) {
       return 'small';
     }
 
-    if (width < settings.breakpoint_medium) {
+    if (width < parseInt(settings.breakpoint_medium)) {
       return 'medium';
     }
 
-    if (width < settings.breakpoint_large) {
+    if (width < parseInt(settings.breakpoint_large)) {
       return 'large';
     }
 

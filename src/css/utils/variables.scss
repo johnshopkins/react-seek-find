@@ -1,4 +1,5 @@
 @forward '../../../node_modules/@johnshopkins/jhu-wds/src/shared/scss/variables/colors';
+@forward 'shared-variables.scss';
 
 :root {
   --stack-background: 1;

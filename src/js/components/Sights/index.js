@@ -1,7 +1,7 @@
 /*global dataLayer*/
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import MagnifyingGlassIcon from '../Icons/MagnifyingGlass';
-import settings from '../../../settings';
+import * as settings from '../../../css/utils/shared-variables.scss';
 import './style.scss';
 
 /**

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import getOffsetCoords from '../../lib/get-offset-coords';
 import roundToThousandth from '../../lib/roundToThousandth';
-import settings from '../../../settings';
+import * as settings from '../../../css/utils/shared-variables.scss';
 import './style.scss';
 
 const throttle = require('lodash.throttle');
@@ -19,7 +19,7 @@ export default function MiniMap({ canvasX, canvasY, containerHeight, containerWi
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartY, setDragStartY] = useState(null);
 
-  const miniMapSize = settings.miniMap - 8;
+  const miniMapSize = parseInt(settings.miniMap) - 8;
 
   const sizeDown = miniMapSize / imageWidth;
   const sizeUp = imageWidth / miniMapSize;

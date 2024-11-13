@@ -1,3 +1,4 @@
+@use 'sass:map';
 @use '../../../css/main' as *;
 
 $iconRatio: 0.4;
@@ -16,7 +17,7 @@ $iconRatio: 0.4;
       min-width: 100%;
       overflow-x: auto;
       overflow-y: hidden;
-      padding: #{$legendPadding_small}px;
+      padding: #{map.get($shared-vars, 'legendPadding_small')}px;
     }
 
     .label {
@@ -37,12 +38,12 @@ $iconRatio: 0.4;
 
   .legend {
     display: flex;
-    gap: #{$legendGap_small}px;
+    gap: #{map.get($shared-vars, 'legendGap_small')}px;
     
     .thumbnail {
       background: #000;
-      height: #{$legendThumbnailHeight_small}px;
-      width: #{$legendThumbnailHeight_small}px;
+      height: #{map.get($shared-vars, 'legendThumbnailHeight_small')}px;
+      width: #{map.get($shared-vars, 'legendThumbnailHeight_small')}px;
 
       img {
         width: 100%;
@@ -51,8 +52,8 @@ $iconRatio: 0.4;
       svg {
         background: #fff;
         fill: green;
-        height: calc(#{$legendThumbnailHeight_small}px * $iconRatio);
-        width: calc(#{$legendThumbnailHeight_small}px * $iconRatio);
+        height: calc((map.get($shared-vars, 'legendThumbnailHeight_small')px) * $iconRatio);
+        width: calc((map.get($shared-vars, 'legendThumbnailHeight_small')px) * $iconRatio);
         position: absolute;
       }
     }
@@ -60,14 +61,14 @@ $iconRatio: 0.4;
 
   &.medium {
     .legend {
-      gap: #{$legendGap_medium}px;
+      gap: #{map.get($shared-vars, 'legendGap_medium')}px;
 
       .thumbnail {
-        height: #{$legendThumbnailHeight_medium}px;
-        width: #{$legendThumbnailHeight_medium}px;
+        height: #{map.get($shared-vars, 'legendThumbnailHeight_medium')}px;
+        width: #{map.get($shared-vars, 'legendThumbnailHeight_medium')}px;
         svg {
-          height: calc(#{$legendThumbnailHeight_medium}px * $iconRatio);
-          width: calc(#{$legendThumbnailHeight_medium}px * $iconRatio);
+          height: calc((map.get($shared-vars, 'legendThumbnailHeight_medium')px) * $iconRatio);
+          width: calc((map.get($shared-vars, 'legendThumbnailHeight_medium')px) * $iconRatio);
         }
       }
     }
@@ -75,14 +76,14 @@ $iconRatio: 0.4;
 
   &.large {
     .legend {
-      gap: #{$legendGap_large}px;
+      gap: #{map.get($shared-vars, 'legendGap_large')}px;
 
       .thumbnail {
-        height: #{$legendThumbnailHeight_large}px;
-        width: #{$legendThumbnailHeight_large}px;
+        height: #{map.get($shared-vars, 'legendThumbnailHeight_large')}px;
+        width: #{map.get($shared-vars, 'legendThumbnailHeight_large')}px;
         svg {
-          height: calc(#{$legendThumbnailHeight_large}px * $iconRatio);
-          width: calc(#{$legendThumbnailHeight_large}px * $iconRatio);
+          height: calc((map.get($shared-vars, 'legendThumbnailHeight_large')px) * $iconRatio);
+          width: calc((map.get($shared-vars, 'legendThumbnailHeight_large')px) * $iconRatio);
         }
       }
     }
@@ -90,14 +91,14 @@ $iconRatio: 0.4;
 
   &.xlarge {
     .legend {
-      gap: #{$legendGap_xlarge}px;
+      gap: #{map.get($shared-vars, 'legendGap_xlarge')}px;
 
       .thumbnail {
-        height: #{$legendThumbnailHeight_xlarge}px;
-        width: #{$legendThumbnailHeight_xlarge}px;
+        height: #{map.get($shared-vars, 'legendThumbnailHeight_xlarge')}px;
+        width: #{map.get($shared-vars, 'legendThumbnailHeight_xlarge')}px;
         svg {
-          height: calc(#{$legendThumbnailHeight_xlarge}px * $iconRatio);
-          width: calc(#{$legendThumbnailHeight_xlarge}px * $iconRatio);
+          height: calc((map.get($shared-vars, 'legendThumbnailHeight_xlarge')px) * $iconRatio);
+          width: calc((map.get($shared-vars, 'legendThumbnailHeight_xlarge')px) * $iconRatio);
         }
       }
     }

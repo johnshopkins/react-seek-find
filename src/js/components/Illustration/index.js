@@ -14,7 +14,7 @@ import ZoomInIcon from '../Icons/ZoomIn';
 import ZoomOutIcon from '../Icons/ZoomOut';
 import getOffsetCoords from '../../lib/get-offset-coords';
 import roundToThousandth from '../../lib/roundToThousandth';
-import settings from '../../../settings';
+import * as settings from '../../../css/utils/shared-variables.scss';
 import './style.scss';
 
 const throttle = require('lodash.throttle');
@@ -43,7 +43,7 @@ class Illustration extends Component {
     this.scaledImageHeight = this.props.imageHeight * this.props.scale;
     this.scaledImageWidth = this.props.imageWidth * this.props.scale;
 
-    this.bufferSize = settings.miniMap + (settings.utilitiesEdgeSpace * 2);
+    this.bufferSize = parseInt(settings.miniMap) + (parseInt(settings.utilitiesEdgeSpace) * 2);
 
     const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
     const { gamePlacementX, gamePlacementY } = this.getGameOffset();
@@ -260,7 +260,8 @@ class Illustration extends Component {
 
   getGameOffset() {
 
-    const bufferSize = (settings.utilitiesEdgeSpace * 4) + (settings.miniMap * 2);
+    // both sides
+    const bufferSize = this.bufferSize * 2;
 
     let gameOffsetLeft = 0;
     let gameOffsetTop = 0;
@@ -515,7 +516,7 @@ class Illustration extends Component {
   onSightsMove(x, y, size, direction) {
 
     // size of minimap + utility edge
-    const threshold = settings.miniMap + (settings.utilitiesEdgeSpace * 2);
+    const threshold = parseInt(settings.miniMap) + (parseInt(settings.utilitiesEdgeSpace) * 2);
     
     // move 1/5 of either the container height or width (whichever is largest)
     // but don't scroll more than the smallest

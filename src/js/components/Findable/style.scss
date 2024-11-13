@@ -1,8 +1,9 @@
+@use 'sass:map';
 @use '../../../css/main' as *;
 
 canvas.findable {
   outline: 0;
   position: absolute;
-  transition: all #{$canvasTransition};
+  transition: all #{map.get($shared-vars, 'canvasTransition')};
   z-index: var(--stack-findable);
 }

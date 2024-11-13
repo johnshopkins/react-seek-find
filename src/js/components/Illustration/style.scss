@@ -1,3 +1,4 @@
+@use 'sass:map';
 @use '../../../css/main' as *;
 
 .container {
@@ -13,8 +14,8 @@
       outline: solid var(--jhu-brand-white) 2px;
 
       svg {
-        height: #{$utilitiesIconHeight}px;
-        width: #{$utilitiesIconHeight}px;
+        height: #{map.get($shared-vars, 'utilitiesIconHeight')}px;
+        width: #{map.get($shared-vars, 'utilitiesIconHeight')}px;
       }
     }
 
@@ -29,13 +30,13 @@
     }
 
     .navigation {
-      right: #{$utilitiesEdgeSpace}px;
-      top: #{$utilitiesEdgeSpace}px;
+      right: #{map.get($shared-vars, 'utilitiesEdgeSpace')}px;
+      top: #{map.get($shared-vars, 'utilitiesEdgeSpace')}px;
     }
 
     .instructions-and-hint {
-      bottom: #{$utilitiesEdgeSpace}px;
-      left: #{$utilitiesEdgeSpace}px;
+      bottom: #{map.get($shared-vars, 'utilitiesEdgeSpace')}px;
+      left: #{map.get($shared-vars, 'utilitiesEdgeSpace')}px;
     }
 
     .hint {

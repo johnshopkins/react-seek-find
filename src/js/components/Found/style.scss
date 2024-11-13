@@ -1,3 +1,4 @@
+@use 'sass:map';
 @use '../../../css/main' as *;
 
 canvas.found {
@@ -5,7 +6,7 @@ canvas.found {
   pointer-events: none;
   position: absolute;
   animation: fade 6000ms;
-  transition: all #{$canvasTransition};
+  transition: all #{map.get($shared-vars, 'canvasTransition')};
   z-index: var(--stack-found);
 }
 

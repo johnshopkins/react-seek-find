@@ -13,8 +13,8 @@ import getMouseEvent from '../helpers/getMouseEvent';
 import getTouchEvent from '../helpers/getTouchEvent';
 import { saveGameState } from '../../src/js/lib/persistance';
 
-// mock settings so i don't have to keep updating tests for small sizing changes
-jest.mock('../../src/settings', () => {
+// mock settings so i don't have to keep updating tests for sizing changes
+jest.mock('../../src/css/utils/shared-variables.scss', () => {
   return {
     // animations (in ms)
     foundKeepAlive: 2000,

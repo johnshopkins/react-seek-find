@@ -24,23 +24,16 @@ module.exports = {
         test: /\.scss$/,
         use: [
           'style-loader',
-          'css-loader',
           {
-            loader: 'sass-loader',
+            loader: "css-loader",
             options: {
-              additionalData: (content) => {
-
-                let add = '';
-
-                for (const prop in settings) {
-                  add += `$${prop}: ${settings[prop]};`;
-                }
-
-                return add + content;
-
-              }
-            }
-          }
+              importLoaders: 1,
+              modules: {
+                mode: "icss",
+              },
+            },
+          },
+          'sass-loader'
         ],
       },
       {
