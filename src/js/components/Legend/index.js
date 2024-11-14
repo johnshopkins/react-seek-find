@@ -23,7 +23,7 @@ export default function Legend({ breakpoint, found, objects, width }) {
   const availableSpace = width - (buttonWidth * 2) - (parseInt(settings[`legendPadding_${breakpoint}`]) * 4);
   const legendWidth = objects.length * thumbnailSize + (objects.length -1) * parseInt(settings[`legendGap_${breakpoint}`]);
 
-  const needsPagination = legendWidth > availableSpace
+  const needsPagination = legendWidth > availableSpace;
 
   const minPositionX = 0;
   const maxPositionX = -Math.abs(legendWidth - availableSpace);
@@ -74,7 +74,7 @@ export default function Legend({ breakpoint, found, objects, width }) {
         <div className="legend-scroll">
           {needsPagination &&
             <button onMouseDown={() => handleMouseDown('left')} onMouseUp={handleMouseUp} disabled={positionX === minPositionX}>
-              <ArrowIcon className="left" />
+              <ArrowIcon className="left" tooltip="Scroll left" />
             </button>
           }
           <div className="legend" style={{width: `${availableSpace}px` }}>
@@ -87,7 +87,7 @@ export default function Legend({ breakpoint, found, objects, width }) {
           </div>
           {needsPagination &&
             <button onMouseDown={() => handleMouseDown('right')} onMouseUp={handleMouseUp} disabled={positionX === maxPositionX}>
-              <ArrowIcon className="right" />
+              <ArrowIcon className="right" tooltip="Scroll right" />
             </button>
           }
       </div>
