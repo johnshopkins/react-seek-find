@@ -1,5 +1,12 @@
 @forward '../../../node_modules/@johnshopkins/jhu-wds/src/shared/scss/variables/colors';
-@forward 'shared-variables.scss';
+@forward 'shared-variables';
+
+@use 'sass:map';
+@use 'shared-variables' as *;
+
+$breakpoint_small: #{map.get($shared-vars, 'breakpoint_small')}px;
+$breakpoint_medium: #{map.get($shared-vars, 'breakpoint_medium')}px;
+$breakpoint_large: #{map.get($shared-vars, 'breakpoint_large')}px;
 
 :root {
   --stack-background: 1;
@@ -9,4 +16,32 @@
   --stack-utilities: 5;
   --stack-legend: 6;
   --stack-overlay: 7;
+
+  --legendGap: #{map.get($shared-vars, 'legendGap')}px;
+  --legendPadding: #{map.get($shared-vars, 'legendPadding')}px;
+  --legendThumbnailHeight: #{map.get($shared-vars, 'legendThumbnailHeight_small')}px;
+  --utilitiesEdgeSpace: #{map.get($shared-vars, 'utilitiesEdgeSpace')}px;
+
+  @media (width <= $breakpoint_small) {
+    --legendGap: #{map.get($shared-vars, 'legendGap_small')}px;
+    --legendPadding: #{map.get($shared-vars, 'legendPadding_small')}px;
+    }
+
+  @media ($breakpoint_small < width <= $breakpoint_medium) {
+    --legendGap: #{map.get($shared-vars, 'legendGap_medium')}px;
+    --legendPadding: #{map.get($shared-vars, 'legendPadding_medium')}px;
+    --legendThumbnailHeight: #{map.get($shared-vars, 'legendThumbnailHeight_medium')}px;
+  }
+
+  @media ($breakpoint_medium < width <= $breakpoint_large) {
+    --legendGap: #{map.get($shared-vars, 'legendGap_large')}px;
+    --legendPadding: #{map.get($shared-vars, 'legendPadding_large')}px;
+    --legendThumbnailHeight: #{map.get($shared-vars, 'legendThumbnailHeight_large')}px;
+  }
+
+  @media ($breakpoint_large < width) {
+    --legendGap: #{map.get($shared-vars, 'legendGap_xlarge')}px;
+    --legendPadding: #{map.get($shared-vars, 'legendPadding_xlarge')}px;
+    --legendThumbnailHeight: #{map.get($shared-vars, 'legendThumbnailHeight_xlarge')}px;
+  }
 }
