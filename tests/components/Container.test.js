@@ -16,6 +16,8 @@ import { saveGameState } from '../../src/js/lib/persistance';
 // mock settings so i don't have to keep updating tests for sizing changes
 jest.mock('../../src/css/utils/shared-variables.scss', () => {
   return {
+    buttonPadding: 10,
+
     // animations (in ms)
     foundKeepAlive: 2000,
 
@@ -1326,6 +1328,114 @@ describe('Container', () => {
         expect(clearTimeout).toHaveBeenCalledTimes(1);
 
         clearTimeoutSpy.mockRestore();
+
+      });
+
+    });
+
+    describe('Legend', () => {
+
+      beforeEach(() => {
+        jest.useFakeTimers();
+      });
+
+      afterEach(() => {
+        jest.useRealTimers();
+      });
+
+      test('Can scroll when there are more thumbnails than space allows', async() => {
+
+        // create a bunch of objects
+        const objects = [];
+        let i = 0;
+        for (let y = 100; y < 800; y += 200) {
+          for (let x = 100; x <= 1400; x += 200) {
+            objects.push(new FindableObject(
+              `box${i}`,
+              `box${i}`,
+              'https://picsum.photos/143/143',
+              () => {
+                const path = new Path2D();
+                path.moveTo(x, y);
+                path.lineTo(x, y + 100);
+                path.lineTo(x + 100, y + 100);
+                path.lineTo(x + 100, y);
+                path.closePath();
+                return path;
+              },
+              { x: x - 50, y: y - 50 },
+              200
+            ));
+            i++;
+          }
+        }
+
+        const { container } = await renderGame({ objects });
+        
+        const legend = container.querySelector('.legend-container');
+
+        const thumbnails = container.querySelector('.legend-container .thumbnails');
+        expect(thumbnails).toHaveStyle({ 'left': '0px' });
+
+        const scrollLeftButton = within(legend).getByRole('button', { name: 'Scroll left' });
+        const scrollRightButton = within(legend).getByRole('button', { name: 'Scroll right' });
+
+        expect(scrollLeftButton).toBeInTheDocument();
+        expect(scrollRightButton).toBeInTheDocument();
+
+        // hold down the scroll left button for 1 second
+        act(() => fireEvent.mouseDown(scrollLeftButton))
+        jest.advanceTimersByTime(1000);
+        act(() => fireEvent.mouseUp(scrollLeftButton))
+
+        // thumbnails cannot scroll further left
+        expect(thumbnails).toHaveStyle({ 'left': '0px' });
+
+        // hold down the scroll right button for 1 second
+        act(() => fireEvent.mouseDown(scrollRightButton));
+        act(() => jest.advanceTimersByTime(1000));
+        act(() => fireEvent.mouseUp(scrollRightButton));
+
+        expect(thumbnails).toHaveStyle({ 'left': '-400px' }); // 10 x thumbnailWidth (40)
+
+        // hold down the scroll right button for 1 more second
+        act(() => fireEvent.mouseDown(scrollRightButton))
+        act(() => jest.advanceTimersByTime(1000));
+        act(() => fireEvent.mouseUp(scrollRightButton))
+
+        expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // max
+
+        // hold down the scroll right button for 1 more second
+        act(() => fireEvent.mouseDown(scrollRightButton))
+        act(() => jest.advanceTimersByTime(1000));
+        act(() => fireEvent.mouseUp(scrollRightButton))
+
+        expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // still at max
+
+        // hold down the scroll right button for 1 second
+        act(() => fireEvent.mouseDown(scrollLeftButton))
+        act(() => jest.advanceTimersByTime(1000));
+        act(() => fireEvent.mouseUp(scrollLeftButton))
+
+        expect(thumbnails).toHaveStyle({ 'left': '-379px' });
+
+        // hold down the scroll right button for 1 more second
+        act(() => fireEvent.mouseDown(scrollLeftButton))
+        act(() => jest.advanceTimersByTime(1000));
+        act(() => fireEvent.mouseUp(scrollLeftButton))
+
+        expect(thumbnails).toHaveStyle({ 'left': '0px' });
+
+      });
+
+      test('No scroll option present when all thumbnails fit in alloted space', async() => {
+
+        const { container } = await renderGame();
+
+        const legend = container.querySelector('.legend-container');
+
+        expect(within(legend).queryByRole('button', { name: 'Scroll left' })).not.toBeInTheDocument();
+        expect(within(legend).queryByRole('button', { name: 'Scroll right' })).not.toBeInTheDocument();
 
       });
 
