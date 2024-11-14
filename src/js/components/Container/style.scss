@@ -12,7 +12,47 @@
   }
 
   .game-container {
-    overflow: hidden;
+    contain: paint;
     position: relative;
+  }
+
+  .utilities {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    button {
+      border: solid var(--jhu-grayscale-100) 4px;
+      outline: solid var(--jhu-grayscale-0) 2px;
+    }
+
+    .instructions-and-hint,
+    .navigation {
+      margin: var(--utilitiesEdgeSpace);
+      position: sticky;
+    }
+
+    .instructions-and-hint {
+      align-self: flex-end;
+      bottom: calc(var(--legendThumbnailHeight) + (var(--legendPadding) * 2) + var(--utilitiesEdgeSpace));
+    }
+
+    .navigation {
+      align-self: flex-start;
+      top: var(--utilitiesEdgeSpace);
+
+      > div:last-child {
+        border: solid var(--jhu-grayscale-100) 4px;
+        border-radius: 99em;
+        color: var(--jhu-brand-heritage-blue);
+        font-weight: 700;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+        text-align: center;
+        width: auto;
+      }
+    }
   }
 }
