@@ -711,6 +711,81 @@ describe('Container', () => {
 
         });
 
+        test('If keyboard is newly focused, move the sights into view', async () => {
+
+          const { container } = await renderGame();
+
+          const game = container.querySelector('.game');
+          const sights = container.querySelector('.sights');
+          const canvas = container.querySelector('canvas.findable');
+
+          // use the mouse to move the canvas into the bottom right
+
+          // initial positions
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '0px', top: '0px' });
+
+          // move to the bottom right of the canvas
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 300 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 200, clientY: 10 }));
+          fireEvent(canvas, getMouseEvent('mouseup', { clientX: 200, clientY: 10 }));
+          expect(game).toHaveStyle({ left: '-283px', top: '-290px' });
+
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 300 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 400, clientY: 10 }));
+          fireEvent(canvas, getMouseEvent('mouseup', { clientX: 200, clientY: 10 }));
+          expect(game).toHaveStyle({ left: '-283px', top: '-433px' });
+
+          // click on the canvas (fireEvent doesn't change focus)
+          await user.click(canvas);
+          expect(canvas).toHaveFocus();
+
+          // get out of the game
+          await user.tab({ shift: true });
+          expect(document.body).toHaveFocus();
+
+          // tab back into canvas
+          await user.tab();
+          expect(canvas).toHaveFocus();
+          expect(sights).toHaveStyle({ left: '283px', top: '433px' });
+
+        })
+
+        test('If a user switches from mouse to keyboard navigation, move the sights into view', async () => {
+
+          const { container } = await renderGame();
+
+          const game = container.querySelector('.game');
+          const sights = container.querySelector('.sights');
+          const canvas = container.querySelector('canvas.findable');
+
+          // use the mouse to move the canvas into the bottom right
+
+          // initial positions
+          expect(game).toHaveStyle({ left: '0px', top: '0px' });
+          expect(sights).toHaveStyle({ left: '0px', top: '0px' });
+
+          // move to the bottom right of the canvas
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 300 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 200, clientY: 10 }));
+          fireEvent(canvas, getMouseEvent('mouseup', { clientX: 200, clientY: 10 }));
+          expect(game).toHaveStyle({ left: '-283px', top: '-290px' });
+
+          fireEvent(canvas, getMouseEvent('mousedown', { clientX: 800, clientY: 300 }));
+          fireEvent(canvas, getMouseEvent('mousemove', { clientX: 400, clientY: 10 }));
+          fireEvent(canvas, getMouseEvent('mouseup', { clientX: 200, clientY: 10 }));
+          expect(game).toHaveStyle({ left: '-283px', top: '-433px' });
+
+          // click on the canvas (fireEvent doesn't change focus)
+          await user.click(canvas);
+          expect(canvas).toHaveFocus();
+
+          // switch to keyboard navigation
+          await user.keyboard('{ArrowRight}');
+          expect(sights).toHaveStyle({ left: '283px', top: '433px' });
+
+        })
+
       });
 
     });

@@ -89,6 +89,7 @@ class Illustration extends Component {
     this.showFound = this.showFound.bind(this);
     this.showHint = this.showHint.bind(this);
     this.toggleHint = this.toggleHint.bind(this);
+    this.onNewlyFocusedViaKeyboard = this.onNewlyFocusedViaKeyboard.bind(this);
     this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.removeHint = this.removeHint.bind(this);
@@ -305,10 +306,23 @@ class Illustration extends Component {
    * @param {event} e 
    */
   onKeyDown(e) {
-    this.setState({ isClick: false }, () => {
-      if (this.state.isKeyboardFocused) {
-        this.sightsRef.current.moveSights(e);
-      }
+
+    if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) {
+      return;
+    }
+
+    if (!this.state.isKeyboardFocused) {
+      this.onNewlyFocusedViaKeyboard(e);
+    } else {
+      this.sightsRef.current.moveSights(e);
+    }
+  }
+
+  onNewlyFocusedViaKeyboard(e = false) {
+    this.setState({ isClick: false, isKeyboardFocused: true }, () => {
+      const x = this.state.canvasX > 0 ? 0 : Math.abs(this.state.canvasX);
+      const y = this.state.canvasY > 0 ? 0 : Math.abs(this.state.canvasY);
+      this.sightsRef.current.moveSightsTo(x, y, e);
     });
   }
 
@@ -318,12 +332,23 @@ class Illustration extends Component {
    * so tht the sights will be shown.
    */
   onFocus() {
-    this.setState({ isKeyboardFocused: !this.state.isClick });
+
+    const viaKeyboard = !this.state.isClick;
+
+    this.setState({ isKeyboardFocused: viaKeyboard }, () => {
+      if (viaKeyboard) {
+        this.onNewlyFocusedViaKeyboard();
+      }
+    });
+
     this.props.onKeyboardFocusChange(!this.state.isClick)
   }
 
   onBlur() {
-    this.setState({ isKeyboardFocused: false });
+    this.setState({
+      isClick: false,
+      isKeyboardFocused: false,
+    });
     this.props.onKeyboardFocusChange(false)
   }
 

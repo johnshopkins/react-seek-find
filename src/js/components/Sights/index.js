@@ -26,14 +26,8 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
   const [positionY, setPositionY] = useState(0);
   const [useTransition, setUseTransition] = useState(false);
 
-  useImperativeHandle(ref, () => ({
-    moveSights: (e) => {
-
-      if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) {
-        return;
-      }
-
-      e.stopPropagation();
+  const moveSights = (e) => {
+    e.stopPropagation();
       e.preventDefault();
 
       setUseTransition(false);
@@ -102,11 +96,17 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
 
       // pan the background, if necessary
       onSightsMove(newPositionX, newPositionY, iconSize, direction);
-    },
-    moveSightsTo(x, y) {
+  }
+
+  useImperativeHandle(ref, () => ({
+    moveSights: moveSights,
+    moveSightsTo(x, y, e = false) {
       setUseTransition(false);
       setPositionX(x);
       setPositionY(y);
+      if (e) {
+        onSightsMove(e)
+      }
     },
     calibrateSights(scaleDiff) {
 
