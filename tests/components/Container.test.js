@@ -300,9 +300,12 @@ describe('Container', () => {
       expect(replayButton).not.toBeInTheDocument();
 
       // legend images show a status of not found
-      const legend = container.querySelector('.legend');
-      const legendImageContainers = container.querySelectorAll('.legend .thumbnail');
+      const legend = container.querySelector('.legend-container');
+      const legendLabel = container.querySelector('.legend-container .label');
+      const legendImageContainers = container.querySelectorAll('.legend-container .thumbnail');
       const legendImages = await within(legend).findAllByRole('img');
+
+      expect(legendLabel).toHaveTextContent('Can you find us all? 0/2');
       expect(within(legendImageContainers[0]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(within(legendImageContainers[1]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
@@ -320,6 +323,7 @@ describe('Container', () => {
       fireEvent(canvas, getMouseEvent('mouseup', { clientX: 450, clientY: 250 }));
 
       // object found
+      expect(legendLabel).toHaveTextContent('Can you find us all? 1/2');
       expect(within(legendImageContainers[0]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
@@ -344,6 +348,7 @@ describe('Container', () => {
       fireEvent(canvas, getMouseEvent('mouseup', { clientX: 350, clientY: 350 }));
 
       // object found
+      expect(legendLabel).toHaveTextContent('Can you find us all? 2/2');
       expect(within(legendImageContainers[0]).getByTitle('Found')).toBeInTheDocument();
       expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: found');
