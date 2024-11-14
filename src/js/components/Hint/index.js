@@ -6,12 +6,8 @@ export default function Hint({ height, object, scale, width }) {
   const ref = useRef(null);
 
   useEffect(() => {
-
-    if (object) {
-      const context = ref.current.getContext('2d');
-      object.hint.call(this, context, width, height);
-    }
-
+    const context = ref.current.getContext('2d');
+    object.hint.call(this, context, width, height);
   }, [height, object, width]);
 
   return (
