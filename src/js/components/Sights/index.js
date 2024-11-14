@@ -124,11 +124,6 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
       setPositionX(newX - iconOffsetLeft);
       setPositionY(newY - iconOffsetTop);
     },
-    resetSights() {
-      setUseTransition(false);
-      setPositionX(0);
-      setPositionY(0);
-    },
     getSightsPosition() {
       const bounds = sightsRef.current.getBoundingClientRect();
       return {
