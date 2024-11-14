@@ -11,9 +11,10 @@ $iconRatio: 0.4;
     z-index: var(--stack-legend);
 
     .legend-scroll {
+      align-items: center;
       background: var(--jhu-brand-heritage-blue);
       display: flex;
-      flex: 1;  
+      flex: 1;
       gap: #{map.get($shared-vars, 'legendPadding_small')}px;
       min-width: 100%;
       overflow: hidden;
@@ -52,6 +53,15 @@ $iconRatio: 0.4;
   .legend {
     display: flex;
     gap: #{map.get($shared-vars, 'legendPadding_small')}px;
+    overflow: hidden;
+    position: relative;
+
+    .thumbnails {
+      display: flex;
+      gap: #{map.get($shared-vars, 'legendGap_small')}px;
+      position: absolute;
+      transition: left #{map.get($shared-vars, 'canvasTransition')};
+    }
     
     .thumbnail {
       background: #000;
@@ -81,6 +91,11 @@ $iconRatio: 0.4;
 
     .legend {
       gap: #{map.get($shared-vars, 'legendGap_medium')}px;
+      height: #{map.get($shared-vars, 'legendThumbnailHeight_medium')}px;
+
+      .thumbnails {
+        gap: #{map.get($shared-vars, 'legendGap_medium')}px;
+      }
 
       .thumbnail {
         height: #{map.get($shared-vars, 'legendThumbnailHeight_medium')}px;
@@ -102,6 +117,11 @@ $iconRatio: 0.4;
 
     .legend {
       gap: #{map.get($shared-vars, 'legendGap_large')}px;
+      height: #{map.get($shared-vars, 'legendThumbnailHeight_large')}px;
+
+      .thumbnails {
+        gap: #{map.get($shared-vars, 'legendGap_large')}px;
+      }
 
       .thumbnail {
         height: #{map.get($shared-vars, 'legendThumbnailHeight_large')}px;
@@ -123,6 +143,11 @@ $iconRatio: 0.4;
 
     .legend {
       gap: #{map.get($shared-vars, 'legendGap_xlarge')}px;
+      height: #{map.get($shared-vars, 'legendThumbnailHeight_xlarge')}px;
+
+      .thumbnails {
+        gap: #{map.get($shared-vars, 'legendGap_xlarge')}px;
+      }
 
       .thumbnail {
         height: #{map.get($shared-vars, 'legendThumbnailHeight_xlarge')}px;
