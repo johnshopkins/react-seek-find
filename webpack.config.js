@@ -1,5 +1,4 @@
 const path = require('path');
-const settings = require('./src/settings');
 
 module.exports = {
   mode: 'production',
