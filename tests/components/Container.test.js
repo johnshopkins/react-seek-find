@@ -470,6 +470,8 @@ describe('Container', () => {
 
         test('Moving canvas within bounds by 2-touch scroll', async () => {
 
+          jest.useFakeTimers();
+
           const { container } = await renderGame();
 
           const game = container.querySelector('.game');
@@ -483,16 +485,21 @@ describe('Container', () => {
           // initial placement of canvas within the page
           jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
 
-          // (328, 306) is where mousedown is initiated, relative to the document
+          // (328, 306) is where touch is initiated, relative to the document
           fireEvent(canvas, getTouchEvent('touchstart', { targetTouches: [{ clientX: 328, clientY: 306 }] }));
           
           // two-touch scroll
           fireEvent(canvas, getTouchEvent('touchmove', { targetTouches: [{ clientX: 200, clientY: 200 }, { clientX: 175, clientY: 175 }] }));
+          act(() => {
+            jest.runAllTimers();
+          });
 
           // new positioning after 2-touch touchmove
           expect(game).toHaveStyle({ left: '-128px', top: '-106px' });
 
           fireEvent(canvas, getTouchEvent('touchend'));
+
+          jest.useRealTimers();
 
         });
 

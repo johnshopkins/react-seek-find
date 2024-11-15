@@ -91,6 +91,7 @@ class Illustration extends Component {
     this.toggleHint = this.toggleHint.bind(this);
     this.onNewlyFocusedViaKeyboard = this.onNewlyFocusedViaKeyboard.bind(this);
     this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
+    this.onTouchMoveNotThrottled = this.onTouchMove.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.removeHint = this.removeHint.bind(this);
     this.replay = this.replay.bind(this);
@@ -424,10 +425,15 @@ class Illustration extends Component {
     const diffX = this.state.dragStartX - offsetX;
     const diffY = this.state.dragStartY - offsetY;
 
-    let newX = this.state.canvasX - diffX;
-    let newY = this.state.canvasY - diffY;
-
-    this.moveCanvas(newX, newY);
+    if (this.state.isDragging) {
+      const newX = this.state.canvasX - diffX;
+      const newY = this.state.canvasY - diffY;
+      this.moveCanvas(newX, newY);
+    } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
+      this.setState({ isDragging: true}, () => {
+        this.onTouchMoveNotThrottled(e);
+      });
+    }
   }
 
   onTouchStart(e) {
@@ -450,6 +456,7 @@ class Illustration extends Component {
     // reset state vars
     window.addEventListener('touchend', e => {
       this.onTouchMove.cancel();
+      this.setState({ isDragging: false });
       window.removeEventListener('touchmove', this.onTouchMove);
     }, { once: true });
   }
