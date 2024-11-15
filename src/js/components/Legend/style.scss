@@ -20,6 +20,11 @@ $iconRatio: 0.4;
       overflow: hidden;
       padding: #{map.get($shared-vars, 'legendPadding_small')}px;
 
+      user-select: none;
+      // -moz-user-select: none;
+      -webkit-user-select: none;
+      // -ms-user-select: none;
+
       button {
         @include button(round);
 

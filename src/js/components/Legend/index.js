@@ -73,7 +73,13 @@ export default function Legend({ breakpoint, found, objects, width }) {
       <div className="label">Can you find us all? {found.length}/{objects.length}</div>
         <div className="legend-scroll">
           {needsPagination &&
-            <button onMouseDown={() => handleMouseDown('left')} onMouseUp={handleMouseUp} disabled={positionX === minPositionX}>
+            <button
+              onMouseDown={() => handleMouseDown('left')}
+              onTouchStart={() => handleMouseDown('left')}
+              onMouseUp={handleMouseUp}
+              onTouchEnd={handleMouseUp}
+              disabled={positionX === minPositionX}
+            >
               <ArrowIcon className="left" tooltip="Scroll left" />
             </button>
           }
@@ -86,7 +92,13 @@ export default function Legend({ breakpoint, found, objects, width }) {
             </div>
           </div>
           {needsPagination &&
-            <button onMouseDown={() => handleMouseDown('right')} onMouseUp={handleMouseUp} disabled={positionX === maxPositionX}>
+            <button
+              onMouseDown={() => handleMouseDown('right')}
+              onTouchStart={() => handleMouseDown('right')}
+              onMouseUp={handleMouseUp}
+              onTouchEnd={handleMouseUp}
+              disabled={positionX === maxPositionX}
+            >
               <ArrowIcon className="right" tooltip="Scroll right" />
             </button>
           }
