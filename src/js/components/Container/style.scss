@@ -4,6 +4,7 @@
   cursor: url('../../../images/arrow.svg'), pointer;
   display: flex;
   flex-direction: column;
+  -webkit-tap-highlight-color: transparent;
 
   &.keyboard-focused {
     &:focus-within {
