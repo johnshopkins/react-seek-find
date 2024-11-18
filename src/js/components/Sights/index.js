@@ -28,74 +28,74 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
 
   const moveSights = (e) => {
     e.stopPropagation();
-      e.preventDefault();
+    e.preventDefault();
 
-      setUseTransition(false);
+    setUseTransition(false);
 
-      const increment = e.shiftKey ? 20 : 2;
+    const increment = e.shiftKey ? 20 : 2;
 
-      let newPositionX = positionX;
-      let newPositionY = positionY;
+    let newPositionX = positionX;
+    let newPositionY = positionY;
 
-      let direction;
+    let direction;
 
-      if (e.key === ' ') {
+    if (e.key === ' ') {
 
-        dataLayer.push({
-          event: 'keyboard_interaction',
-          type: 'guess_submitted',
-        });
+      dataLayer.push({
+        event: 'keyboard_interaction',
+        type: 'guess_submitted',
+      });
 
-        checkGuess(positionX + iconOffsetLeft, positionY + iconOffsetTop);
+      checkGuess(positionX + iconOffsetLeft, positionY + iconOffsetTop);
 
-      } else if (e.key === 'ArrowRight') {
+    } else if (e.key === 'ArrowRight') {
 
-        direction = 'right'
+      direction = 'right'
 
-        newPositionX = positionX + increment;
-        if (newPositionX > maxX) {
-          newPositionX = maxX;
-        }
-
-        setPositionX(newPositionX);
-
-      } else if (e.key === 'ArrowLeft') {
-
-        direction = 'left'
-
-        newPositionX = positionX - increment;
-
-        if (newPositionX < minX) {
-          newPositionX = minX;
-        }
-
-        setPositionX(newPositionX);
-
-      } else if (e.key === 'ArrowUp') {
-
-        direction = 'up'
-        
-        newPositionY = positionY - increment;
-        if (newPositionY < minY) {
-          newPositionY = minY;
-        }
-
-        setPositionY(newPositionY);
-
-      } else if (e.key === 'ArrowDown') {
-
-        direction = 'down'
-        
-        newPositionY = positionY + increment;
-        if (newPositionY > maxY) {
-          newPositionY = maxY;
-        }
-
-        setPositionY(newPositionY);
+      newPositionX = positionX + increment;
+      if (newPositionX > maxX) {
+        newPositionX = maxX;
       }
 
-      // pan the background, if necessary
-      onSightsMove(newPositionX, newPositionY, iconSize, direction);
+      setPositionX(newPositionX);
+
+    } else if (e.key === 'ArrowLeft') {
+
+      direction = 'left'
+
+      newPositionX = positionX - increment;
+
+      if (newPositionX < minX) {
+        newPositionX = minX;
+      }
+
+      setPositionX(newPositionX);
+
+    } else if (e.key === 'ArrowUp') {
+
+      direction = 'up'
+      
+      newPositionY = positionY - increment;
+      if (newPositionY < minY) {
+        newPositionY = minY;
+      }
+
+      setPositionY(newPositionY);
+
+    } else if (e.key === 'ArrowDown') {
+
+      direction = 'down'
+      
+      newPositionY = positionY + increment;
+      if (newPositionY > maxY) {
+        newPositionY = maxY;
+      }
+
+      setPositionY(newPositionY);
+    }
+
+    // pan the background, if necessary
+    onSightsMove(newPositionX, newPositionY, iconSize, direction);
   }
 
   useImperativeHandle(ref, () => ({
