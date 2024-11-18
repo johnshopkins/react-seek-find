@@ -79,6 +79,7 @@ export default forwardRef(({
       onTouchStart={onTouchStart}
       tabIndex={disableTabbing ? '-1' : '0'}
       style={{
+        touchAction: 'pan-y',
         height: `${height * scale}px`,
         width: `${width * scale}px`
       }}
