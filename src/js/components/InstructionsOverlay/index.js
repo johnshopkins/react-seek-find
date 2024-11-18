@@ -1,6 +1,6 @@
 /*global Modernizr*/
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import XMarkIcon from '../Icons/Xmark';
 import './style.scss';
 
@@ -11,11 +11,9 @@ require('../../lib/modernizr');
  */
 export default function InstructionsOverlay({ breakpoint, isAutoOpen, onClose, style }) {
 
+  const [focused] = useState(document.activeElement);
   const overlay = useRef(null);
   const closeButton = useRef(null);
-
-  // what had focus before the overlay was opened
-  const focused = document.activeElement;
 
   const close = () => {
     
