@@ -187,6 +187,9 @@ describe('Container', () => {
 
     test('Instructions overlay is not open on later views', async () => {
 
+      localStorage.clear();
+      saveGameState({ seenInstructions: true });
+
       const { container } = await renderGame();
 
       const instructionsOverlay = container.querySelector('.overlay-container');
@@ -195,6 +198,9 @@ describe('Container', () => {
     });
 
     test('Reopening instructions is tracked', async () => {
+
+      localStorage.clear();
+      saveGameState({ seenInstructions: true });
 
       const { container } = await renderGame();
 
@@ -211,6 +217,9 @@ describe('Container', () => {
     });
 
     test('Keyboard navigators can open and close the overlay', async () => {
+
+      localStorage.clear();
+      saveGameState({ seenInstructions: true });
 
       const { container } = await renderGame();
 
