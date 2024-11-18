@@ -63,8 +63,6 @@ class Illustration extends Component {
       gamePlacementX,
       gamePlacementY,
 
-      isClick: false,
-      isKeyboardFocused: false,
       loading: true,
       isDragging: false,
       dragStartX: null,
@@ -76,10 +74,8 @@ class Illustration extends Component {
 
     this.getGameOffset = this.getGameOffset.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
-    this.onBlur = this.onBlur.bind(this);
     this.onContainerMouseDown = this.onContainerMouseDown.bind(this);
     this.onFind = this.onFind.bind(this);
-    this.onFocus = this.onFocus.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMoveNotThrottled = this.onMouseMove.bind(this);
@@ -173,7 +169,6 @@ class Illustration extends Component {
       'hint',
       'hintActive',
       'isDragging',
-      'isKeyboardFocused',
       'loading',
     ];
 
@@ -187,6 +182,7 @@ class Illustration extends Component {
       'disableTabbing',
       'found',
       'gameComplete',
+      'isKeyboardFocused',
       'containerHeight',
       'containerWidth',
       'scale',
@@ -236,7 +232,7 @@ class Illustration extends Component {
       let newX = this.state.anchorX * scaleDiff;
       let newY = this.state.anchorY * scaleDiff;
 
-      if (this.state.isKeyboardFocused) {
+      if (this.props.isKeyboardFocused) {
         const containerBounds = this.containerRef.current.getBoundingClientRect();
         const gameBounds = this.gameRef.current.getBoundingClientRect();
         const sightsPosition = this.sightsRef.current.getSightsPosition(scaleDiff);
@@ -309,11 +305,15 @@ class Illustration extends Component {
    */
   onKeyDown(e) {
 
+    if (e.key === 'Tab' && !this.props.isKeyboardFocused) {
+      return this.onNewlyFocusedViaKeyboard(e);
+    }
+
     if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) {
       return;
     }
 
-    if (!this.state.isKeyboardFocused) {
+    if (!this.props.isKeyboardFocused) {
       this.onNewlyFocusedViaKeyboard(e);
     } else {
       this.sightsRef.current.moveSights(e);
@@ -321,37 +321,13 @@ class Illustration extends Component {
   }
 
   onNewlyFocusedViaKeyboard(e = false) {
-    this.setState({ isClick: false, isKeyboardFocused: true }, () => {
-      const x = this.state.canvasX > 0 ? 0 : Math.abs(this.state.canvasX);
-      const y = this.state.canvasY > 0 ? 0 : Math.abs(this.state.canvasY);
-      this.sightsRef.current.moveSightsTo(x, y, e);
-    });
-  }
 
-  /**
-   * When the game is focused, if it wasn't initiated by a click,
-   * it was initiated by the keyboard. Set isKeyboardFocused to TRUE
-   * so tht the sights will be shown.
-   */
-  onFocus() {
+    this.props.onKeyboardFocusChange(true);
 
-    const viaKeyboard = !this.state.isClick;
+    const x = this.state.canvasX > 0 ? 0 : Math.abs(this.state.canvasX);
+    const y = this.state.canvasY > 0 ? 0 : Math.abs(this.state.canvasY);
 
-    this.setState({ isKeyboardFocused: viaKeyboard }, () => {
-      if (viaKeyboard) {
-        this.onNewlyFocusedViaKeyboard();
-      }
-    });
-
-    this.props.onKeyboardFocusChange(!this.state.isClick)
-  }
-
-  onBlur() {
-    this.setState({
-      isClick: false,
-      isKeyboardFocused: false,
-    });
-    this.props.onKeyboardFocusChange(false)
+    this.sightsRef.current.moveSightsTo(x, y, e);
   }
 
   onMouseUp(e) {
@@ -364,10 +340,6 @@ class Illustration extends Component {
   }
 
   onContainerMouseDown() {
-    this.setState({
-      isClick: true,
-      isKeyboardFocused: false,
-    });
     this.props.onKeyboardFocusChange(false);
   }
 
@@ -450,7 +422,6 @@ class Illustration extends Component {
     this.setState({
       dragStartX: offsetX,
       dragStartY: offsetY,
-      isKeyboardFocused: false,
     });
 
     this.props.onKeyboardFocusChange(false);
@@ -679,8 +650,6 @@ class Illustration extends Component {
         aria-label="Seek and Find"
         style={containerStyles}
         ref={this.containerRef}
-        onFocus={this.onFocus}
-        onBlur={this.onBlur}
         onKeyDown={this.onKeyDown}
         onMouseDown={this.onContainerMouseDown}
       >
@@ -693,7 +662,7 @@ class Illustration extends Component {
                   checkGuess={(x, y) => this.findableRef.current.checkGuess(x, y)}
                   height={this.scaledImageHeight}
                   onSightsMove={this.onSightsMove}
-                  show={this.state.isKeyboardFocused}
+                  show={this.props.isKeyboardFocused}
                   width={this.scaledImageWidth}
                 />
                 {this.state.hint &&

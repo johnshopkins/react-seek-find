@@ -24,9 +24,7 @@ class Game extends Component {
 
     // the DOM element the game is contained in. helps determine view
     this.container = props.container;
-
-    // the DOM element used to calculate ems to pixels
-    this.em = createRef();
+    this.containerRef = createRef();
 
     // // for testing
     // clearGameState();
@@ -41,6 +39,7 @@ class Game extends Component {
 
     // combine stored and default state
     this.state = {
+      focused: false,
       isKeyboardFocused: false,
       browserHeight: document.documentElement.clientHeight,
       browserWidth: document.documentElement.clientWidth,
@@ -57,6 +56,8 @@ class Game extends Component {
 
     this.closeInstructions = this.closeInstructions.bind(this);
     this.getViewState = this.getViewState.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleFocus = this.handleFocus.bind(this);
     this.onFind = this.onFind.bind(this);
     this.onKeyboardFocusChange = this.onKeyboardFocusChange.bind(this);
     this.openInstructions = this.openInstructions.bind(this);
@@ -346,6 +347,26 @@ class Game extends Component {
     this.zoomTo(newZoom, callback);
   }
 
+  handleBlur (e) {
+    if (!this.containerRef.current.contains(e.relatedTarget)) {
+      this.setState({
+        focused: false,
+        isKeyboardFocused: false
+      });
+    }
+  }
+
+  handleFocus() {
+    if (!this.state.focused) {
+      this.setState({ focused: true });
+      this.containerRef.current.addEventListener('keyup', (e) => {
+        if (e.key === 'Tab') {
+          this.setState({ isKeyboardFocused: true });
+        }
+      }, { once: true })
+    }
+  }
+
   render() {
 
     // contains legend
@@ -360,7 +381,11 @@ class Game extends Component {
     }
 
     return (
-      <>
+      <div
+        ref={this.containerRef}
+        onBlur={this.handleBlur}
+        onFocus={this.handleFocus}
+      >
         {this.state.openInstructions &&
           <InstructionsOverlay
             breakpoint={this.state.breakpoint}
@@ -382,6 +407,7 @@ class Game extends Component {
             imageHeight={this.props.imageHeight}
             imageSrc={this.props.image}
             imageWidth={this.props.imageWidth}
+            isKeyboardFocused={this.state.isKeyboardFocused}
             objects={Object.values(this.objects)}
             onFind={this.onFind}
             onKeyboardFocusChange={this.onKeyboardFocusChange}
@@ -401,7 +427,7 @@ class Game extends Component {
             width={this.state.width}
           />
         </div>
-      </>
+      </div>
     );
   }
 }
