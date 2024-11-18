@@ -40,10 +40,6 @@
       @include button(round);
       margin-left: auto;
       order: 2;
-
-      &:hover {
-        cursor: url('../../../images/pointer.svg'), pointer;
-      }
     }
   }
 
@@ -56,11 +52,4 @@
       @include button(round);
     }
   }
-
-  // &.small,
-  // &.medium {
-  //   .overlay {
-  //     padding: 0.25em;
-  //   }
-  // }
 }
