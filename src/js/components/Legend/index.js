@@ -68,12 +68,21 @@ export default function Legend({ breakpoint, found, objects, width }) {
     setIsMouseDown(false);
   }
 
+  const handleKeyDown = (e, direction) => {
+    if (e.key !== 'Enter') {
+      return;
+    }
+    handleMouseDown(direction)
+  }
+
   return (
     <div className="legend-container" tabIndex="-1">
       <div className="label">Can you find us all? {found.length}/{objects.length}</div>
         <div className="legend-scroll">
           {needsPagination &&
             <button
+              onKeyDown={(e) => handleKeyDown(e, 'left')}
+              onKeyUp={handleMouseUp}
               onMouseDown={() => handleMouseDown('left')}
               onTouchStart={() => handleMouseDown('left')}
               onMouseUp={handleMouseUp}
@@ -93,6 +102,8 @@ export default function Legend({ breakpoint, found, objects, width }) {
           </div>
           {needsPagination &&
             <button
+              onKeyDown={(e) => handleKeyDown(e, 'right')}
+              onKeyUp={handleMouseUp}
               onMouseDown={() => handleMouseDown('right')}
               onTouchStart={() => handleMouseDown('right')}
               onMouseUp={handleMouseUp}
