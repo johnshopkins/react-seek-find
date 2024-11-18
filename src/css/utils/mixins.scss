@@ -19,7 +19,7 @@
   &:disabled {
     background: var(--jhu-grayscale-20);
     color: var(--jhu-grayscale-70);
-    cursor: url('../../../images/arrow.svg'), pointer;
+    cursor: url('../../../images/arrow.svg'), default;
   }
 
   @if ($style == rounded) {
