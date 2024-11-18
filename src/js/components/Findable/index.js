@@ -12,7 +12,9 @@ export default forwardRef(({
   objects,
   onFind,
   onMouseDown,
+  onTouchEnd,
   onTouchStart,
+  onTouchMove,
   scale,
   width,
 }, ref) => {
@@ -29,6 +31,25 @@ export default forwardRef(({
     });
 
   }, [objects]);
+
+  useEffect(() => {
+
+    const canvas = canvasRef.current;
+
+    // this event must be listened for at all times (not just after onTouchStart)
+    // to ensure it is being listened for actively (instead of passively, which is the
+    // default for many mobile browsers). Allows e.preventDefault() to run within
+    // touchmove callback, which we need to facilitate both 1- (use browser default) 
+    // and 2-touch events (use our callback)
+    canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+    canvas.addEventListener('touchend', onTouchEnd);
+
+    return () => {
+      canvas.removeEventListener('touchmove', onTouchMove, { passive: false });
+      canvas.removeEventListener('touchend', onTouchEnd);
+    }
+
+  }, [onTouchEnd, onTouchMove]);
 
   useImperativeHandle(ref, () => ({
     checkGuess: (positionX, positionY) => {
@@ -58,8 +79,6 @@ export default forwardRef(({
       onTouchStart={onTouchStart}
       tabIndex={disableTabbing ? '-1' : '0'}
       style={{
-        // stops the browser from its scrolling on the element
-        touchAction: 'none',
         height: `${height * scale}px`,
         width: `${width * scale}px`
       }}

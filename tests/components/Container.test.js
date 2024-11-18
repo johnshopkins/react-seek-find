@@ -486,7 +486,7 @@ describe('Container', () => {
           jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
 
           // (328, 306) is where touch is initiated, relative to the document
-          fireEvent(canvas, getTouchEvent('touchstart', { targetTouches: [{ clientX: 328, clientY: 306 }] }));
+          fireEvent(canvas, getTouchEvent('touchstart', { targetTouches: [{ clientX: 328, clientY: 306 }, { clientX: 303, clientY: 181 }] }));
           
           // two-touch scroll
           fireEvent(canvas, getTouchEvent('touchmove', { targetTouches: [{ clientX: 200, clientY: 200 }, { clientX: 175, clientY: 175 }] }));

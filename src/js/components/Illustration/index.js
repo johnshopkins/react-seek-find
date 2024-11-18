@@ -90,6 +90,7 @@ class Illustration extends Component {
     this.showHint = this.showHint.bind(this);
     this.toggleHint = this.toggleHint.bind(this);
     this.onNewlyFocusedViaKeyboard = this.onNewlyFocusedViaKeyboard.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
     this.onTouchMoveNotThrottled = this.onTouchMove.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
@@ -416,12 +417,14 @@ class Illustration extends Component {
 
   onTouchMove(e) {
 
-    if (e.targetTouches.length !== 2 || e.changedTouches.length !== 2) {
+    if (e.targetTouches.length !== 2) {
       return;
     }
 
-    const { offsetX, offsetY } = getOffsetCoords(e, true);
+    // prevent browser default handling of 2-touch scroll
+    e.preventDefault();
 
+    const { offsetX, offsetY } = getOffsetCoords(e, true);
     const diffX = this.state.dragStartX - offsetX;
     const diffY = this.state.dragStartY - offsetY;
 
@@ -438,8 +441,9 @@ class Illustration extends Component {
 
   onTouchStart(e) {
 
-    // do not limit this event to 2-touch events because an event
-    // can go from 1-touch to 2-touch without triggering touchstart again
+    if (e.targetTouches.length !== 2) {
+      return;
+    }
 
     const { offsetX, offsetY } = getOffsetCoords(e, true);
 
@@ -449,16 +453,12 @@ class Illustration extends Component {
       isKeyboardFocused: false,
     });
 
-    this.props.onKeyboardFocusChange(false)
+    this.props.onKeyboardFocusChange(false);
+  }
 
-    window.addEventListener('touchmove', this.onTouchMove);
-
-    // reset state vars
-    window.addEventListener('touchend', e => {
-      this.onTouchMove.cancel();
-      this.setState({ isDragging: false });
-      window.removeEventListener('touchmove', this.onTouchMove);
-    }, { once: true });
+  onTouchEnd() {
+    this.onTouchMove.cancel();
+    this.setState({ isDragging: false });
   }
 
   /**
@@ -720,6 +720,8 @@ class Illustration extends Component {
                   width={this.props.imageWidth}
                   onMouseDown={this.onMouseDown}
                   onTouchStart={this.onTouchStart}
+                  onTouchMove={this.onTouchMove}
+                  onTouchEnd={this.onTouchEnd}
               />
               </>
             }
