@@ -422,6 +422,7 @@ class Illustration extends Component {
     this.setState({
       dragStartX: offsetX,
       dragStartY: offsetY,
+      isDragging: true,
     });
 
     this.props.onKeyboardFocusChange(false);

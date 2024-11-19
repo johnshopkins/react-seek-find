@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4a9b9008-89d5-49e0-a536-2b205d4a135e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/example/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/example/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/components/Container/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/components/Container/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/components/Findable/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/components/Findable/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/components/Illustration/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/components/Illustration/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/components/Legend/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/components/Legend/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/components/MiniMap/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/components/MiniMap/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/components/MiniMap/style.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/components/MiniMap/style.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/lib/get-offset-coords.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/lib/get-offset-coords.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/components/Container.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/tests/components/Container.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webpack.dev.js" beforeDir="false" afterPath="$PROJECT_DIR$/webpack.dev.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="Local" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2p4hfbASIB36LXuIpyXya5n5ncD" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "nodejs_package_manager_path": "npm"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-PS-241.14494.237" />
+        <option value="bundled-php-predefined-ba97393d7c68-8f0632a2a215-com.jetbrains.php.sharedIndexes-PS-241.14494.237" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4a9b9008-89d5-49e0-a536-2b205d4a135e" name="Changes" comment="" />
+      <created>1732031360328</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1732031360328</updated>
+      <workItem from="1732031360836" duration="12000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
