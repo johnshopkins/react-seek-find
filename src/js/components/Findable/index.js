@@ -9,6 +9,7 @@ import './style.scss';
 export default forwardRef(({
   disableTabbing,
   height,
+  needsManualScroll,
   objects,
   onFind,
   onMouseDown,
@@ -79,7 +80,7 @@ export default forwardRef(({
       onTouchStart={onTouchStart}
       tabIndex={disableTabbing ? '-1' : '0'}
       style={{
-        touchAction: 'pan-y',
+        touchAction: !needsManualScroll ? 'pan-y' : 'none',
         height: `${height * scale}px`,
         width: `${width * scale}px`
       }}

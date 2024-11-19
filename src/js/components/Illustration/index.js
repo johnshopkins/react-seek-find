@@ -46,10 +46,11 @@ class Illustration extends Component {
 
     this.bufferSize = parseInt(settings.miniMap) + (parseInt(settings.utilitiesEdgeSpace) * 2);
 
+    this.loggedTouchMoveFailure = false;
+    this.needsManualScroll = navigator.userAgent.includes('SamsungBrowser');
+
     const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
     const { gamePlacementX, gamePlacementY } = this.getGameOffset();
-
-    this.loggedTouchMoveFailure = false;
 
     this.state = {
 
@@ -392,7 +393,7 @@ class Illustration extends Component {
 
   onTouchMove(e) {
 
-    if (e.targetTouches.length !== 2) {
+    if (e.targetTouches.length !== 2 && !this.needsManualScroll) {
       return;
     }
 
@@ -415,6 +416,14 @@ class Illustration extends Component {
     const diffX = this.state.dragStartX - offsetX;
     const diffY = this.state.dragStartY - offsetY;
 
+    if (e.targetTouches.length === 1 && this.needsManualScroll) {
+      // manually scroll the user
+      return window.scroll({
+        top: window.scrollY + diffY,
+        behavior: 'auto',
+      });
+    }
+
     if (this.state.isDragging) {
       const newX = this.state.canvasX - diffX;
       const newY = this.state.canvasY - diffY;
@@ -428,9 +437,11 @@ class Illustration extends Component {
 
   onTouchStart(e) {
 
-    if (e.targetTouches.length !== 2) {
-      return;
-    }
+    // do not limit this event to 2-touch events because, in some browsers,
+    // an event can go from 1-touch to 2-touch without triggering touchstart again
+    // if (e.targetTouches.length !== 2) {
+    //   return;
+    // }
 
     const { offsetX, offsetY } = getOffsetCoords(e);
 
@@ -703,6 +714,7 @@ class Illustration extends Component {
                   scale={this.props.scale}
                   height={this.props.imageHeight}
                   width={this.props.imageWidth}
+                  needsManualScroll={this.needsManualScroll}
                   onMouseDown={this.onMouseDown}
                   onTouchStart={this.onTouchStart}
                   onTouchMove={this.onTouchMove}
