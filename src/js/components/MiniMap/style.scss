@@ -6,13 +6,14 @@
   box-sizing: content-box;
   outline: 2px solid var(--jhu-brand-double-black);
   position: relative;
-  pointer-events: auto;
 
   .shown {
     border: 2px solid var(--jhu-red-50);
     box-sizing: border-box;
     cursor: url('../../../images/grab.svg') 16 16, grab;
     position: absolute;
+    pointer-events: auto;
+    touch-action: none;
 
     &:active {
       cursor: url('../../../images/grabbing.svg') 4 15, grabbing;

@@ -1,95 +1,124 @@
-import React, { useState } from 'react';
+import React, { Component, createRef } from 'react';
+import PropTypes from 'prop-types';
 import getOffsetCoords from '../../lib/get-offset-coords';
 import roundToThousandth from '../../lib/roundToThousandth';
 import * as settings from '../../../css/utils/shared-variables.scss';
 import './style.scss';
-
 const throttle = require('lodash.throttle');
 
-/**
- * Manages the mini-map utility.
- */
-export default function MiniMap({ canvasX, canvasY, containerHeight, containerWidth, imageHeight, imageWidth, moveCanvas }) {
+class MiniMap extends Component {
 
-  // note: minimap click+drag works only for mouse users...
-  // the minimap is too small to be usable for click+drag purposes on mobile.
+  constructor(props) {
+    super(props);
 
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [dragStartX, setDragStartX] = useState(null);
-  const [dragStartY, setDragStartY] = useState(null);
+    this.shownRef = createRef(null);
 
-  const miniMapSize = parseInt(settings.miniMap) - 8;
+    this.state = {
+      dragStartX: null,
+      dragStartY: null,
+    };
 
-  const sizeDown = miniMapSize / imageWidth;
-  const sizeUp = imageWidth / miniMapSize;
+    this.miniMapSize = parseInt(settings.miniMap) - 8;
+    this.mapWidth = this.miniMapSize;
 
-  const onMouseDown = (e) => {
+    this.handlePointerDown = this.handlePointerDown.bind(this);
+    this.handlePointerMove = throttle(this.handlePointerMove.bind(this), 15);
+    this.handlePointerUp = this.handlePointerUp.bind(this);
+  }
 
-    setIsMouseDown(true);
+  handlePointerDown(e) {
 
     const { offsetX, offsetY } = getOffsetCoords(e);
 
-    setDragStartX(offsetX);
-    setDragStartY(offsetY);
+    this.setState({
+      dragStartX: offsetX,
+      dragStartY: offsetY,
+    })
 
-    window.addEventListener('mouseup', e => {
-      onMouseMove.cancel();
-      setIsMouseDown(false);
-    }, { once: true });
+    this.shownRef.current.addEventListener('pointermove', this.handlePointerMove);
+    this.shownRef.current.addEventListener('pointerup', this.handlePointerUp, { once: true });
   }
-  
-  const onMouseMove = throttle((e) => {
 
-    if (isMouseDown) {
+  handlePointerMove(e) {
 
-      const { offsetX, offsetY } = getOffsetCoords(e);
+    const { offsetX, offsetY } = getOffsetCoords(e);
 
-      const diffX = (dragStartX - offsetX);
-      const diffY = (dragStartY - offsetY);
+    const diffX = (this.state.dragStartX - offsetX);
+    const diffY = (this.state.dragStartY - offsetY);
 
-      let newX = canvasX + (diffX * sizeUp);
-      let newY = canvasY + (diffY * sizeUp);
+    let newX = this.props.canvasX + (diffX * this.sizeUp);
+    let newY = this.props.canvasY + (diffY * this.sizeUp);
 
-      moveCanvas(newX, newY);
+    this.props.moveCanvas(newX, newY);
+
+  }
+
+  handlePointerUp() {
+    this.handlePointerMove.cancel();
+    this.shownRef.current.removeEventListener('pointermove', this.handlePointerMove);
+  }
+
+  handlePointerCancel() {
+    this.handlePointerUp();
+    this.shownRef.current.removeEventListener('pointerup', this.handlePointerUp, { once: true });
+  }
+
+  render() {
+
+    this.sizeDown = this.miniMapSize / this.props.imageWidth;
+    this.sizeUp = this.props.imageWidth / this.miniMapSize;
+
+    this.mapHeight = this.props.imageHeight * this.sizeDown;
+
+    const mapStyle = {
+      height: `${this.mapHeight}px`,
+      width: `${this.mapWidth}px`,
     }
-    
-  }, 15); // set to 15 to keep up with mousemove in a smaller space
 
-  const mapHeight = imageHeight * sizeDown
-  const mapWidth = miniMapSize;
+    const shownHeight = roundToThousandth(Math.min(this.sizeDown * this.props.containerHeight, this.mapHeight));
+    const shownWidth = roundToThousandth(Math.min(this.sizeDown * this.props.containerWidth, this.mapWidth));
 
-  const mapStyle = {
-    height: `${mapHeight}px`,
-    width: `${mapWidth}px`,
-  }
+    // adjustments for CSS absolute positioning
+    const left = this.props.canvasX <= 0 ? roundToThousandth(Math.min(Math.abs(this.props.canvasX * this.sizeDown), this.mapWidth - shownWidth)) : 0;
+    const top = this.props.canvasY <= 0 ? roundToThousandth(Math.min(Math.abs(this.props.canvasY * this.sizeDown), this.mapHeight - shownHeight)) : 0;
 
-  const shownHeight = roundToThousandth(Math.min(sizeDown * containerHeight, mapHeight));
-  const shownWidth = roundToThousandth(Math.min(sizeDown * containerWidth, mapWidth));
+    const shownStyle = {
+      left: `${left}px`,
+      height: `${shownHeight}px`,
+      top: `${top}px`,
+      width: `${shownWidth}px`,
+    }
 
-  // adjustments for CSS absolute positioning
-  const left = canvasX <= 0 ? roundToThousandth(Math.min(Math.abs(canvasX * sizeDown), mapWidth - shownWidth)) : 0;
-  const top = canvasY <= 0 ? roundToThousandth(Math.min(Math.abs(canvasY * sizeDown), mapHeight - shownHeight)) : 0;
-
-  const shownStyle = {
-    left: `${left}px`,
-    height: `${shownHeight}px`,
-    top: `${top}px`,
-    width: `${shownWidth}px`,
-  }
-
-  return (
-    <div
-      className="mini-map"
-      style={mapStyle}
-      // enables clicks within minimap to still register as focused within game container
-      tabIndex="-1"
-    >
+    return (
       <div
-        className="shown"
-        style={shownStyle}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-      ></div>
-    </div>
-  )
+        className="mini-map"
+        style={mapStyle}
+        // enables clicks within minimap to still register as focused within game container
+        tabIndex="-1"
+      >
+        <div
+          className="shown"
+          style={shownStyle}
+          ref={this.shownRef}
+          onPointerDown={this.handlePointerDown}
+          onPointerCancel={this.handlePointerCancel}
+        ></div>
+      </div>
+    )
+  }
+
+}
+
+MiniMap.defaultProps = {};
+
+MiniMap.propTypes = {
+  canvasX: PropTypes.number.isRequired,
+  canvasY: PropTypes.number.isRequired,
+  containerHeight: PropTypes.number.isRequired,
+  containerWidth: PropTypes.number.isRequired,
+  imageHeight: PropTypes.number.isRequired,
+  imageWidth: PropTypes.number.isRequired,
+  moveCanvas: PropTypes.func.isRequired,
 };
+
+export default MiniMap;

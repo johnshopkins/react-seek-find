@@ -10,6 +10,7 @@ import '@testing-library/jest-dom';
 import { Game } from '../../src/js/main';
 import { FindableObject } from '../../src/js/main';
 import getMouseEvent from '../helpers/getMouseEvent';
+import getPointerEvent from '../helpers/getPointerEvent';
 import getTouchEvent from '../helpers/getTouchEvent';
 import { saveGameState } from '../../src/js/lib/persistance';
 
@@ -465,8 +466,8 @@ describe('Container', () => {
           expect(grabbable).toHaveStyle({ height: '20.563px', left: '0px', top: '0px', width: '35.25px' });
 
           // move the minimap
-          fireEvent(grabbable, getMouseEvent('mousedown', { clientX: 730, clientY: 85 }));
-          fireEvent(grabbable, getMouseEvent('mousemove', { clientX: 737, clientY: 93 }));
+          fireEvent(grabbable, getPointerEvent('pointerdown', { clientX: 730, clientY: 85 }));
+          fireEvent(grabbable, getPointerEvent('pointermove', { clientX: 737, clientY: 93 }));
 
           expect(game).toHaveStyle({ left: '-119.149px', top: '-136.17px' });
           expect(grabbable).toHaveStyle({ height: '20.563px', left: '7px', top: '8px', width: '35.25px' });
