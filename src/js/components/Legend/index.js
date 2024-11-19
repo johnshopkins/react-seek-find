@@ -13,7 +13,7 @@ import './style.scss';
  */
 export default function Legend({ breakpoint, found, objects, width }) {
 
-  const [isMouseDown, setIsMouseDown] = useState(false);
+  const [isPointerDown, setIsPointerDown] = useState(false);
   const [direction, setDirection] = useState(null);
   const [positionX, setPositionX] = useState(0);
 
@@ -36,17 +36,17 @@ export default function Legend({ breakpoint, found, objects, width }) {
 
     let intervalId;
 
-    if (isMouseDown) {
+    if (isPointerDown) {
       intervalId = setInterval(function () {
         setPositionX((prevPositionX) => {
 
           const newValue = direction === 'left' ? prevPositionX + thumbnailSize : prevPositionX - thumbnailSize;
 
           if (direction === 'left' && newValue >= minPositionX) {
-            setIsMouseDown(false);
+            setIsPointerDown(false);
             return minPositionX;
           } else if (direction === 'right' && newValue <= maxPositionX) {
-            setIsMouseDown(false);
+            setIsPointerDown(false);
             return maxPositionX;
           }
 
@@ -57,22 +57,22 @@ export default function Legend({ breakpoint, found, objects, width }) {
 
     return () => clearInterval(intervalId);
 
-  }, [direction, isMouseDown, maxPositionX, needsPagination, thumbnailSize]);
+  }, [direction, isPointerDown, maxPositionX, needsPagination, thumbnailSize]);
 
-  const handleMouseDown = (direction) => {
-    setIsMouseDown(true);
+  const handlePointerDown = direction => {
+    setIsPointerDown(true);
     setDirection(direction);
   };
 
-  const handleMouseUp = () => {
-    setIsMouseDown(false);
+  const handlePointerUp = () => {
+    setIsPointerDown(false);
   }
 
   const handleKeyDown = (e, direction) => {
     if (e.key !== 'Enter') {
       return;
     }
-    handleMouseDown(direction)
+    handlePointerDown(direction)
   }
 
   return (
@@ -82,11 +82,10 @@ export default function Legend({ breakpoint, found, objects, width }) {
           {needsPagination &&
             <button
               onKeyDown={(e) => handleKeyDown(e, 'left')}
-              onKeyUp={handleMouseUp}
-              onMouseDown={() => handleMouseDown('left')}
-              onTouchStart={() => handleMouseDown('left')}
-              onMouseUp={handleMouseUp}
-              onTouchEnd={handleMouseUp}
+              onKeyUp={handlePointerUp}
+              onPointerDown={e => handlePointerDown('left')}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
               disabled={positionX === minPositionX}
             >
               <ArrowIcon className="left" tooltip="Scroll left" />
@@ -103,11 +102,10 @@ export default function Legend({ breakpoint, found, objects, width }) {
           {needsPagination &&
             <button
               onKeyDown={(e) => handleKeyDown(e, 'right')}
-              onKeyUp={handleMouseUp}
-              onMouseDown={() => handleMouseDown('right')}
-              onTouchStart={() => handleMouseDown('right')}
-              onMouseUp={handleMouseUp}
-              onTouchEnd={handleMouseUp}
+              onKeyUp={handlePointerUp}
+              onPointerDown={e => handlePointerDown('right')}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
               disabled={positionX === maxPositionX}
             >
               <ArrowIcon className="right" tooltip="Scroll right" />
