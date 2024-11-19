@@ -1,3 +1,4 @@
+/*global logger*/
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import Background from '../Background';
@@ -47,6 +48,8 @@ class Illustration extends Component {
 
     const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
     const { gamePlacementX, gamePlacementY } = this.getGameOffset();
+
+    this.loggedTouchMoveFailure = false;
 
     this.state = {
 
@@ -393,8 +396,20 @@ class Illustration extends Component {
       return;
     }
 
-    // prevent browser default handling of 2-touch scroll
-    e.preventDefault();
+    if (e.cancelable) {
+      // prevent browser default handling of 2-touch scroll
+      // check first to make sure the event is cancelable as
+      // samsung browser makes touchmove events not cancelable
+      // after a second or two
+      e.preventDefault();
+    } else {
+      if (!this.loggedTouchMoveFailure) {
+        // track any other browsers that do this
+        logger.log('touchmove event is not cancelable');
+        this.loggedTouchMoveFailure = true;
+      }
+    }
+
     const { offsetX, offsetY } = getOffsetCoords(e);
 
     const diffX = this.state.dragStartX - offsetX;

@@ -1,3 +1,5 @@
+global.logger = console;
+
 const { createRoot } = ReactDOM;
 import { FindableObject, Game } from '../../src/js/main';
 
