@@ -72,10 +72,6 @@ class Game extends Component {
 
   componentDidMount() {
 
-    // window.addEventListener('keyup', e => {
-    //   console.log('active', document.activeElement);
-    // })
-
     this.setViewState();
 
     ResizeWatcher.startWatching();
