@@ -395,8 +395,8 @@ class Illustration extends Component {
 
     // prevent browser default handling of 2-touch scroll
     e.preventDefault();
+    const { offsetX, offsetY } = getOffsetCoords(e);
 
-    const { offsetX, offsetY } = getOffsetCoords(e, true);
     const diffX = this.state.dragStartX - offsetX;
     const diffY = this.state.dragStartY - offsetY;
 
@@ -417,7 +417,7 @@ class Illustration extends Component {
       return;
     }
 
-    const { offsetX, offsetY } = getOffsetCoords(e, true);
+    const { offsetX, offsetY } = getOffsetCoords(e);
 
     this.setState({
       dragStartX: offsetX,
