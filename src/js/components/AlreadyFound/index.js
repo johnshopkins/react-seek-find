@@ -42,5 +42,9 @@ export default function Found({ alreadyFound, canvasX, canvasY, containerHeight,
     top: `${positionY}px`,
   };
 
-  return <div className={`already-found ${className}`} style={style} ref={alreadyFoundRef}>You already found this</div>;
+  return (
+    <div className={`already-found ${className}`} style={style} ref={alreadyFoundRef}>
+      You already<br/>found this
+    </div>
+  );
 }
