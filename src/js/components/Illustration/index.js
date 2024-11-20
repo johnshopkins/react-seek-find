@@ -670,12 +670,8 @@ class Illustration extends Component {
     };
 
     const gameStyles = {
-      // height: `${this.props.imageHeight}px`,
-      // width: `${this.props.imageWidth}px`,
       left: roundToThousandth(this.state.canvasX),
       top: roundToThousandth(this.state.canvasY),
-      // left: this.state.canvasX,
-      // top: this.state.canvasY,
     };
 
     const gamePlacementStyles = {
