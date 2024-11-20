@@ -90,12 +90,17 @@ class Game extends Component {
       // note: in iOS, going from landscape to portrait reports the same
       // height and width, so we must also check window.orientation
       if (this.state.browserHeight !== newState.browserHeight || this.state.browserWidth !== newState.browserWidth || this.state.orientation !== newState.orientation) {
-        this.setViewState(newState);
+        this.setViewState(newState, () => {
+          this.props.onResize({
+            browserHeight: this.state.browserHeight,
+            browserWidth: this.state.browserWidth,
+            gameHeight: this.state.height,
+            gameWidth: this.state.width,
+          });
+        });
       } else {
         this.setState(newState)
       }
-
-      this.props.onResize(newState);
     })
   }
 
@@ -170,8 +175,8 @@ class Game extends Component {
     };
   }
 
-  setViewState(additionalState = {}) {
-    this.setState(this.getViewState(false, additionalState));
+  setViewState(additionalState = {}, callback = () => {}) {
+    this.setState(this.getViewState(false, additionalState), callback);
   }
 
   getBreakpoint(width) {
