@@ -8,7 +8,6 @@
   outline: solid var(--jhu-brand-white) 2px;
   padding: 10px;
   position: absolute;
-  transition: left #{map.get($shared-vars, 'canvasTransition')}, top #{map.get($shared-vars, 'canvasTransition')};
   white-space: nowrap;
   z-index: var(--stack-already-found);
 }

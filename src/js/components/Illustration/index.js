@@ -535,6 +535,7 @@ class Illustration extends Component {
     const { anchorX, anchorY } = this.getCenterAnchor(newX, newY);
 
     this.setState({
+      alreadyFound: null,
       anchorX,
       anchorY,
       canvasX: newX,
