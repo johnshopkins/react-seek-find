@@ -236,7 +236,10 @@ class Illustration extends Component {
       this.scaledImageWidth = this.props.imageWidth * this.props.scale;
 
       // calibrate the sights
-      this.sightsRef.current.calibrateSights(scaleDiff);
+      // this.sightsRef.current is undefined when the image hasn't loaded yet
+      if (this.sightsRef.current) {
+        this.sightsRef.current.calibrateSights(scaleDiff);
+      }
 
       // new (x, y) coordinates to the center of the canvas' current location
       let newX = this.state.anchorX * scaleDiff;
