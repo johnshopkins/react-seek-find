@@ -4,6 +4,7 @@ import './style.scss';
 export default function Found({ alreadyFound, canvasX, canvasY, containerHeight, containerWidth, imageHeight, imageWidth, scale }) {
 
   const alreadyFoundRef = useRef(null);
+  const [className, setClassName] = useState(null);
   const [positionX, setPositionX] = useState(0);
   const [positionY, setPositionY] = useState(0);
 
@@ -11,7 +12,8 @@ export default function Found({ alreadyFound, canvasX, canvasY, containerHeight,
 
     const alreadyFoundBounds = alreadyFoundRef.current.getBoundingClientRect();
 
-    // where to plot the message (top, left anchored to click))
+    // where to plot the message, start with quadrant 4
+    let className = 'q4';
     let newPositionX = (alreadyFound[1] * scale);
     let newPositionY = (alreadyFound[2] * scale);
 
@@ -20,15 +22,16 @@ export default function Found({ alreadyFound, canvasX, canvasY, containerHeight,
     // condition 2: if the message extends outside viewable area (container)
 
     if ((newPositionX + alreadyFoundBounds.width > imageWidth) || (newPositionX + canvasX + alreadyFoundBounds.width > containerWidth)) {
-      // anchor right to click
+      className = 'q3';
       newPositionX = newPositionX - alreadyFoundBounds.width;
     }
 
     if (newPositionY + alreadyFoundBounds.height > imageHeight || (newPositionY + canvasY + alreadyFoundBounds.height > containerHeight)) {
-      // anchor bottom to click
+      className = className === 'q4' ? 'q1' : 'q2';
       newPositionY = newPositionY - alreadyFoundBounds.height;
     }
 
+    setClassName(className);
     setPositionX(newPositionX);
     setPositionY(newPositionY);
 
@@ -39,5 +42,5 @@ export default function Found({ alreadyFound, canvasX, canvasY, containerHeight,
     top: `${positionY}px`,
   };
 
-  return <div className="already-found" style={style} ref={alreadyFoundRef}>You already found this</div>;
+  return <div className={`already-found ${className}`} style={style} ref={alreadyFoundRef}>You already found this</div>;
 }
