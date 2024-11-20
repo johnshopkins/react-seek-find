@@ -269,9 +269,6 @@ class Illustration extends Component {
 
   getGameOffset() {
 
-    // both sides
-    const bufferSize = this.bufferSize * 2;
-
     let gameOffsetLeft = 0;
     let gameOffsetTop = 0;
 
