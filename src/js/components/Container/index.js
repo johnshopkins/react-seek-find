@@ -78,17 +78,21 @@ class Game extends Component {
 
     window.addEventListener('jhu:winresize:done', e => {
 
-      const newHeight = document.documentElement.clientHeight;
-      const newWidth = document.documentElement.clientWidth;
-      const newOrientation = window.screen.orientation.type;
+      const newState = {
+        browserHeight: document.documentElement.clientHeight,
+        browserWidth: document.documentElement.clientWidth,
+        orientation: window.screen.orientation.type,
+      };
 
       // make sure the size actually changed (iOS triggers the resize event too much)
       // see: https://johnkavanagh.co.uk/articles/understanding-phantom-window-resize-events-in-ios/
       
       // note: in iOS, going from landscape to portrait reports the same
       // height and width, so we must also check window.orientation
-      if (this.state.browserHeight !== newHeight || this.state.browserWidth !== newWidth || this.state.orientation !== newOrientation) {
-        this.setViewState();
+      if (this.state.browserHeight !== newState.browserHeight || this.state.browserWidth !== newState.browserWidth || this.state.orientation !== newState.orientation) {
+        this.setViewState(newState);
+      } else {
+        this.setState(newState)
       }
     })
   }
@@ -105,7 +109,7 @@ class Game extends Component {
     return Math.ceil(num / 10) * 10;
   }
 
-  getViewState(init = false) {
+  getViewState(init = false, additionalState = {}) {
 
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
@@ -159,11 +163,12 @@ class Game extends Component {
       width,
       zoomInLimitReached: scale === 100, // the farthest IN you can zoom
       zoomOutLimitReached: scale === maxZoomOut, // the farthest OUT you can zoom
+      ...additionalState,
     };
   }
 
-  setViewState() {
-    this.setState(this.getViewState());
+  setViewState(additionalState = {}) {
+    this.setState(this.getViewState(false, additionalState));
   }
 
   getBreakpoint(width) {
