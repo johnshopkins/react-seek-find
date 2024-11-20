@@ -114,12 +114,13 @@ class Game extends Component {
     // width of game container (minus padding)
     const styles = window.getComputedStyle(this.container);
     const width = !this.props.containerWidth ? this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0) : this.props.containerWidth;
-
-    // small buffer around the game
-    const height = !this.props.containerHeight ? document.documentElement.clientHeight - 20 : this.props.containerHeight;
     
     // base breakpoint on the width of the container, not the user's screen
     const breakpoint = this.getBreakpoint(width);
+
+    // small buffer around the game
+    const buffer = document.documentElement.clientHeight > 600 ? 50 : 20;
+    const height = !this.props.containerHeight ? document.documentElement.clientHeight - buffer : this.props.containerHeight;
 
     const legendHeight = parseInt(settings[`legendThumbnailHeight_${breakpoint}`]) + (parseInt(settings[`legendPadding_${breakpoint}`]) * 2);
 
