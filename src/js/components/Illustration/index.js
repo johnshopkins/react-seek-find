@@ -1,6 +1,7 @@
 /*global logger*/
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
+import AlreadyFound from '../AlreadyFound';
 import Background from '../Background';
 import Findable from '../Findable';
 import Found from '../Found';
@@ -36,6 +37,7 @@ class Illustration extends Component {
     this.zoomInRef = createRef();
     this.zoomOutRef = createRef();
 
+    this.alreadyFoundTimeout = null;
     this.hintTimeout = null;
 
     const canvasX = 0;
@@ -71,12 +73,14 @@ class Illustration extends Component {
       isDragging: false,
       dragStartX: null,
       dragStartY: null,
+      alreadyFound: null,
       found: [],
       hint: null,
       hintActive: false,
     };
 
     this.getGameOffset = this.getGameOffset.bind(this);
+    this.removeAlreadyFound = this.removeAlreadyFound.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
     this.onContainerMouseDown = this.onContainerMouseDown.bind(this);
     this.onFind = this.onFind.bind(this);
@@ -86,6 +90,7 @@ class Illustration extends Component {
     this.onMouseMoveThrottled = throttle(this.onMouseMove.bind(this), 30);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onSightsMove = this.onSightsMove.bind(this);
+    this.showAlreadyFound = this.showAlreadyFound.bind(this);
     this.showFound = this.showFound.bind(this);
     this.showHint = this.showHint.bind(this);
     this.toggleHint = this.toggleHint.bind(this);
@@ -165,6 +170,7 @@ class Illustration extends Component {
    */
   shouldComponentUpdate(nextProps, nextState) {
     const stateVars = [
+      'alreadyFound',
       'canvasX',
       'canvasY',
       'found',
@@ -295,11 +301,13 @@ class Illustration extends Component {
    * highlight it and remove the hint.
    * @param {object} object 
    */
-  onFind(object) {
-    const confirmed = this.props.onFind(object)
-    if (confirmed) {
+  onFind(object, x, y) {
+    const newlyFound = this.props.onFind(object);
+    if (newlyFound) {
       this.showFound(object);
-      this.removeHint(true);
+      this.removeHint();
+    } else {
+      this.showAlreadyFound(object, x, y);
     }
   }
 
@@ -624,6 +632,20 @@ class Illustration extends Component {
     });
   }
 
+  showAlreadyFound(object, x, y) {
+    // clear out any previous messages
+    this.removeAlreadyFound(() => {
+      this.setState({ alreadyFound: [object, x, y] }, () => {
+        this.alreadyFoundTimeout = setTimeout(() => this.removeAlreadyFound(), settings.alreadyFoundKeepAlive);
+      });
+    });
+  }
+
+  removeAlreadyFound(callback = () => {}) {
+    clearTimeout(this.alreadyFoundTimeout);
+    this.setState({ alreadyFound: null }, callback);
+  }
+
   zoomIn () {
     this.props.zoomIn((newScale, limitReached) => {
       if (limitReached) {
@@ -697,6 +719,18 @@ class Illustration extends Component {
                     height={this.props.imageHeight}
                     width={this.props.imageWidth}
                     object={this.state.hint}
+                    scale={this.props.scale}
+                  />
+                }
+                {this.state.alreadyFound &&
+                  <AlreadyFound
+                    canvasX={roundToThousandth(this.state.canvasX)}
+                    canvasY={roundToThousandth(this.state.canvasY)}
+                    containerHeight={this.props.containerHeight}
+                    containerWidth={this.props.containerWidth}
+                    imageHeight={this.scaledImageHeight}
+                    imageWidth={this.scaledImageWidth}
+                    alreadyFound={this.state.alreadyFound}
                     scale={this.props.scale}
                   />
                 }

@@ -1,0 +1,20 @@
+@use 'sass:map';
+@use '../../../css/main' as *;
+
+.already-found {
+  animation: fade #{map.get($shared-vars, 'alreadyFoundKeepAlive')}ms;
+  background-color: var(--jhu-brand-gold);
+  border: solid var(--jhu-brand-double-black) 4px;
+  outline: solid var(--jhu-brand-white) 2px;
+  padding: 10px;
+  position: absolute;
+  white-space: nowrap;
+  z-index: var(--stack-already-found);
+}
+
+@keyframes fade {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+}

@@ -62,7 +62,7 @@ export default forwardRef(({
 
       for (const object of objects) {
         if (context.isPointInPath(object.plotted, x, y)) {
-          onFind(object);
+          onFind(object, x, y);
           break;
         }
       }
