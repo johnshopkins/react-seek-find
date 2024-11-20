@@ -54,7 +54,8 @@ root.render(
       Football,
       ...moreObjects
     ]}
-    onGameComplete={() => console.log('hooray!')}
+    // onGameComplete={() => console.log('hooray!')}
+    // onResize={(data) => console.log('resize', data)}
   />
   // <Game
   //   container={elem} // image should always be wider than this element

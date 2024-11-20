@@ -94,6 +94,8 @@ class Game extends Component {
       } else {
         this.setState(newState)
       }
+
+      this.props.onResize(newState);
     })
   }
 
@@ -439,6 +441,7 @@ Game.defaultProps = {
   hintKeepAlive: 10000,
   objects: [],
   onGameComplete: () => {},
+  onResize: () => {},
   test: false,
 };
 
@@ -450,6 +453,7 @@ Game.propTypes = {
   hintKeepAlive: PropTypes.number,
   image: PropTypes.string.isRequired,
   onGameComplete: PropTypes.func.isRequired,
+  onResize: PropTypes.func.isRequired,
   width: PropTypes.number,
   objects: PropTypes.array,
   test: PropTypes.bool,
