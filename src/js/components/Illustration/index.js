@@ -275,7 +275,7 @@ class Illustration extends Component {
     let gameOffsetLeft = 0;
     let gameOffsetTop = 0;
 
-    if (this.props.containerWidth > this.scaledImageWidth + bufferSize) {
+    if (this.props.containerWidth > this.scaledImageWidth) {
       gameOffsetLeft = roundToThousandth((this.props.containerWidth - this.scaledImageWidth) / 2);
     }
 
