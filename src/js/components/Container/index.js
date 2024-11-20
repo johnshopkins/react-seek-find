@@ -72,7 +72,14 @@ class Game extends Component {
 
   componentDidMount() {
 
-    this.setViewState();
+    this.setViewState(false, () => {
+      this.props.onResize({
+        browserHeight: this.state.browserHeight,
+        buffer: this.state.buffer,
+        gameHeight: this.state.height,
+        gameWidth: this.state.width,
+      });
+    });
 
     ResizeWatcher.startWatching();
 
@@ -93,13 +100,18 @@ class Game extends Component {
         this.setViewState(newState, () => {
           this.props.onResize({
             browserHeight: this.state.browserHeight,
-            browserWidth: this.state.browserWidth,
+            buffer: this.state.buffer,
             gameHeight: this.state.height,
             gameWidth: this.state.width,
           });
         });
       } else {
-        this.setState(newState)
+        this.setState({
+          browserHeight: this.state.browserHeight,
+          buffer: this.state.buffer,
+          gameHeight: this.state.height,
+          gameWidth: this.state.width,
+        })
       }
     })
   }
@@ -162,6 +174,7 @@ class Game extends Component {
 
     return {
       breakpoint,
+      buffer,
       height,
       illustrationContainerHeight,
       illustrationContainerWidth,
