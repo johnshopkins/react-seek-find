@@ -57,7 +57,7 @@
   }
 
   .game {
-    cursor: crosshair;
+    cursor: url('../../../images/crosshair.svg') 16 16, crosshair;
     left: 0px;
     position: absolute;
     top: 0px;
