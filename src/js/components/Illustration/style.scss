@@ -3,6 +3,11 @@
 
 .container {
 
+  .game-container {
+    contain: paint;
+    position: relative;
+  }
+
   .utilities {
     pointer-events: none;
     position: absolute;
