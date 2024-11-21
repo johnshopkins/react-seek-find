@@ -149,7 +149,7 @@ class Game extends Component {
 
     let buffer, width, height;
 
-    if (this.state && !this.state.isFullscreen) {
+    if (!this.state || (this.state && !this.state.isFullscreen)) {
       // width of game container (minus padding)
       const styles = window.getComputedStyle(this.container);
       width = !this.props.containerWidth ? this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0) : this.props.containerWidth;
