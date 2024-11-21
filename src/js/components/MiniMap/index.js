@@ -36,7 +36,7 @@ class MiniMap extends Component {
     })
 
     this.shownRef.current.addEventListener('pointermove', this.handlePointerMove);
-    this.shownRef.current.addEventListener('pointerup', this.handlePointerUp, { once: true });
+    window.addEventListener('pointerup', this.handlePointerUp, { once: true });
   }
 
   handlePointerMove(e) {
@@ -60,7 +60,7 @@ class MiniMap extends Component {
 
   handlePointerCancel() {
     this.handlePointerUp();
-    this.shownRef.current.removeEventListener('pointerup', this.handlePointerUp, { once: true });
+    window.removeEventListener('pointerup', this.handlePointerUp, { once: true });
   }
 
   render() {

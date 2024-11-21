@@ -62,6 +62,7 @@ export default function Legend({ breakpoint, found, objects, width }) {
   const handlePointerDown = direction => {
     setIsPointerDown(true);
     setDirection(direction);
+    window.addEventListener('pointerup', handlePointerUp, { once: true });
   };
 
   const handlePointerUp = () => {
@@ -84,7 +85,6 @@ export default function Legend({ breakpoint, found, objects, width }) {
               onKeyDown={(e) => handleKeyDown(e, 'left')}
               onKeyUp={handlePointerUp}
               onPointerDown={e => handlePointerDown('left')}
-              onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               disabled={positionX === minPositionX}
             >
@@ -104,7 +104,6 @@ export default function Legend({ breakpoint, found, objects, width }) {
               onKeyDown={(e) => handleKeyDown(e, 'right')}
               onKeyUp={handlePointerUp}
               onPointerDown={e => handlePointerDown('right')}
-              onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               disabled={positionX === maxPositionX}
             >

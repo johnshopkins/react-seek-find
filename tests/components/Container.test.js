@@ -468,6 +468,7 @@ describe('Container', () => {
           // move the minimap
           fireEvent(grabbable, getPointerEvent('pointerdown', { clientX: 730, clientY: 85 }));
           fireEvent(grabbable, getPointerEvent('pointermove', { clientX: 737, clientY: 93 }));
+          fireEvent(grabbable, getPointerEvent('pointerup', { clientX: 737, clientY: 93 }));
 
           expect(game).toHaveStyle({ left: '-119.149px', top: '-136.17px' });
           expect(grabbable).toHaveStyle({ height: '20.563px', left: '7px', top: '8px', width: '35.25px' });
