@@ -150,7 +150,6 @@ class Game extends Component {
     let buffer, width, height;
 
     if (!this.state || (this.state && !this.state.isFullscreen)) {
-      console.log('not fullscreen');
       // width of game container (minus padding)
       const styles = window.getComputedStyle(this.container);
       width = !this.props.containerWidth ? this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0) : this.props.containerWidth;
@@ -160,7 +159,6 @@ class Game extends Component {
       height = !this.props.containerHeight ? document.documentElement.clientHeight - buffer : this.props.containerHeight;
 
     } else {
-      console.log('fullscreen');
       buffer = 0;
       width = window.innerWidth;
       height = window.innerHeight;
@@ -263,7 +261,7 @@ class Game extends Component {
       });
 
       if (this.state.gameComplete) {
-        this.props.onGameComplete();
+        setTimeout(this.props.onGameComplete, 1500)
         dataLayer.push({
           event: 'unlock_achievement',
           achievement_id: 'game_complete',

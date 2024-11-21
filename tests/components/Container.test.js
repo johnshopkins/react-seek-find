@@ -1541,6 +1541,8 @@ describe('Container', () => {
 
     test('Replay', async () => {
 
+      jest.useFakeTimers();
+
       const onGameComplete = jest.fn();
 
       const { container } = await renderGame({ onGameComplete });
@@ -1560,6 +1562,8 @@ describe('Container', () => {
       context.isPointInPath.mockImplementation(path => path.name === 'box');
       fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 100 }));
       fireEvent(canvas, getMouseEvent('mouseup', { clientX: 100, clientY: 100 }));
+      
+      jest.runAllTimers();
 
       // game complete
       expect(onGameComplete).toHaveBeenCalledTimes(1);
@@ -1580,6 +1584,8 @@ describe('Container', () => {
       const legendImages = await within(legend).findAllByRole('img');
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: not found');
+
+      jest.useRealTimers();
 
     });
 
