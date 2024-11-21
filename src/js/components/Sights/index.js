@@ -26,80 +26,78 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
   const [positionY, setPositionY] = useState(0);
   const [useTransition, setUseTransition] = useState(false);
 
-  const moveSights = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    setUseTransition(false);
-
-    const increment = e.shiftKey ? 20 : 2;
-
-    let newPositionX = positionX;
-    let newPositionY = positionY;
-
-    let direction;
-
-    if (e.key === ' ') {
-
-      dataLayer.push({
-        event: 'keyboard_interaction',
-        type: 'guess_submitted',
-      });
-
-      checkGuess(positionX + iconOffsetLeft, positionY + iconOffsetTop);
-
-    } else if (e.key === 'ArrowRight') {
-
-      direction = 'right'
-
-      newPositionX = positionX + increment;
-      if (newPositionX > maxX) {
-        newPositionX = maxX;
-      }
-
-      setPositionX(newPositionX);
-
-    } else if (e.key === 'ArrowLeft') {
-
-      direction = 'left'
-
-      newPositionX = positionX - increment;
-
-      if (newPositionX < minX) {
-        newPositionX = minX;
-      }
-
-      setPositionX(newPositionX);
-
-    } else if (e.key === 'ArrowUp') {
-
-      direction = 'up'
-      
-      newPositionY = positionY - increment;
-      if (newPositionY < minY) {
-        newPositionY = minY;
-      }
-
-      setPositionY(newPositionY);
-
-    } else if (e.key === 'ArrowDown') {
-
-      direction = 'down'
-      
-      newPositionY = positionY + increment;
-      if (newPositionY > maxY) {
-        newPositionY = maxY;
-      }
-
-      setPositionY(newPositionY);
-    }
-
-    // pan the background, if necessary
-    onSightsMove(newPositionX, newPositionY, iconSize, direction);
-  }
-
   useImperativeHandle(ref, () => ({
-    moveSights: moveSights,
+    moveSights: (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      setUseTransition(false);
+
+      const increment = e.shiftKey ? 20 : 2;
+
+      let newPositionX = positionX;
+      let newPositionY = positionY;
+
+      let direction;
+
+      if (e.key === ' ') {
+
+        dataLayer.push({
+          event: 'keyboard_interaction',
+          type: 'guess_submitted',
+        });
+
+        checkGuess(positionX + iconOffsetLeft, positionY + iconOffsetTop);
+
+      } else if (e.key === 'ArrowRight') {
+
+        direction = 'right'
+
+        newPositionX = positionX + increment;
+        if (newPositionX > maxX) {
+          newPositionX = maxX;
+        }
+
+        setPositionX(newPositionX);
+
+      } else if (e.key === 'ArrowLeft') {
+
+        direction = 'left'
+
+        newPositionX = positionX - increment;
+
+        if (newPositionX < minX) {
+          newPositionX = minX;
+        }
+
+        setPositionX(newPositionX);
+
+      } else if (e.key === 'ArrowUp') {
+
+        direction = 'up'
+        
+        newPositionY = positionY - increment;
+        if (newPositionY < minY) {
+          newPositionY = minY;
+        }
+
+        setPositionY(newPositionY);
+
+      } else if (e.key === 'ArrowDown') {
+
+        direction = 'down'
+        
+        newPositionY = positionY + increment;
+        if (newPositionY > maxY) {
+          newPositionY = maxY;
+        }
+
+        setPositionY(newPositionY);
+      }
+
+      // pan the background, if necessary
+      onSightsMove(newPositionX, newPositionY, iconSize, direction);
+    },
     moveSightsTo(x, y, e = false) {
       setUseTransition(false);
       setPositionX(x);
@@ -131,7 +129,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
         y: bounds.y + iconOffsetTop,
       };
     }
-  }), [moveSights, onSightsMove, positionX, positionY]);
+  }), [checkGuess, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
 
   const containerStyle = {
     display: show ? 'block' : 'none',
