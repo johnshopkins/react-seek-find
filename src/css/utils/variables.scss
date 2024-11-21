@@ -9,14 +9,14 @@ $breakpoint_medium: #{map.get($shared-vars, 'breakpoint_medium')}px;
 $breakpoint_large: #{map.get($shared-vars, 'breakpoint_large')}px;
 
 :root {
-  --stack-background: 1;
-  --stack-found: 2;
-  --stack-hint: 3;
-  --stack-findable: 4;
-  --stack-utilities: 5;
-  --stack-legend: 6;
-  --stack-already-found: 6;
-  --stack-overlay: 7;
+  --stack-background: 10;
+  --stack-found: 20;
+  --stack-hint: 30;
+  --stack-findable: 40;
+  --stack-utilities: 50;
+  --stack-legend: 60;
+  --stack-already-found: 70;
+  --stack-overlay: 80;
 
   --legendGap: #{map.get($shared-vars, 'legendGap')}px;
   --legendPadding: #{map.get($shared-vars, 'legendPadding')}px;

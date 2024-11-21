@@ -128,7 +128,7 @@ class Game extends Component {
         document.body.classList.remove('fullscreen');
         window.removeEventListener('keydown', this.handleKeyDown);
       }
-      
+
       this.setViewState();
     }
   }
@@ -150,6 +150,7 @@ class Game extends Component {
     let buffer, width, height;
 
     if (!this.state || (this.state && !this.state.isFullscreen)) {
+      console.log('not fullscreen');
       // width of game container (minus padding)
       const styles = window.getComputedStyle(this.container);
       width = !this.props.containerWidth ? this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0) : this.props.containerWidth;
@@ -159,6 +160,7 @@ class Game extends Component {
       height = !this.props.containerHeight ? document.documentElement.clientHeight - buffer : this.props.containerHeight;
 
     } else {
+      console.log('fullscreen');
       buffer = 0;
       width = window.innerWidth;
       height = window.innerHeight;
