@@ -1,5 +1,17 @@
 @use '../../../css/main' as *;
 
+body.fullscreen {
+  margin: 0;
+
+  .overlay-container {
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+}
+
 .overlay-container {
   align-items: center;
   background: rgb(0, 0, 0, .75);
