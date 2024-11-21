@@ -82,23 +82,23 @@ class Illustration extends Component {
     this.getGameOffset = this.getGameOffset.bind(this);
     this.removeAlreadyFound = this.removeAlreadyFound.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
-    this.onContainerMouseDown = this.onContainerMouseDown.bind(this);
-    this.onFind = this.onFind.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseMoveNotThrottled = this.onMouseMove.bind(this);
-    this.onMouseMoveThrottled = throttle(this.onMouseMove.bind(this), 30);
-    this.onMouseUp = this.onMouseUp.bind(this);
-    this.onSightsMove = this.onSightsMove.bind(this);
+    this.handleContainerMouseDown = this.handleContainerMouseDown.bind(this);
+    this.handleFoundObject = this.handleFoundObject.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseMoveNotThrottled = this.handleMouseMove.bind(this);
+    this.handleMouseMoveThrottled = throttle(this.handleMouseMove.bind(this), 30);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleSightsMove = this.handleSightsMove.bind(this);
     this.showAlreadyFound = this.showAlreadyFound.bind(this);
     this.showFound = this.showFound.bind(this);
     this.showHint = this.showHint.bind(this);
     this.toggleHint = this.toggleHint.bind(this);
-    this.onNewlyFocusedViaKeyboard = this.onNewlyFocusedViaKeyboard.bind(this);
-    this.onTouchEnd = this.onTouchEnd.bind(this);
-    this.onTouchMove = throttle(this.onTouchMove.bind(this), 30);
-    this.onTouchMoveNotThrottled = this.onTouchMove.bind(this);
-    this.onTouchStart = this.onTouchStart.bind(this);
+    this.handleNewlyFocusedViaKeyboard = this.handleNewlyFocusedViaKeyboard.bind(this);
+    this.handleTouchEnd = this.handleTouchEnd.bind(this);
+    this.handleTouchMoveThrottled = throttle(this.handleTouchMove.bind(this), 30);
+    this.handleTouchMoveNotThrottled = this.handleTouchMove.bind(this);
+    this.handleTouchStart = this.handleTouchStart.bind(this);
     this.removeHint = this.removeHint.bind(this);
     this.replay = this.replay.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
@@ -301,7 +301,7 @@ class Illustration extends Component {
    * highlight it and remove the hint.
    * @param {object} object 
    */
-  onFind(object, x, y) {
+  handleFoundObject(object, x, y) {
     const newlyFound = this.props.onFind(object);
     if (newlyFound) {
       this.showFound(object);
@@ -315,10 +315,10 @@ class Illustration extends Component {
    * A key was pressed while the game is in focus.
    * @param {event} e 
    */
-  onKeyDown(e) {
+  handleKeyDown(e) {
 
     if (e.key === 'Tab' && !this.props.isKeyboardFocused) {
-      return this.onNewlyFocusedViaKeyboard(e);
+      return this.handleNewlyFocusedViaKeyboard(e);
     }
 
     if (!['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) {
@@ -326,13 +326,13 @@ class Illustration extends Component {
     }
 
     if (!this.props.isKeyboardFocused) {
-      this.onNewlyFocusedViaKeyboard(e);
+      this.handleNewlyFocusedViaKeyboard(e);
     } else {
       this.sightsRef.current.moveSights(e);
     }
   }
 
-  onNewlyFocusedViaKeyboard(e = false) {
+  handleNewlyFocusedViaKeyboard(e = false) {
 
     this.props.onKeyboardFocusChange(true);
 
@@ -342,7 +342,7 @@ class Illustration extends Component {
     this.sightsRef.current.moveSightsTo(x, y, e);
   }
 
-  onMouseUp(e) {
+  handleMouseUp(e) {
     if (this.state.isDragging) {
       this.setState({ isDragging: false });
       return;
@@ -351,11 +351,11 @@ class Illustration extends Component {
     this.findableRef.current.checkGuess(e.offsetX, e.offsetY);
   }
 
-  onContainerMouseDown() {
+  handleContainerMouseDown() {
     this.props.onKeyboardFocusChange(false);
   }
 
-  onMouseDown(e) {
+  handleMouseDown(e) {
 
     const { offsetX, offsetY } = getOffsetCoords(e);
     
@@ -365,12 +365,12 @@ class Illustration extends Component {
     });
 
     const target = e.target;
-    target.addEventListener('mousemove', this.onMouseMoveThrottled);
+    target.addEventListener('mousemove', this.handleMouseMoveThrottled);
 
     window.addEventListener('mouseup', e => {
-      this.onMouseMoveThrottled.cancel();
-      target.removeEventListener('mousemove', this.onMouseMoveThrottled);
-      this.onMouseUp(e);
+      this.handleMouseMoveThrottled.cancel();
+      target.removeEventListener('mousemove', this.handleMouseMoveThrottled);
+      this.handleMouseUp(e);
     }, { once: true });
   }
 
@@ -382,7 +382,7 @@ class Illustration extends Component {
    * click and drag when they actually wanted to submit a guess.
    * @param {MouseEvent} e 
    */
-  onMouseMove(e) {
+  handleMouseMove(e) {
 
     const { offsetX, offsetY } = getOffsetCoords(e);
     const diffX = this.state.dragStartX - offsetX;
@@ -394,12 +394,12 @@ class Illustration extends Component {
       this.moveCanvas(newX, newY);
     } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
       this.setState({ isDragging: true}, () => {
-        this.onMouseMoveNotThrottled(e);
+        this.handleMouseMoveNotThrottled(e);
       });
     }
   }
 
-  onTouchMove(e) {
+  handleTouchMove(e) {
 
     if (e.targetTouches.length !== 2 && !this.needsManualScroll) {
       return;
@@ -438,12 +438,12 @@ class Illustration extends Component {
       this.moveCanvas(newX, newY);
     } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
       this.setState({ isDragging: true}, () => {
-        this.onTouchMoveNotThrottled(e);
+        this.handleTouchMoveNotThrottled(e);
       });
     }
   }
 
-  onTouchStart(e) {
+  handleTouchStart(e) {
 
     // do not limit this event to 2-touch events because, in some browsers,
     // an event can go from 1-touch to 2-touch without triggering touchstart again
@@ -462,8 +462,8 @@ class Illustration extends Component {
     this.props.onKeyboardFocusChange(false);
   }
 
-  onTouchEnd() {
-    this.onTouchMove.cancel();
+  handleTouchEnd() {
+    this.handleTouchMoveThrottled.cancel();
     this.setState({ isDragging: false });
   }
 
@@ -552,7 +552,7 @@ class Illustration extends Component {
    * @param {number} size
    * @param {string} direction 
    */
-  onSightsMove(x, y, size, direction) {
+  handleSightsMove(x, y, size, direction) {
 
     // size of minimap + utility edge
     const threshold = parseInt(settings.miniMap) + (parseInt(settings.utilitiesEdgeSpace) * 2);
@@ -696,8 +696,8 @@ class Illustration extends Component {
         aria-label="Seek and Find"
         style={containerStyles}
         ref={this.containerRef}
-        onKeyDown={this.onKeyDown}
-        onMouseDown={this.onContainerMouseDown}
+        onKeyDown={this.handleKeyDown}
+        onMouseDown={this.handleContainerMouseDown}
       >
         <div className="game-placement" style={gamePlacementStyles}>
           <div className={gameClasses.join(' ')} style={gameStyles} ref={this.gameRef}>
@@ -707,7 +707,7 @@ class Illustration extends Component {
                   ref={this.sightsRef}
                   checkGuess={(x, y) => this.findableRef.current.checkGuess(x, y)}
                   height={this.scaledImageHeight}
-                  onSightsMove={this.onSightsMove}
+                  onSightsMove={this.handleSightsMove}
                   show={this.props.isKeyboardFocused}
                   width={this.scaledImageWidth}
                 />
@@ -739,17 +739,17 @@ class Illustration extends Component {
                 />
                 <Findable
                   disableTabbing={this.props.disableTabbing}
-                  onFind={this.onFind}
+                  onFind={this.handleFoundObject}
                   objects={this.props.objects}
                   ref={this.findableRef}
                   scale={this.props.scale}
                   height={this.props.imageHeight}
                   width={this.props.imageWidth}
                   needsManualScroll={this.needsManualScroll}
-                  onMouseDown={this.onMouseDown}
-                  onTouchStart={this.onTouchStart}
-                  onTouchMove={this.onTouchMove}
-                  onTouchEnd={this.onTouchEnd}
+                  onMouseDown={this.handleMouseDown}
+                  onTouchStart={this.handleTouchStart}
+                  onTouchMove={this.handleTouchMoveThrottled}
+                  onTouchEnd={this.handleTouchEnd}
               />
               </>
             }

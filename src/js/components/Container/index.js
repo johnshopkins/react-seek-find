@@ -58,8 +58,8 @@ class Game extends Component {
     this.getViewState = this.getViewState.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
-    this.onFind = this.onFind.bind(this);
-    this.onKeyboardFocusChange = this.onKeyboardFocusChange.bind(this);
+    this.handleKeyboardFocusChange = this.handleKeyboardFocusChange.bind(this);
+    this.handleFoundObject = this.handleFoundObject.bind(this);
     this.openInstructions = this.openInstructions.bind(this);
     this.replay = this.replay.bind(this);
     this.saveGame = this.saveGame.bind(this);
@@ -209,7 +209,7 @@ class Game extends Component {
     return 'xlarge';
   }
 
-  onFind(foundObject) {
+  handleFoundObject(foundObject) {
 
     if (this.state.found.includes(foundObject.id)) {
       // object already found
@@ -342,7 +342,7 @@ class Game extends Component {
     this.setState({ openInstructions: true });
   }
 
-  onKeyboardFocusChange(focused) {
+  handleKeyboardFocusChange(focused) {
     if (focused !== this.state.isKeyboardFocused) {
       this.setState({ isKeyboardFocused: focused });
     }
@@ -431,8 +431,8 @@ class Game extends Component {
             imageWidth={this.props.imageWidth}
             isKeyboardFocused={this.state.isKeyboardFocused}
             objects={Object.values(this.objects)}
-            onFind={this.onFind}
-            onKeyboardFocusChange={this.onKeyboardFocusChange}
+            onFind={this.handleFoundObject}
+            onKeyboardFocusChange={this.handleKeyboardFocusChange}
             openInstructions={this.openInstructions}
             replay={this.replay}
             scale={this.state.scale / 100}
