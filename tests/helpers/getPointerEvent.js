@@ -6,6 +6,8 @@ class PointerEvent extends Event {
     this.pointerId = props?.pointerId || 1;
     this.clientX = props.clientX;
     this.clientY = props.clientY;
+    this.offsetX = props.offsetX;
+    this.offsetY = props.offsetY;
   }
 }
 
@@ -15,6 +17,8 @@ export default function getPointerEvent(type, values = {}) {
     clientY: 0,
     bubbles: true,
     cancelable: true,
+    offsetX: 0,
+    offsetY: 0,
     ...values,
   };
   return new PointerEvent(type, values);

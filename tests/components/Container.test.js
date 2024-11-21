@@ -142,6 +142,7 @@ beforeAll(() => {
 beforeEach(() => {
   window.dataLayer = [];
   user = userEvent.setup({ delay: null });
+  updateDimensions(600, 400);
 })
 
 afterEach(() => {
@@ -332,8 +333,8 @@ describe('Container', () => {
 
       // mock a click on circle
       context.isPointInPath.mockImplementation(path => path.name === 'circle');
-      fireEvent(canvas, getMouseEvent('mousedown', { clientX: 450, clientY: 250 }, true));
-      fireEvent(canvas, getMouseEvent('mouseup', { clientX: 450, clientY: 250 }));
+      fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 450, offsetY: 250 }, true));
+      fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 450, offsetY: 250 }));
 
       // object found
       expect(legendLabel).toHaveTextContent('Can you find us all? 1/2');
@@ -346,8 +347,8 @@ describe('Container', () => {
 
       // mock a click on NOT an object
       context.isPointInPath.mockReturnValueOnce(false);
-      fireEvent(canvas, getMouseEvent('mousedown', { clientX: 5, clientY: 5 }, true));
-      fireEvent(canvas, getMouseEvent('mouseup', { clientX: 5, clientY: 5 }));
+      fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 5, offsetY: 5 }, true));
+      fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 5, offsetY: 5 }));
 
       // found objects are still the same
       expect(within(legendImageContainers[0]).queryByTitle('Found')).not.toBeInTheDocument();
@@ -355,10 +356,21 @@ describe('Container', () => {
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: found');
 
+      // mock a click on the circle, again
+      context.isPointInPath.mockImplementation(path => path.name === 'circle');
+      fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 450, offsetY: 250 }, true));
+      fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 450, offsetY: 250 }));
+
+      // the already found message pops up
+      const alreadyFound = container.querySelector('.game .already-found');
+      expect(alreadyFound).toBeInTheDocument();
+      expect(alreadyFound).toHaveStyle({ left: '450px', top: '250px' });
+      
+
       // mock a click on box
       context.isPointInPath.mockImplementation(path => path.name === 'box');
-      fireEvent(canvas, getMouseEvent('mousedown', { clientX: 350, clientY: 350 }, true));
-      fireEvent(canvas, getMouseEvent('mouseup', { clientX: 350, clientY: 350 }));
+      fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 350, offsetY: 350 }, true));
+      fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 350, offsetY: 350 }));
 
       // object found
       expect(legendLabel).toHaveTextContent('Can you find us all? 2/2');
@@ -847,6 +859,59 @@ describe('Container', () => {
       expect(outerContainer).toHaveStyle({ height: '280px', width: '500px' });
       expect(gameContainer).toHaveStyle({ height: '230px', width: '500px' });
       expect(game).toHaveStyle({ left: '-150px', top: '-200px' });
+
+    });
+
+    describe('Fullscreen', () => {
+
+      test('Enter/exit fullscreen mode via button', async () => {
+
+        const { container } = await renderGame({
+          containerHeight: null,
+          containerWidth: null
+        });
+
+        const outerContainer = container.querySelector('.container');
+        expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
+
+        const fullscreenButton = screen.getByRole('button', { name: 'Maximize game' });
+        expect(fullscreenButton).toBeInTheDocument();
+
+        await user.click(fullscreenButton);
+        expect(document.body).toHaveClass('fullscreen')
+        expect(outerContainer).not.toHaveStyle({ height: '380px', width: '600px' });
+        expect(fullscreenButton).toHaveTextContent('Minimize game');
+
+        await user.click(fullscreenButton);
+        expect(document.body).not.toHaveClass('fullscreen')
+        expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
+        expect(fullscreenButton).toHaveTextContent('Maximize game');
+
+      });
+
+      test('Exit fullscreen mode via Escape key', async () => {
+
+        const { container } = await renderGame({
+          containerHeight: null,
+          containerWidth: null
+        });
+
+        const outerContainer = container.querySelector('.container');
+        expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
+
+        await user.tab();
+        await user.tab();
+        expect(screen.getByRole('button', { name: 'Maximize game' })).toHaveFocus();
+
+        await user.keyboard('{Enter}');
+        expect(document.body).toHaveClass('fullscreen')
+        expect(outerContainer).not.toHaveStyle({ height: '380px', width: '600px' });
+
+        await user.keyboard('{Escape}');
+        expect(document.body).not.toHaveClass('fullscreen')
+        expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
+
+      });
 
     });
 
@@ -1451,7 +1516,7 @@ describe('Container', () => {
         jest.useRealTimers();
       });
 
-      test('Can scroll when there are more thumbnails than space allows', async() => {
+      describe('Pointers', () => {
 
         // create a bunch of objects
         const objects = [];
@@ -1478,72 +1543,151 @@ describe('Container', () => {
           }
         }
 
-        const { container } = await renderGame({ objects });
-        
-        const legend = container.querySelector('.legend-container');
+        test('Can scroll when there are more thumbnails than space allows', async() => {
 
-        const thumbnails = container.querySelector('.legend-container .thumbnails');
-        expect(thumbnails).toHaveStyle({ 'left': '0px' });
+          const { container } = await renderGame({ objects });
+          
+          const legend = container.querySelector('.legend-container');
 
-        const scrollLeftButton = within(legend).getByRole('button', { name: 'Scroll left' });
-        const scrollRightButton = within(legend).getByRole('button', { name: 'Scroll right' });
+          const thumbnails = container.querySelector('.legend-container .thumbnails');
+          expect(thumbnails).toHaveStyle({ 'left': '0px' });
 
-        expect(scrollLeftButton).toBeInTheDocument();
-        expect(scrollRightButton).toBeInTheDocument();
+          const scrollLeftButton = within(legend).getByRole('button', { name: 'Scroll left' });
+          const scrollRightButton = within(legend).getByRole('button', { name: 'Scroll right' });
 
-        // hold down the scroll left button for 1 second
-        act(() => fireEvent.pointerDown(scrollLeftButton))
-        act(() => jest.advanceTimersByTime(1000));
-        act(() => fireEvent.pointerUp(scrollLeftButton))
+          expect(scrollLeftButton).toBeInTheDocument();
+          expect(scrollLeftButton).toBeDisabled();
+          expect(scrollRightButton).toBeInTheDocument();
+          expect(scrollRightButton).not.toBeDisabled();
 
-        // thumbnails cannot scroll further left
-        expect(thumbnails).toHaveStyle({ 'left': '0px' });
+          // hold down the scroll left button for 1 second
+          act(() => fireEvent.pointerDown(scrollLeftButton))
+          act(() => jest.advanceTimersByTime(1000));
+          act(() => fireEvent.pointerUp(scrollLeftButton))
 
-        // hold down the scroll right button for 1 second
-        act(() => fireEvent.pointerDown(scrollRightButton));
-        act(() => jest.advanceTimersByTime(1000));
-        act(() => fireEvent.pointerUp(scrollRightButton));
+          // thumbnails cannot scroll further left
+          expect(thumbnails).toHaveStyle({ 'left': '0px' });
 
-        expect(thumbnails).toHaveStyle({ 'left': '-400px' }); // 10 x thumbnailWidth (40)
+          // hold down the scroll right button for 1 second
+          act(() => fireEvent.pointerDown(scrollRightButton));
+          act(() => jest.advanceTimersByTime(1000));
+          act(() => fireEvent.pointerUp(scrollRightButton));
 
-        // hold down the scroll right button for 1 more second
-        act(() => fireEvent.pointerDown(scrollRightButton))
-        act(() => jest.advanceTimersByTime(1000));
-        act(() => fireEvent.pointerUp(scrollRightButton))
+          expect(thumbnails).toHaveStyle({ 'left': '-400px' }); // 10 x thumbnailWidth (40)
+          expect(scrollLeftButton).not.toBeDisabled();
+          expect(scrollRightButton).not.toBeDisabled();
 
-        expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // max
+          // hold down the scroll right button for 1 more second
+          act(() => fireEvent.pointerDown(scrollRightButton))
+          act(() => jest.advanceTimersByTime(1000));
+          act(() => fireEvent.pointerUp(scrollRightButton))
 
-        // hold down the scroll right button for 1 more second
-        act(() => fireEvent.pointerDown(scrollRightButton))
-        act(() => jest.advanceTimersByTime(1000));
-        act(() => fireEvent.pointerUp(scrollRightButton))
+          expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // max
+          expect(scrollLeftButton).not.toBeDisabled();
+          expect(scrollRightButton).toBeDisabled();
 
-        expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // still at max
+          // hold down the scroll right button for 1 more second
+          act(() => fireEvent.pointerDown(scrollRightButton))
+          act(() => jest.advanceTimersByTime(1000));
+          act(() => fireEvent.pointerUp(scrollRightButton))
 
-        // hold down the scroll right button for 1 second
-        act(() => fireEvent.pointerDown(scrollLeftButton))
-        act(() => jest.advanceTimersByTime(1000));
-        act(() => fireEvent.pointerUp(scrollLeftButton))
+          expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // still at max
 
-        expect(thumbnails).toHaveStyle({ 'left': '-379px' });
+          // hold down the scroll left button for 1 second
+          act(() => fireEvent.pointerDown(scrollLeftButton))
+          act(() => jest.advanceTimersByTime(1000));
+          act(() => fireEvent.pointerUp(scrollLeftButton))
 
-        // hold down the scroll right button for 1 more second
-        act(() => fireEvent.pointerDown(scrollLeftButton))
-        act(() => jest.advanceTimersByTime(1000));
-        act(() => fireEvent.pointerUp(scrollLeftButton))
+          expect(thumbnails).toHaveStyle({ 'left': '-379px' });
 
-        expect(thumbnails).toHaveStyle({ 'left': '0px' });
+          // hold down the scroll left button for 1 more second
+          act(() => fireEvent.pointerDown(scrollLeftButton))
+          act(() => jest.advanceTimersByTime(1000));
+          act(() => fireEvent.pointerUp(scrollLeftButton))
 
-      });
+          expect(thumbnails).toHaveStyle({ 'left': '0px' });
+          expect(scrollLeftButton).toBeDisabled();
+          expect(scrollRightButton).not.toBeDisabled();
 
-      test('No scroll option present when all thumbnails fit in alloted space', async() => {
+        });
 
-        const { container } = await renderGame();
+        test('Keyboard users can navigate the legend', async() => {
 
-        const legend = container.querySelector('.legend-container');
+          const { container } = await renderGame({ objects });
+          
+          const legend = container.querySelector('.legend-container');
 
-        expect(within(legend).queryByRole('button', { name: 'Scroll left' })).not.toBeInTheDocument();
-        expect(within(legend).queryByRole('button', { name: 'Scroll right' })).not.toBeInTheDocument();
+          const thumbnails = container.querySelector('.legend-container .thumbnails');
+          expect(thumbnails).toHaveStyle({ 'left': '0px' });
+
+          const scrollLeftButton = within(legend).getByRole('button', { name: 'Scroll left' });
+          const scrollRightButton = within(legend).getByRole('button', { name: 'Scroll right' });
+
+          await user.tab();
+          await user.tab();
+          await user.tab();
+          await user.tab();
+          await user.tab();
+          await user.tab();
+
+          expect(scrollRightButton).toHaveFocus();
+
+          // hold down the scroll right button for 1 second
+          await user.keyboard('{Enter>}');
+          act(() => jest.advanceTimersByTime(1000));
+          await user.keyboard('{/Enter}');
+
+          expect(thumbnails).toHaveStyle({ 'left': '-400px' }); // 10 x thumbnailWidth (40)
+          expect(scrollLeftButton).not.toBeDisabled();
+          expect(scrollRightButton).not.toBeDisabled();
+
+          // hold down the scroll right button for 1 more second
+          await user.keyboard('{Enter>}');
+          act(() => jest.advanceTimersByTime(1000));
+          await user.keyboard('{/Enter}');
+
+          expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // max
+          expect(scrollLeftButton).not.toBeDisabled();
+          expect(scrollRightButton).toBeDisabled();
+
+          // hold down the scroll right button for 1 more second
+          await user.keyboard('{Enter>}');
+          act(() => jest.advanceTimersByTime(1000));
+          await user.keyboard('{/Enter}');
+
+          expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // still at max
+
+          await user.tab({ shift: true });
+          expect(scrollLeftButton).toHaveFocus();
+
+          // hold down the scroll left button for 1 second
+          await user.keyboard('{Enter>}');
+          act(() => jest.advanceTimersByTime(1000));
+          await user.keyboard('{/Enter}');
+
+          expect(thumbnails).toHaveStyle({ 'left': '-379px' });
+
+          // hold down the scroll left button for 1 more second
+          await user.keyboard('{Enter>}');
+          act(() => jest.advanceTimersByTime(1000));
+          await user.keyboard('{/Enter}');
+
+          expect(thumbnails).toHaveStyle({ 'left': '0px' });
+          expect(scrollLeftButton).toBeDisabled();
+          expect(scrollRightButton).not.toBeDisabled();
+
+        });
+
+        test('No scroll option present when all thumbnails fit in alloted space', async() => {
+
+          const { container } = await renderGame();
+
+          const legend = container.querySelector('.legend-container');
+
+          expect(within(legend).queryByRole('button', { name: 'Scroll left' })).not.toBeInTheDocument();
+          expect(within(legend).queryByRole('button', { name: 'Scroll right' })).not.toBeInTheDocument();
+
+        });
 
       });
 

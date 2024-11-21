@@ -2,6 +2,8 @@ class FakeTouch {
   constructor(values = {}) {
     this.clientX = values.clientX || 0;
     this.clientY = values.clientY || 0;
+    this.offsetX = values.offsetX || 0;
+    this.offsetY = values.offsetY || 0;
   }
 }
 
