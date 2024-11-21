@@ -295,6 +295,8 @@ describe('Container', () => {
 
     test('onGameComplete fires when all objects are found', async () => {
 
+       jest.useFakeTimers();
+
       const dataLayer = []
       const onGameComplete = jest.fn();
 
@@ -367,6 +369,10 @@ describe('Container', () => {
       dataLayer.push({ event: 'level_up', level: 2 }, { event: 'unlock_achievement', achievement_id: 'game_complete' });
       expect(window.dataLayer).toEqual(dataLayer);
 
+      act(() => {
+        jest.runAllTimers();
+      });
+
       // game complete
       expect(onGameComplete).toHaveBeenCalledTimes(1);
 
@@ -376,6 +382,8 @@ describe('Container', () => {
       // replay button is visible
       replayButton = within(utilities).getByRole('button', { name: 'Play again' });
       expect(replayButton).toBeVisible();
+
+      jest.useRealTimers();
 
     });
 
