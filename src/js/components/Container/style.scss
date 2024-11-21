@@ -6,8 +6,8 @@ body.fullscreen {
 
   .container {
     height:100vh;
-    position: absolute;
-    right: 0;
+    position: fixed;
+    left: 0;
     top: 0;
     width: 100vw;
   }
