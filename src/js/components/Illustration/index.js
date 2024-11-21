@@ -8,6 +8,8 @@ import Found from '../Found';
 import Hint from '../Hint';
 import MiniMap from '../MiniMap';
 import Sights from '../Sights';
+import MaximizeIcon from '../Icons/Maximize';
+import MinimizeIcon from '../Icons/Minimize';
 import InstructionsIcon from '../Icons/Instructions';
 import LightbulbIcon from '../Icons/Lightbulb';
 import ReplayIcon from '../Icons/Replay';
@@ -192,6 +194,7 @@ class Illustration extends Component {
       'disableTabbing',
       'found',
       'gameComplete',
+      'isFullscreen',
       'isKeyboardFocused',
       'containerHeight',
       'containerWidth',
@@ -770,6 +773,11 @@ class Illustration extends Component {
           <div className="utilities" style={containerStyles}>
 
             <div className="instructions-and-hint">
+
+            <button className="fullscreen" onClick={this.props.toggleFullscreen} tabIndex={this.props.disableTabbing ? '-1' : null}>
+              {!this.props.isFullscreen ? <MaximizeIcon tooltip="Maximize game" /> : <MinimizeIcon tooltip="Minimize game" />}
+            </button>
+
               <button className="instructions" onClick={this.props.openInstructions} tabIndex={this.props.disableTabbing ? '-1' : null}>
                 <InstructionsIcon tooltip="How to play" />
               </button>
@@ -847,6 +855,7 @@ Illustration.propTypes = {
   replay: PropTypes.func.isRequired,
   scale: PropTypes.number,
   scaleToFit: PropTypes.func.isRequired,
+  toggleFullscreen: PropTypes.func.isRequired,
   zoomIn: PropTypes.func.isRequired,
   zoomInLimitReached: PropTypes.bool,
   zoomOut: PropTypes.func.isRequired,

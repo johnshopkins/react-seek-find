@@ -40,6 +40,7 @@ class Game extends Component {
     // combine stored and default state
     this.state = {
       focused: false,
+      isFullscreen: false,
       isKeyboardFocused: false,
       browserHeight: document.documentElement.clientHeight,
       browserWidth: document.documentElement.clientWidth,
@@ -58,6 +59,7 @@ class Game extends Component {
     this.getViewState = this.getViewState.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyboardFocusChange = this.handleKeyboardFocusChange.bind(this);
     this.handleFoundObject = this.handleFoundObject.bind(this);
     this.openInstructions = this.openInstructions.bind(this);
@@ -65,6 +67,7 @@ class Game extends Component {
     this.saveGame = this.saveGame.bind(this);
     this.scaleToFit = this.scaleToFit.bind(this);
     this.setViewState = this.setViewState.bind(this);
+    this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
     this.zoomTo = this.zoomTo.bind(this);
@@ -116,6 +119,20 @@ class Game extends Component {
     })
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.isFullscreen !== this.state.isFullscreen) {
+      if (this.state.isFullscreen) {
+        document.body.classList.add('fullscreen');
+        window.addEventListener('keydown', this.handleKeyDown);
+      } else {
+        document.body.classList.remove('fullscreen');
+        window.removeEventListener('keydown', this.handleKeyDown);
+      }
+      
+      this.setViewState();
+    }
+  }
+
   round(num) {
     return Math.round(num / 10) * 10;
   }
@@ -130,16 +147,25 @@ class Game extends Component {
 
   getViewState(init = false, additionalState = {}) {
 
-    // width of game container (minus padding)
-    const styles = window.getComputedStyle(this.container);
-    const width = !this.props.containerWidth ? this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0) : this.props.containerWidth;
-    
+    let buffer, width, height;
+
+    if (this.state && !this.state.isFullscreen) {
+      // width of game container (minus padding)
+      const styles = window.getComputedStyle(this.container);
+      width = !this.props.containerWidth ? this.container.clientWidth - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0) : this.props.containerWidth;
+
+      // small buffer around the game
+      buffer = document.documentElement.clientHeight > 600 ? 50 : 20;
+      height = !this.props.containerHeight ? document.documentElement.clientHeight - buffer : this.props.containerHeight;
+
+    } else {
+      buffer = 0;
+      width = window.innerWidth;
+      height = window.innerHeight;
+    }
+
     // base breakpoint on the width of the container, not the user's screen
     const breakpoint = this.getBreakpoint(width);
-
-    // small buffer around the game
-    const buffer = document.documentElement.clientHeight > 600 ? 50 : 20;
-    const height = !this.props.containerHeight ? document.documentElement.clientHeight - buffer : this.props.containerHeight;
 
     const legendHeight = parseInt(settings[`legendThumbnailHeight_${breakpoint}`]) + (parseInt(settings[`legendPadding_${breakpoint}`]) * 2);
 
@@ -389,6 +415,18 @@ class Game extends Component {
     }
   }
 
+  handleKeyDown(e) {
+    if (e.key === 'Escape') {
+      this.toggleFullscreen();
+    }
+  }
+
+  toggleFullscreen() {
+    this.setState((state) => {
+      return { isFullscreen: !state.isFullscreen }
+    });
+  }
+
   render() {
 
     // contains legend
@@ -429,6 +467,7 @@ class Game extends Component {
             imageHeight={this.props.imageHeight}
             imageSrc={this.props.image}
             imageWidth={this.props.imageWidth}
+            isFullscreen={this.state.isFullscreen}
             isKeyboardFocused={this.state.isKeyboardFocused}
             objects={Object.values(this.objects)}
             onFind={this.handleFoundObject}
@@ -437,6 +476,7 @@ class Game extends Component {
             replay={this.replay}
             scale={this.state.scale / 100}
             scaleToFit={this.scaleToFit}
+            toggleFullscreen={this.toggleFullscreen}
             zoomIn={this.zoomIn}
             zoomOut={this.zoomOut}
             zoomInLimitReached={this.state.zoomInLimitReached}
