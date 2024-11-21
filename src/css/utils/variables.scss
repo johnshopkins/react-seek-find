@@ -17,6 +17,7 @@ $breakpoint_large: #{map.get($shared-vars, 'breakpoint_large')}px;
   --stack-legend: 60;
   --stack-already-found: 70;
   --stack-overlay: 80;
+  --stack-modal: 100;
 
   --legendGap: #{map.get($shared-vars, 'legendGap')}px;
   --legendPadding: #{map.get($shared-vars, 'legendPadding')}px;
