@@ -226,6 +226,7 @@ describe('Container', () => {
 
       await user.tab();
       await user.tab();
+      await user.tab();
       await user.keyboard('{Enter}');
 
       expect(container.querySelector('.overlay-container')).toBeVisible();
@@ -1069,6 +1070,7 @@ describe('Container', () => {
         await user.keyboard('{Shift>}{ArrowDown>15/}{/Shift}');
 
         // activate zoom out button
+        await user.tab();
         await user.tab();
         await user.tab();
         await user.tab();
