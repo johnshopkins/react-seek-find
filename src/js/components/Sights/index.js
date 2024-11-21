@@ -131,7 +131,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
         y: bounds.y + iconOffsetTop,
       };
     }
-  }), [checkGuess, iconOffsetLeft, iconOffsetTop, maxX, maxY, minX, minY, onSightsMove, positionX, positionY]);
+  }), [moveSights, onSightsMove, positionX, positionY]);
 
   const containerStyle = {
     display: show ? 'block' : 'none',
