@@ -430,9 +430,12 @@ class Game extends Component {
   render() {
 
     // contains legend
-    const containerStyles = {
-      height: `${this.state.height}px`,
-      width: `${this.state.width}px`,
+    const containerStyles = {};
+
+    if (!this.state.isFullscreen) {
+      containerStyles.height = `${this.state.height}px`;
+      containerStyles.width = `${this.state.width}px`;
+
     }
 
     const containerClasses = ['container', this.state.breakpoint];
