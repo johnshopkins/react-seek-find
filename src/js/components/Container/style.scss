@@ -9,7 +9,7 @@ body.fullscreen {
     position: fixed;
     top: 0;
     width: 100vw;
-    z-index: var(--stack-modal);
+    z-index: calc(var(--stack-overlay) - 1);
   }
 }
 
