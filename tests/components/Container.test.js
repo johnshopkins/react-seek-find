@@ -874,18 +874,18 @@ describe('Container', () => {
         const outerContainer = container.querySelector('.container');
         expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
 
-        const fullscreenButton = screen.getByRole('button', { name: 'Maximize game' });
+        const fullscreenButton = screen.getByRole('button', { name: 'Enter fullscreen' });
         expect(fullscreenButton).toBeInTheDocument();
 
         await user.click(fullscreenButton);
         expect(document.body).toHaveClass('fullscreen')
         expect(outerContainer).not.toHaveStyle({ height: '380px', width: '600px' });
-        expect(fullscreenButton).toHaveTextContent('Minimize game');
+        expect(fullscreenButton).toHaveTextContent('Exit fullscreen');
 
         await user.click(fullscreenButton);
         expect(document.body).not.toHaveClass('fullscreen')
         expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
-        expect(fullscreenButton).toHaveTextContent('Maximize game');
+        expect(fullscreenButton).toHaveTextContent('Enter fullscreen');
 
       });
 
@@ -901,7 +901,7 @@ describe('Container', () => {
 
         await user.tab();
         await user.tab();
-        expect(screen.getByRole('button', { name: 'Maximize game' })).toHaveFocus();
+        expect(screen.getByRole('button', { name: 'Enter fullscreen' })).toHaveFocus();
 
         await user.keyboard('{Enter}');
         expect(document.body).toHaveClass('fullscreen')

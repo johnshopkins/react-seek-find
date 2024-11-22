@@ -775,7 +775,7 @@ class Illustration extends Component {
             <div className="instructions-and-hint">
 
             <button className="fullscreen" onClick={this.props.toggleFullscreen} tabIndex={this.props.disableTabbing ? '-1' : null}>
-              {!this.props.isFullscreen ? <MaximizeIcon tooltip="Maximize game" /> : <MinimizeIcon tooltip="Minimize game" />}
+              {!this.props.isFullscreen ? <MaximizeIcon tooltip="Enter fullscreen" /> : <MinimizeIcon tooltip="Exit fullscreen" />}
             </button>
 
               <button className="instructions" onClick={this.props.openInstructions} tabIndex={this.props.disableTabbing ? '-1' : null}>
