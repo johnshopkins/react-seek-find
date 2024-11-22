@@ -91,6 +91,33 @@ const circleObject = new FindableObject(
   200
 );
 
+// for when you need a bunch of objects to test
+const bunchOfObjects = [];
+let i = 0;
+for (let y = 100; y < 800; y += 200) {
+  for (let x = 100; x <= 1400; x += 200) {
+    const id = `box${i}`;
+    bunchOfObjects.push(new FindableObject(
+      id,
+      id,
+      'https://picsum.photos/143/143',
+      () => {
+        const path = new Path2D();
+        path.moveTo(x, y);
+        path.lineTo(x, y + 100);
+        path.lineTo(x + 100, y + 100);
+        path.lineTo(x + 100, y);
+        path.closePath();
+        path.name = id; // for mocking mockImplementation
+        return path;
+      },
+      { x: x - 50, y: y - 50 },
+      200
+    ));
+    i++;
+  }
+}
+
 const getProps = (override) => {
   return {
     containerWidth: 600,
@@ -1504,6 +1531,83 @@ describe('Container', () => {
 
       });
 
+      test('Duplicate hints aren\'t given until all hints are shown', async () => {
+
+        const { container } = await renderGame({ objects: bunchOfObjects.slice(0, 10) });
+        const hintButton = screen.getByRole('button', { name: 'Give me a hint' });
+
+        const hintsGiven = [];
+
+        for (let i = 0; i < 10; i++) {
+          await user.click(hintButton);
+          hintsGiven.push(container.querySelector('canvas.hint').dataset.id);
+          await user.click(hintButton);
+        }
+
+        // 10 hints given
+        expect(hintsGiven.length).toEqual(10);
+
+        // all hints given should be unqique
+        const uniqueHints = [...new Set(hintsGiven)];
+        expect(hintsGiven.length).toEqual(uniqueHints.length);
+
+        // turn on hint
+        await user.click(hintButton);
+        
+        const activeHint = container.querySelector('canvas.hint');
+
+        // turn off hint
+        await user.click(hintButton);
+
+        expect(hintsGiven).toContain(activeHint.dataset.id);
+
+      });
+
+      test('If an item is found, it does not get factored into hints anymore', async () => {
+
+        const objects = bunchOfObjects.slice(0, 10);
+        const { container } = await renderGame({ objects });
+
+        const canvas = container.querySelector('canvas.findable');
+        const context = canvas.getContext('2d');
+
+        const hintButton = screen.getByRole('button', { name: 'Give me a hint' });
+
+        const hintsGiven = [];
+
+        for (let i = 0; i < 5; i++) {
+          await user.click(hintButton);
+          hintsGiven.push(container.querySelector('canvas.hint').dataset.id);
+          await user.click(hintButton);
+        }
+
+        // get an object that has not been given a hint
+        const notFound = objects.filter(object => !hintsGiven.includes(object.id))
+        const randomNotFound = notFound[Math.floor(Math.random() * notFound.length)];
+
+        // find the random object
+        context.isPointInPath.mockImplementation(path => path.name === randomNotFound.id);
+        const clickCoords = {
+          offsetX: randomNotFound.hintCoords.x + 50,
+          offsetY: randomNotFound.hintCoords.y + 50,
+        }
+        fireEvent(canvas, getMouseEvent('mousedown', clickCoords, true));
+        fireEvent(canvas, getMouseEvent('mouseup', clickCoords));
+
+        // activate a bunch more hints
+        for (let i = 0; i < 30; i++) {
+          await user.click(hintButton);
+          hintsGiven.push(container.querySelector('canvas.hint').dataset.id);
+          await user.click(hintButton);
+        }
+
+        // only get the unique hints
+        const uniqueHints = [...new Set(hintsGiven)];
+
+        // does not contain randomFound
+        expect(uniqueHints).not.toContain(randomNotFound.id);
+      });
+
     });
 
     describe('Legend', () => {
@@ -1518,34 +1622,9 @@ describe('Container', () => {
 
       describe('Pointers', () => {
 
-        // create a bunch of objects
-        const objects = [];
-        let i = 0;
-        for (let y = 100; y < 800; y += 200) {
-          for (let x = 100; x <= 1400; x += 200) {
-            objects.push(new FindableObject(
-              `box${i}`,
-              `box${i}`,
-              'https://picsum.photos/143/143',
-              () => {
-                const path = new Path2D();
-                path.moveTo(x, y);
-                path.lineTo(x, y + 100);
-                path.lineTo(x + 100, y + 100);
-                path.lineTo(x + 100, y);
-                path.closePath();
-                return path;
-              },
-              { x: x - 50, y: y - 50 },
-              200
-            ));
-            i++;
-          }
-        }
-
         test('Can scroll when there are more thumbnails than space allows', async() => {
 
-          const { container } = await renderGame({ objects });
+          const { container } = await renderGame({ objects: bunchOfObjects });
           
           const legend = container.querySelector('.legend-container');
 
@@ -1613,7 +1692,7 @@ describe('Container', () => {
 
         test('Keyboard users can navigate the legend', async() => {
 
-          const { container } = await renderGame({ objects });
+          const { container } = await renderGame({ objects: bunchOfObjects });
           
           const legend = container.querySelector('.legend-container');
 

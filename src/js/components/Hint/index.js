@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import './style.scss';
 
-export default function Hint({ height, object, scale, width }) {
+export default function Hint({ height, object, scale, test, width }) {
 
   const ref = useRef(null);
 
@@ -20,6 +20,7 @@ export default function Hint({ height, object, scale, width }) {
         height: `${height * scale}px`,
         width: `${width * scale}px`
       }}
+      data-id={test ? object.id : null}
     />
   )
 

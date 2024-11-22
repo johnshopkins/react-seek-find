@@ -79,11 +79,13 @@ class Illustration extends Component {
       found: [],
       hint: null,
       hintActive: false,
+      hintsGiven: [],
     };
 
     this.getGameOffset = this.getGameOffset.bind(this);
     this.removeAlreadyFound = this.removeAlreadyFound.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
+    this.getRandomHint = this.getRandomHint.bind(this);
     this.handleContainerMouseDown = this.handleContainerMouseDown.bind(this);
     this.handleFoundObject = this.handleFoundObject.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -585,12 +587,28 @@ class Illustration extends Component {
     !this.state.hintActive ?  this.showHint() : this.removeHint();
   }
 
+  /**
+   * Gets a random hint, but ensures all objects used as hints
+   * before any duplicates can occur
+   * @returns Findable  object
+   */
+  getRandomHint() {
+
+    const availableObjects = Object.values(this.props.objects).filter(object => {
+      // not found and not already given as a hint (until all objects are given as a hint)
+      return !this.props.found.includes(object.id) && !this.state.hintsGiven.includes(object.id);
+    });
+
+    const random = Math.floor(Math.random() * availableObjects.length);
+
+    return availableObjects[random];
+  }
+
   showHint() {
 
-    const notFound = Object.values(this.props.objects).filter(object => !this.props.found.includes(object.id));
-    const random = Math.floor(Math.random() * notFound.length);
+    const hint = this.getRandomHint();
 
-    const hint = notFound[random];
+    // const hint = notFound[random];
     const coords = hint.hintCoords;
     const hintSize = hint.hintSize;
 
@@ -598,12 +616,31 @@ class Illustration extends Component {
     const newX = coords.x * this.props.scale;
     const newY = coords.y * this.props.scale;
 
-    this.setState({
-      // set the center anchor to be the center of the hint
-      // on componentDidUpdate, the new canvas position will be based on that
-      anchorX: -Math.abs(newX + hintOffset),
-      anchorY: -Math.abs(newY + hintOffset),
-      hint, // get the hint in the DOM
+    this.setState(state => {
+
+      const newState = {
+        // set the center anchor to be the center of the hint
+        // on componentDidUpdate, the new canvas position will be based on that
+        anchorX: -Math.abs(newX + hintOffset),
+        anchorY: -Math.abs(newY + hintOffset),
+
+        // get the hint in the DOM
+        hint,
+      }
+
+      let hintsGiven = [...state.hintsGiven]; // handle immutably to prevent bugs
+      hintsGiven.push(hint.id);
+
+      // reset hintsGiven, if all objects have been hinted
+      const notFound = this.props.objects.length - this.props.found.length;
+      if (hintsGiven.length === notFound) {
+        hintsGiven = [];
+      }
+
+      newState.hintsGiven = hintsGiven;
+
+      return newState;
+
     }, () => {
 
       this.props.scaleToFit(hint.hintSize, hint.hintSize, (scale) => {
@@ -630,9 +667,24 @@ class Illustration extends Component {
 
   showFound(object) {
     this.setState(state => {
+
+      const newState = {};
+
+      // remove found object from hintsGiven, if present
+      const hintsGiven = [...state.hintsGiven]; // handle immutably to prevent bugs
+      const index = hintsGiven.indexOf(object.id);
+
+      if (index > -1) {
+        hintsGiven.splice(index, 1);
+        newState.hintsGiven = hintsGiven;
+      }
+
+      // add the object to the list of found objects
       const found = [...state.found]; // handle immutably to prevent bugs
       found.push(object);
-      return { found }
+      newState.found = found;
+
+      return newState;
     });
   }
 
@@ -720,6 +772,7 @@ class Illustration extends Component {
                     width={this.props.imageWidth}
                     object={this.state.hint}
                     scale={this.props.scale}
+                    test={this.props.test}
                   />
                 }
                 {this.state.alreadyFound &&
@@ -833,6 +886,7 @@ Illustration.defaultProps = {
   found: [],
   gameComplete: false,
   scale: 1,
+  test: false,
   zoomInLimitReached: false,
   zoomOutLimitReached: false,
 };
@@ -855,6 +909,7 @@ Illustration.propTypes = {
   replay: PropTypes.func.isRequired,
   scale: PropTypes.number,
   scaleToFit: PropTypes.func.isRequired,
+  test: PropTypes.bool,
   toggleFullscreen: PropTypes.func.isRequired,
   zoomIn: PropTypes.func.isRequired,
   zoomInLimitReached: PropTypes.bool,

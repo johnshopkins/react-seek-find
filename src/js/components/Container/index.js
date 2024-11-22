@@ -479,6 +479,7 @@ class Game extends Component {
             replay={this.replay}
             scale={this.state.scale / 100}
             scaleToFit={this.scaleToFit}
+            test={this.props.test}
             toggleFullscreen={this.toggleFullscreen}
             zoomIn={this.zoomIn}
             zoomOut={this.zoomOut}
