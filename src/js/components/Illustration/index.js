@@ -16,6 +16,7 @@ import ReplayIcon from '../Icons/Replay';
 import SlashIcon from '../Icons/Slash';
 import ZoomInIcon from '../Icons/ZoomIn';
 import ZoomOutIcon from '../Icons/ZoomOut';
+import distanceBetweenTouch from '../../lib/distance-between-touch';
 import getOffsetCoords from '../../lib/get-offset-coords';
 import roundToThousandth from '../../lib/roundToThousandth';
 import * as settings from '../../../css/utils/shared-variables.scss';
@@ -70,6 +71,14 @@ class Illustration extends Component {
 
       gamePlacementX,
       gamePlacementY,
+
+      // mousemove, touchmove x, y coordinates
+      // used to detect zoom in/out pinch motions
+      prevTouchEvent: null,
+
+      // distance between touches
+      // used to detect zoom in/out pinch motions
+      prevTouchDistance: null,
 
       loading: true,
       isDragging: false,
@@ -423,7 +432,6 @@ class Illustration extends Component {
         this.loggedTouchMoveFailure = true;
       }
     }
-
     const { offsetX, offsetY } = getOffsetCoords(e);
 
     const diffX = this.state.dragStartX - offsetX;
@@ -437,15 +445,94 @@ class Illustration extends Component {
       });
     }
 
-    if (this.state.isDragging) {
-      const newX = this.state.canvasX - diffX;
-      const newY = this.state.canvasY - diffY;
-      this.moveCanvas(newX, newY);
-    } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
-      this.setState({ isDragging: true}, () => {
-        this.handleTouchMoveNotThrottled(e);
-      });
+    // if (this.state.isDragging) {
+    //   const newX = this.state.canvasX - diffX;
+    //   const newY = this.state.canvasY - diffY;
+    //   this.moveCanvas(newX, newY);
+    // } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
+    //   this.setState({ isDragging: true}, () => {
+    //     this.handleTouchMoveNotThrottled(e);
+    //   });
+    // }
+
+    const prevTouchEvent = this.state.prevTouchEvent;
+
+    const prevTouch1 = prevTouchEvent.targetTouches[0];
+    const prevTouch2 = prevTouchEvent.targetTouches[1];
+
+    const currentTouch1 = e.targetTouches[0];
+    const currentTouch2 = e.targetTouches[1];
+
+    const diffTouch1X = Math.abs(prevTouch1.clientX - currentTouch1.clientX);
+    const diffTouch1Y = Math.abs(prevTouch1.clientY - currentTouch1.clientY);
+    const diffTouch2X = Math.abs(prevTouch2.clientX - currentTouch2.clientX);
+    const diffTouch2Y = Math.abs(prevTouch2.clientY - currentTouch2.clientY);
+
+    const threshold = .3;
+    if (diffTouch1X < threshold || diffTouch1Y < threshold || diffTouch2X < threshold || diffTouch2Y < threshold) {
+      // touches haven't moved enough
+      return;
     }
+
+    const touch1DirectionX = prevTouch1.clientX > currentTouch1.clientX ? 'left' : 'right';
+    const touch1DirectionY = prevTouch1.clientY > currentTouch1.clientY ? 'up' : 'down';
+
+    const touch2DirectionX = prevTouch2.clientX > currentTouch2.clientX ? 'left' : 'right';
+    const touch2DirectionY = prevTouch2.clientY > currentTouch2.clientY ? 'up' : 'down';
+
+    const touchDistance = distanceBetweenTouch(e.targetTouches[0], e.targetTouches[1]);
+
+    const newState = {
+      prevTouchDistance: touchDistance,
+      prevTouchEvent: e,
+    }
+
+    if (touch1DirectionX === touch2DirectionX && touch1DirectionY === touch2DirectionY) {
+
+      // pan gets triggered when you transition between zooming in and zooming out
+
+      if (this.state.isDragging) {
+        // console.log('PAN1');
+        // console.log('diff', diffTouch1X, diffTouch2X, diffTouch1Y, diffTouch2Y);
+        // console.log(touch1DirectionX, touch2DirectionX, touch1DirectionY, touch2DirectionY);
+        // console.log('---');
+        const newX = this.state.canvasX - diffX;
+        const newY = this.state.canvasY - diffY;
+        this.moveCanvas(newX, newY);
+      } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
+        // console.log('PAN2');
+        // console.log('diff', diffTouch1X, diffTouch2X, diffTouch1Y, diffTouch2Y);
+        // console.log({ diffX, diffY });
+        // console.log(touch1DirectionX, touch2DirectionX, touch1DirectionY, touch2DirectionY);
+        // console.log('---');
+        this.setState({ isDragging: true}, () => {
+          this.handleTouchMoveNotThrottled(e);
+        });
+      }
+    } else if (touch1DirectionX !== touch2DirectionX || touch1DirectionY !== touch2DirectionY) {
+
+      const distanceDiff = this.state.prevTouchDistance ? touchDistance - this.state.prevTouchDistance : touchDistance;
+
+      if (Math.abs(distanceDiff) > 2) {
+        // console.log(touch1DirectionX, touch2DirectionX, touch1DirectionY, touch2DirectionY);
+        // console.log('---');
+
+        // console.log({ distanceDiff });
+        // const direction = distanceDiff > 0 ? 'in' : 'out';
+        const zoomAmount = (distanceDiff / 3) / 100;
+
+        const newZoom = this.props.scale + zoomAmount;
+
+        this.props.zoomTo(newZoom * 100);
+
+        // console.log('ZOOM', zoomAmount, newZoom);
+
+        newState.isDragging = false;
+
+      }
+    }
+
+    this.setState(newState)
   }
 
   handleTouchStart(e) {
@@ -458,18 +545,29 @@ class Illustration extends Component {
 
     const { offsetX, offsetY } = getOffsetCoords(e);
 
-    this.setState({
+    const newState = {
       dragStartX: offsetX,
       dragStartY: offsetY,
-      isDragging: true,
-    });
+      // isDragging: true,
+      prevTouchEvent: e,
+    }
+
+    if (e.targetTouches.length === 2) {
+      newState.prevTouchDistance = distanceBetweenTouch(e.targetTouches[0], e.targetTouches[1]);
+    }
+
+    this.setState(newState);
 
     this.props.onKeyboardFocusChange(false);
   }
 
   handleTouchEnd() {
     this.handleTouchMoveThrottled.cancel();
-    this.setState({ isDragging: false });
+    this.setState({
+      isDragging: false,
+      prevTouchDistance: null,
+      prevTouchEvent: null,
+    });
   }
 
   /**
@@ -913,6 +1011,7 @@ Illustration.propTypes = {
   toggleFullscreen: PropTypes.func.isRequired,
   zoomIn: PropTypes.func.isRequired,
   zoomInLimitReached: PropTypes.bool,
+  zoomTo: PropTypes.func.isRequired,
   zoomOut: PropTypes.func.isRequired,
   zoomOutLimitReached: PropTypes.bool,
 };

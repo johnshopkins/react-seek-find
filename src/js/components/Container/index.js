@@ -484,6 +484,7 @@ class Game extends Component {
             zoomIn={this.zoomIn}
             zoomOut={this.zoomOut}
             zoomInLimitReached={this.state.zoomInLimitReached}
+            zoomTo={this.zoomTo}
             zoomOutLimitReached={this.state.zoomOutLimitReached}
           />
           <Legend
