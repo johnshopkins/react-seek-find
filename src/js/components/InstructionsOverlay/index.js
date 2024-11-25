@@ -49,27 +49,27 @@ export default function InstructionsOverlay({ breakpoint, isAutoOpen, onClose, s
         <div className="overlay-content">
           {Modernizr.touchevents ? 
             <ul>
-              <li>To move the image, use two fingers.</li>
-              <li>When you find an object, click on it. It will light up if you are correct.</li>
+              <li>Use two fingers to move the image.</li>
+              <li>Found a hidden object? Click it; it will light up if you are correct.</li>
             </ul>
             : 
             <>
               <h3>Using a mouse?</h3>
               <ul>
-                <li>To move the image, click and drag on the image.</li>
-                <li>When you find an object, click on it. It will light up if you are correct.</li>
+                <li>Click and drag to move the image.</li>
+                <li>Found a hidden object? Click it; it will light up if you are correct. </li>
               </ul>
               <h3>Using a keyboard?</h3>
               <ul>
-                <li>Navigate to the game by pressing the Tab key until the game area is active. You will see a magnifying class appear. Use the keyboard's arrow keys to move the magnifying glass around. To move faster, press Shift + arrow keys.</li>
-                <li>When you find an object, line up the crosshairs within the magnifying glass on the object and press the Spacebar. It will light up if you are correct.</li>
+                <li>Press the Tab key until the game area is active, then use the arrow keys to move the magnifying glass. To move faster, press Shift + arrow keys.</li>
+                <li>Found a hidden object? Center the magnifying glass on the object and press the Spacebar; it will light up if you are correct.</li>
               </ul>
             </>
           }
           <h2>Need some help?</h2>
           <ul>
-            <li>To ask for a hint, click on the lightbulb icon. An area of the image will light up where an object is, but only for 10 seconds.</li>
-            <li>To read these instructions again, press the book icon.</li>
+            <li>Click on the lightbulb icon to temporarily highlight an area of the image that contains an unfound hidden object.</li>
+            <li>Press the book icon to read these instructions again.</li>
           </ul>
         </div>
         <div className="overlay-footer">
