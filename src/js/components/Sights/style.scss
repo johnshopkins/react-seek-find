@@ -2,5 +2,5 @@
 
 .sights {
   position: absolute;
-  z-index: 3;
+  z-index: var(--stack-findable);
 }
