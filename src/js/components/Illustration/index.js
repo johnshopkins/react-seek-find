@@ -106,6 +106,7 @@ class Illustration extends Component {
     this.showAlreadyFound = this.showAlreadyFound.bind(this);
     this.showFound = this.showFound.bind(this);
     this.showHint = this.showHint.bind(this);
+    this.stopTouchmove = this.stopTouchmove.bind(this);
     this.toggleHint = this.toggleHint.bind(this);
     this.handleNewlyFocusedViaKeyboard = this.handleNewlyFocusedViaKeyboard.bind(this);
     this.handleTouchEnd = this.handleTouchEnd.bind(this);
@@ -561,13 +562,28 @@ class Illustration extends Component {
     this.props.onKeyboardFocusChange(false);
   }
 
-  handleTouchEnd() {
+  stopTouchmove() {
     this.handleTouchMoveThrottled.cancel();
     this.setState({
       isDragging: false,
       prevTouchDistance: null,
       prevTouchEvent: null,
+      prevTouchEventType: null,
     });
+  }
+
+  handleTouchEnd(e) {
+
+    if (e.touches.length === 2) {
+      // still 2 touches. do not trigger state change
+      return;
+    }
+
+    this.stopTouchmove();
+  }
+
+  handleTouchCancel() {
+    this.stopTouchmove();
   }
 
   /**
@@ -901,6 +917,7 @@ class Illustration extends Component {
                   width={this.props.imageWidth}
                   needsManualScroll={this.needsManualScroll}
                   onMouseDown={this.handleMouseDown}
+                  onTouchCancel={this.handleTouchCancel}
                   onTouchStart={this.handleTouchStart}
                   onTouchMove={this.handleTouchMoveThrottled}
                   onTouchEnd={this.handleTouchEnd}

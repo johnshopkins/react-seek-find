@@ -13,6 +13,7 @@ export default forwardRef(({
   objects,
   onFind,
   onMouseDown,
+  onTouchCancel,
   onTouchEnd,
   onTouchStart,
   onTouchMove,
@@ -44,10 +45,12 @@ export default forwardRef(({
     // and 2-touch events (use our callback)
     canvas.addEventListener('touchmove', onTouchMove, { passive: false });
     canvas.addEventListener('touchend', onTouchEnd);
+    canvas.addEventListener('touchcancel', onTouchCancel);
 
     return () => {
       canvas.removeEventListener('touchmove', onTouchMove, { passive: false });
       canvas.removeEventListener('touchend', onTouchEnd);
+      canvas.removeEventListener('toucheancel', onTouchCancel);
     }
 
   }, [onTouchEnd, onTouchMove]);
