@@ -121,11 +121,12 @@ class Game extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.isFullscreen !== this.state.isFullscreen) {
+      const html = document.getElementsByTagName('html')[0];
       if (this.state.isFullscreen) {
-        document.body.classList.add('fullscreen');
+        html.classList.add('fullscreen');
         window.addEventListener('keydown', this.handleKeyDown);
       } else {
-        document.body.classList.remove('fullscreen');
+        html.classList.remove('fullscreen');
         window.removeEventListener('keydown', this.handleKeyDown);
       }
 
