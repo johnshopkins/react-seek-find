@@ -51,7 +51,7 @@ class Illustration extends Component {
 
     this.bufferSize = parseInt(settings.miniMap) + (parseInt(settings.utilitiesEdgeSpace) * 2);
 
-    this.loggedTouchMoveFailure = false;
+    this.touchMoveFailures = 0;
     this.needsManualScroll = navigator.userAgent.includes('SamsungBrowser');
 
     const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
@@ -424,13 +424,18 @@ class Illustration extends Component {
       // prevent browser default handling of 2-touch scroll
       // check first to make sure the event is cancelable as
       // samsung browser makes touchmove events not cancelable
-      // after a second or two
+      // after a second or two.
       e.preventDefault();
-    } else {
-      if (!this.loggedTouchMoveFailure) {
+    } else if (this.touchMoveFailures < 10) {
+      this.touchMoveFailures++;
+      if (this.touchMoveFailures === 10) {
         // track any other browsers that do this
-        logger.log('touchmove event is not cancelable');
-        this.loggedTouchMoveFailure = true;
+        // note: this also pops up from time-to-time on browsers
+        // that do allow touchmove events to be cancelable,
+        // but it has always occurred at a proper time, which
+        // isn't the case for samsung internet. make sure 10 failures
+        // occur before logging.
+        logger.log('touchmove event is not cancelable', { event: e });
       }
     }
     const { offsetX, offsetY } = getOffsetCoords(e);
