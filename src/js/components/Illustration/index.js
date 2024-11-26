@@ -72,13 +72,16 @@ class Illustration extends Component {
       gamePlacementX,
       gamePlacementY,
 
-      // mousemove, touchmove x, y coordinates
+      // touchmove event
       // used to detect zoom in/out pinch motions
       prevTouchEvent: null,
 
       // distance between touches
       // used to detect zoom in/out pinch motions
       prevTouchDistance: null,
+
+      // pan or zoom
+      prevTouchEventType: null,
 
       loading: true,
       isDragging: false,
@@ -91,6 +94,7 @@ class Illustration extends Component {
       hintsGiven: [],
     };
 
+    this.evaluateTouchData = this.evaluateTouchData.bind(this);
     this.getGameOffset = this.getGameOffset.bind(this);
     this.removeAlreadyFound = this.removeAlreadyFound.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
@@ -106,9 +110,10 @@ class Illustration extends Component {
     this.showAlreadyFound = this.showAlreadyFound.bind(this);
     this.showFound = this.showFound.bind(this);
     this.showHint = this.showHint.bind(this);
-    this.stopTouchmove = this.stopTouchmove.bind(this);
+    this.stopTouchMove = this.stopTouchMove.bind(this);
     this.toggleHint = this.toggleHint.bind(this);
     this.handleNewlyFocusedViaKeyboard = this.handleNewlyFocusedViaKeyboard.bind(this);
+    this.handleTouchCancel = this.handleTouchCancel.bind(this);
     this.handleTouchEnd = this.handleTouchEnd.bind(this);
     this.handleTouchMoveThrottled = throttle(this.handleTouchMove.bind(this), 30);
     this.handleTouchMoveNotThrottled = this.handleTouchMove.bind(this);
@@ -414,6 +419,54 @@ class Illustration extends Component {
     }
   }
 
+  evaluateTouchData(e) {
+
+    let prevTouchEvent = this.state.prevTouchEvent;
+
+    if (!prevTouchEvent) {
+      logger.log('No previous touch event', { event: e });
+      prevTouchEvent = e;
+    }
+
+    const prevTouch1 = prevTouchEvent.targetTouches[0];
+    const prevTouch2 = prevTouchEvent.targetTouches[1];
+
+    const currentTouch1 = e.targetTouches[0];
+    const currentTouch2 = e.targetTouches[1];
+
+    const diffTouch1X = Math.abs(prevTouch1.clientX - currentTouch1.clientX);
+    const diffTouch1Y = Math.abs(prevTouch1.clientY - currentTouch1.clientY);
+    const diffTouch2X = Math.abs(prevTouch2.clientX - currentTouch2.clientX);
+    const diffTouch2Y = Math.abs(prevTouch2.clientY - currentTouch2.clientY);
+
+    // make sure all the touches have moved more than 1/3 of a pixel before proceeding
+    const threshold = .3;
+    if (diffTouch1X < threshold && diffTouch1Y < threshold && diffTouch2X < threshold && diffTouch2Y < threshold) {
+      return { dismiss: true };
+    }
+
+    // the distance between the two current touches
+    const touchDistance = distanceBetweenTouch(e.targetTouches[0], e.targetTouches[1]);
+
+    // how far have the touches moved since the previous touch
+    const distanceDiff = this.state.prevTouchDistance ? touchDistance - this.state.prevTouchDistance : touchDistance;
+
+    // direction each touch is moving on the x and y axis
+    const touch1DirectionX = prevTouch1.clientX > currentTouch1.clientX ? 'left' : 'right';
+    const touch2DirectionX = prevTouch2.clientX > currentTouch2.clientX ? 'left' : 'right';
+    const touch1DirectionY = prevTouch1.clientY > currentTouch1.clientY ? 'up' : 'down';
+    const touch2DirectionY = prevTouch2.clientY > currentTouch2.clientY ? 'up' : 'down';
+
+    return {
+      distanceDiff,
+      touch1DirectionX,
+      touch2DirectionX,
+      touch1DirectionY,
+      touch2DirectionY,
+      touchDistance,
+    };
+  }
+
   handleTouchMove(e) {
 
     if (e.targetTouches.length !== 2 && !this.needsManualScroll) {
@@ -438,6 +491,7 @@ class Illustration extends Component {
         logger.log('touchmove event is not cancelable', { event: e });
       }
     }
+
     const { offsetX, offsetY } = getOffsetCoords(e);
 
     const diffX = this.state.dragStartX - offsetX;
@@ -451,90 +505,74 @@ class Illustration extends Component {
       });
     }
 
-    // if (this.state.isDragging) {
-    //   const newX = this.state.canvasX - diffX;
-    //   const newY = this.state.canvasY - diffY;
-    //   this.moveCanvas(newX, newY);
-    // } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
-    //   this.setState({ isDragging: true}, () => {
-    //     this.handleTouchMoveNotThrottled(e);
-    //   });
-    // }
+    const newState = { prevTouchEvent: e };
 
-    const prevTouchEvent = this.state.prevTouchEvent;
+    const {
+      dismiss,
+      distanceDiff,
+      touch1DirectionX,
+      touch2DirectionX,
+      touch1DirectionY,
+      touch2DirectionY,
+      touchDistance,
+    } = this.evaluateTouchData(e);
 
-    const prevTouch1 = prevTouchEvent.targetTouches[0];
-    const prevTouch2 = prevTouchEvent.targetTouches[1];
-
-    const currentTouch1 = e.targetTouches[0];
-    const currentTouch2 = e.targetTouches[1];
-
-    const diffTouch1X = Math.abs(prevTouch1.clientX - currentTouch1.clientX);
-    const diffTouch1Y = Math.abs(prevTouch1.clientY - currentTouch1.clientY);
-    const diffTouch2X = Math.abs(prevTouch2.clientX - currentTouch2.clientX);
-    const diffTouch2Y = Math.abs(prevTouch2.clientY - currentTouch2.clientY);
-
-    const threshold = .3;
-    if (diffTouch1X < threshold || diffTouch1Y < threshold || diffTouch2X < threshold || diffTouch2Y < threshold) {
-      // touches haven't moved enough
+    if (dismiss) {
       return;
-    }
-
-    const touch1DirectionX = prevTouch1.clientX > currentTouch1.clientX ? 'left' : 'right';
-    const touch1DirectionY = prevTouch1.clientY > currentTouch1.clientY ? 'up' : 'down';
-
-    const touch2DirectionX = prevTouch2.clientX > currentTouch2.clientX ? 'left' : 'right';
-    const touch2DirectionY = prevTouch2.clientY > currentTouch2.clientY ? 'up' : 'down';
-
-    const touchDistance = distanceBetweenTouch(e.targetTouches[0], e.targetTouches[1]);
-
-    const newState = {
-      prevTouchDistance: touchDistance,
-      prevTouchEvent: e,
     }
 
     if (touch1DirectionX === touch2DirectionX && touch1DirectionY === touch2DirectionY) {
 
-      // pan gets triggered when you transition between zooming in and zooming out
+      // touches are moving the same way along the x and y axis: likely a pan gesture
 
-      if (this.state.isDragging) {
-        // console.log('PAN1');
-        // console.log('diff', diffTouch1X, diffTouch2X, diffTouch1Y, diffTouch2Y);
-        // console.log(touch1DirectionX, touch2DirectionX, touch1DirectionY, touch2DirectionY);
-        // console.log('---');
-        const newX = this.state.canvasX - diffX;
-        const newY = this.state.canvasY - diffY;
-        this.moveCanvas(newX, newY);
-      } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
-        // console.log('PAN2');
-        // console.log('diff', diffTouch1X, diffTouch2X, diffTouch1Y, diffTouch2Y);
-        // console.log({ diffX, diffY });
-        // console.log(touch1DirectionX, touch2DirectionX, touch1DirectionY, touch2DirectionY);
-        // console.log('---');
-        this.setState({ isDragging: true}, () => {
-          this.handleTouchMoveNotThrottled(e);
-        });
+      if (this.state.prevTouchEventType === 'zoom') {
+        // if the previous touch event type was zoom, make sure this pan isn't a false alarm,
+        // which can occur when transitioning between zooming in and zooming out and vice versa.
+        // how to detect a false alarm? make sure the touches have moved apart by at least
+        // 5 pixels. this doesn't catch all false positive, but it does catch most :)
+        if (Math.abs(distanceDiff) < 5) {
+          // return: don't update state with this event's data
+          return;
+        }
       }
-    } else if (touch1DirectionX !== touch2DirectionX || touch1DirectionY !== touch2DirectionY) {
 
-      const distanceDiff = this.state.prevTouchDistance ? touchDistance - this.state.prevTouchDistance : touchDistance;
+      newState.prevTouchEventType = 'pan';
+      newState.prevTouchDistance = touchDistance;
 
-      if (Math.abs(distanceDiff) > 2) {
-        // console.log(touch1DirectionX, touch2DirectionX, touch1DirectionY, touch2DirectionY);
-        // console.log('---');
+      if (this.state.prevTouchEventType === 'pan') {
 
-        // console.log({ distanceDiff });
-        // const direction = distanceDiff > 0 ? 'in' : 'out';
-        const zoomAmount = (distanceDiff / 3) / 100;
+        // do not react the first time a gesture is identified -- only the second.
+        // helps to prevent false positives
 
-        const newZoom = this.props.scale + zoomAmount;
+        if (this.state.isDragging) {
+          const newX = this.state.canvasX - diffX;
+          const newY = this.state.canvasY - diffY;
+          this.moveCanvas(newX, newY);
+        } else {
+          // return: don't update state with this event's data
+          return this.setState({ isDragging: true}, () => {
+            this.handleTouchMoveNotThrottled(e);
+          });
+        }
+      }
 
-        this.props.zoomTo(newZoom * 100);
+    } else if (Math.abs(distanceDiff) > 5 && (touch1DirectionX !== touch2DirectionX || touch1DirectionY !== touch2DirectionY)) {
 
-        // console.log('ZOOM', zoomAmount, newZoom);
+      // touches are moving the opposite way along the x and y axis and have moved apart at least 1 pixel: zoom gesture
+
+      newState.prevTouchEventType = 'zoom';
+      newState.prevTouchDistance = touchDistance;
+
+      if (this.state.prevTouchEventType === 'zoom') {
+
+        // do not react the first time a gesture is identified -- only the second.
+        // helps to prevent false positives
 
         newState.isDragging = false;
 
+        const zoomAmount = (distanceDiff / 4) / 100;
+        const newZoom = this.props.scale + zoomAmount;
+        this.props.zoomTo(newZoom * 100);
       }
     }
 
@@ -543,18 +581,11 @@ class Illustration extends Component {
 
   handleTouchStart(e) {
 
-    // do not limit this event to 2-touch events because, in some browsers,
-    // an event can go from 1-touch to 2-touch without triggering touchstart again
-    // if (e.targetTouches.length !== 2) {
-    //   return;
-    // }
-
     const { offsetX, offsetY } = getOffsetCoords(e);
 
     const newState = {
       dragStartX: offsetX,
       dragStartY: offsetY,
-      // isDragging: true,
       prevTouchEvent: e,
     }
 
@@ -567,7 +598,7 @@ class Illustration extends Component {
     this.props.onKeyboardFocusChange(false);
   }
 
-  stopTouchmove() {
+  stopTouchMove() {
     this.handleTouchMoveThrottled.cancel();
     this.setState({
       isDragging: false,
@@ -579,16 +610,16 @@ class Illustration extends Component {
 
   handleTouchEnd(e) {
 
-    if (e.touches.length === 2) {
+    if (e.touches.length >= 2) {
       // still 2 touches. do not trigger state change
       return;
     }
 
-    this.stopTouchmove();
+    this.stopTouchMove();
   }
 
   handleTouchCancel() {
-    this.stopTouchmove();
+    this.stopTouchMove();
   }
 
   /**

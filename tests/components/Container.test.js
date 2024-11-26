@@ -541,18 +541,18 @@ describe('Container', () => {
           jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
 
           // (328, 306) is where touch is initiated, relative to the document
-          fireEvent(canvas, getTouchEvent('touchstart', { targetTouches: [{ clientX: 328, clientY: 306 }, { clientX: 303, clientY: 181 }] }));
+          fireEvent(canvas, getTouchEvent('touchstart', { targetTouches: [{ clientX: 328, clientY: 306 }, { clientX: 303, clientY: 200 }] }));
           
           // two-touch scroll
+          fireEvent(canvas, getTouchEvent('touchmove', { targetTouches: [{ clientX: 210, clientY: 210 }, { clientX: 185, clientY: 185 }] }));
+          act(() => jest.runAllTimers());
           fireEvent(canvas, getTouchEvent('touchmove', { targetTouches: [{ clientX: 200, clientY: 200 }, { clientX: 175, clientY: 175 }] }));
-          act(() => {
-            jest.runAllTimers();
-          });
+          act(() => jest.runAllTimers());
 
           // new positioning after 2-touch touchmove
           expect(game).toHaveStyle({ left: '-128px', top: '-106px' });
 
-          fireEvent(canvas, getTouchEvent('touchend'));
+          fireEvent(canvas, getTouchEvent('touchend', { targetTouches: [] }));
 
         });
 
