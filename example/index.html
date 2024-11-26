@@ -6,7 +6,12 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <style>
 
-      body.fullscreen #root {
+      .fullscreen,
+      .fullscreen body {
+         overflow: hidden;
+      }
+
+      .fullscreen #root {
          max-width: none;
          margin: auto;
       }
