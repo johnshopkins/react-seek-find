@@ -891,6 +891,8 @@ describe('Container', () => {
           containerHeight: null,
           containerWidth: null
         });
+        
+        const root = document.getElementsByTagName('html')[0];
 
         const outerContainer = container.querySelector('.container');
         expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
@@ -899,12 +901,12 @@ describe('Container', () => {
         expect(fullscreenButton).toBeInTheDocument();
 
         await user.click(fullscreenButton);
-        expect(document.body).toHaveClass('fullscreen')
+        expect(root).toHaveClass('fullscreen')
         expect(outerContainer).not.toHaveStyle({ height: '380px', width: '600px' });
         expect(fullscreenButton).toHaveTextContent('Exit fullscreen');
 
         await user.click(fullscreenButton);
-        expect(document.body).not.toHaveClass('fullscreen')
+        expect(root).not.toHaveClass('fullscreen')
         expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
         expect(fullscreenButton).toHaveTextContent('Enter fullscreen');
 
@@ -917,6 +919,8 @@ describe('Container', () => {
           containerWidth: null
         });
 
+        const root = document.getElementsByTagName('html')[0];
+
         const outerContainer = container.querySelector('.container');
         expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
 
@@ -925,11 +929,11 @@ describe('Container', () => {
         expect(screen.getByRole('button', { name: 'Enter fullscreen' })).toHaveFocus();
 
         await user.keyboard('{Enter}');
-        expect(document.body).toHaveClass('fullscreen')
+        expect(root).toHaveClass('fullscreen')
         expect(outerContainer).not.toHaveStyle({ height: '380px', width: '600px' });
 
         await user.keyboard('{Escape}');
-        expect(document.body).not.toHaveClass('fullscreen')
+        expect(root).not.toHaveClass('fullscreen')
         expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
 
       });
