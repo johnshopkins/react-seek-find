@@ -261,7 +261,7 @@ class Game extends Component {
       });
 
       if (this.state.gameComplete) {
-        setTimeout(this.props.onGameComplete, 1500)
+        setTimeout(this.props.onGameComplete, 1000)
         dataLayer.push({
           event: 'unlock_achievement',
           achievement_id: 'game_complete',
@@ -484,6 +484,7 @@ class Game extends Component {
             zoomIn={this.zoomIn}
             zoomOut={this.zoomOut}
             zoomInLimitReached={this.state.zoomInLimitReached}
+            zoomTo={this.zoomTo}
             zoomOutLimitReached={this.state.zoomOutLimitReached}
           />
           <Legend

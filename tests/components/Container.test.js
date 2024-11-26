@@ -170,10 +170,12 @@ beforeEach(() => {
   window.dataLayer = [];
   user = userEvent.setup({ delay: null });
   updateDimensions(600, 400);
+  jest.useFakeTimers();
 })
 
 afterEach(() => {
   jest.clearAllMocks();
+  jest.useRealTimers();
 });
 
 const renderGame = async (overrideProps = {}, initialize = ['image']) => {
@@ -323,8 +325,6 @@ describe('Container', () => {
 
     test('onGameComplete fires when all objects are found', async () => {
 
-       jest.useFakeTimers();
-
       const dataLayer = []
       const onGameComplete = jest.fn();
 
@@ -421,8 +421,6 @@ describe('Container', () => {
       // replay button is visible
       replayButton = within(utilities).getByRole('button', { name: 'Play again' });
       expect(replayButton).toBeVisible();
-
-      jest.useRealTimers();
 
     });
 
@@ -529,8 +527,6 @@ describe('Container', () => {
 
         test('Moving canvas within bounds by 2-touch scroll', async () => {
 
-          jest.useFakeTimers();
-
           const { container } = await renderGame();
 
           const game = container.querySelector('.game');
@@ -545,20 +541,18 @@ describe('Container', () => {
           jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 128, y: 106 });
 
           // (328, 306) is where touch is initiated, relative to the document
-          fireEvent(canvas, getTouchEvent('touchstart', { targetTouches: [{ clientX: 328, clientY: 306 }, { clientX: 303, clientY: 181 }] }));
+          fireEvent(canvas, getTouchEvent('touchstart', { targetTouches: [{ clientX: 328, clientY: 306 }, { clientX: 303, clientY: 200 }] }));
           
           // two-touch scroll
+          fireEvent(canvas, getTouchEvent('touchmove', { targetTouches: [{ clientX: 210, clientY: 210 }, { clientX: 185, clientY: 185 }] }));
+          act(() => jest.runAllTimers());
           fireEvent(canvas, getTouchEvent('touchmove', { targetTouches: [{ clientX: 200, clientY: 200 }, { clientX: 175, clientY: 175 }] }));
-          act(() => {
-            jest.runAllTimers();
-          });
+          act(() => jest.runAllTimers());
 
           // new positioning after 2-touch touchmove
           expect(game).toHaveStyle({ left: '-128px', top: '-106px' });
 
-          fireEvent(canvas, getTouchEvent('touchend'));
-
-          jest.useRealTimers();
+          fireEvent(canvas, getTouchEvent('touchend', { targetTouches: [] }));
 
         });
 
@@ -1444,14 +1438,6 @@ describe('Container', () => {
 
     describe('Hint', () => {
 
-      beforeEach(() => {
-        jest.useFakeTimers();
-      });
-
-      afterEach(() => {
-        jest.useRealTimers();
-      });
-
       test('Hint is removed after timeout', async () => {
 
         const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
@@ -1612,14 +1598,6 @@ describe('Container', () => {
 
     describe('Legend', () => {
 
-      beforeEach(() => {
-        jest.useFakeTimers();
-      });
-
-      afterEach(() => {
-        jest.useRealTimers();
-      });
-
       describe('Pointers', () => {
 
         test('Can scroll when there are more thumbnails than space allows', async() => {
@@ -1774,8 +1752,6 @@ describe('Container', () => {
 
     test('Replay', async () => {
 
-      jest.useFakeTimers();
-
       const onGameComplete = jest.fn();
 
       const { container } = await renderGame({ onGameComplete });
@@ -1817,8 +1793,6 @@ describe('Container', () => {
       const legendImages = await within(legend).findAllByRole('img');
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: not found');
-
-      jest.useRealTimers();
 
     });
 

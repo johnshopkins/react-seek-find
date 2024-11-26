@@ -16,6 +16,7 @@ import ReplayIcon from '../Icons/Replay';
 import SlashIcon from '../Icons/Slash';
 import ZoomInIcon from '../Icons/ZoomIn';
 import ZoomOutIcon from '../Icons/ZoomOut';
+import distanceBetweenTouch from '../../lib/distance-between-touch';
 import getOffsetCoords from '../../lib/get-offset-coords';
 import roundToThousandth from '../../lib/roundToThousandth';
 import * as settings from '../../../css/utils/shared-variables.scss';
@@ -50,7 +51,7 @@ class Illustration extends Component {
 
     this.bufferSize = parseInt(settings.miniMap) + (parseInt(settings.utilitiesEdgeSpace) * 2);
 
-    this.loggedTouchMoveFailure = false;
+    this.touchMoveFailures = 0;
     this.needsManualScroll = navigator.userAgent.includes('SamsungBrowser');
 
     const { anchorX, anchorY } = this.getCenterAnchor(canvasX, canvasY);
@@ -71,6 +72,17 @@ class Illustration extends Component {
       gamePlacementX,
       gamePlacementY,
 
+      // touchmove event
+      // used to detect zoom in/out pinch motions
+      prevTouchEvent: null,
+
+      // distance between touches
+      // used to detect zoom in/out pinch motions
+      prevTouchDistance: null,
+
+      // pan or zoom
+      prevTouchEventType: null,
+
       loading: true,
       isDragging: false,
       dragStartX: null,
@@ -82,6 +94,7 @@ class Illustration extends Component {
       hintsGiven: [],
     };
 
+    this.evaluateTouchData = this.evaluateTouchData.bind(this);
     this.getGameOffset = this.getGameOffset.bind(this);
     this.removeAlreadyFound = this.removeAlreadyFound.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
@@ -97,8 +110,10 @@ class Illustration extends Component {
     this.showAlreadyFound = this.showAlreadyFound.bind(this);
     this.showFound = this.showFound.bind(this);
     this.showHint = this.showHint.bind(this);
+    this.stopTouchMove = this.stopTouchMove.bind(this);
     this.toggleHint = this.toggleHint.bind(this);
     this.handleNewlyFocusedViaKeyboard = this.handleNewlyFocusedViaKeyboard.bind(this);
+    this.handleTouchCancel = this.handleTouchCancel.bind(this);
     this.handleTouchEnd = this.handleTouchEnd.bind(this);
     this.handleTouchMoveThrottled = throttle(this.handleTouchMove.bind(this), 30);
     this.handleTouchMoveNotThrottled = this.handleTouchMove.bind(this);
@@ -404,6 +419,54 @@ class Illustration extends Component {
     }
   }
 
+  evaluateTouchData(e) {
+
+    let prevTouchEvent = this.state.prevTouchEvent;
+
+    if (!prevTouchEvent) {
+      logger.log('No previous touch event', { event: e });
+      prevTouchEvent = e;
+    }
+
+    const prevTouch1 = prevTouchEvent.targetTouches[0];
+    const prevTouch2 = prevTouchEvent.targetTouches[1];
+
+    const currentTouch1 = e.targetTouches[0];
+    const currentTouch2 = e.targetTouches[1];
+
+    const diffTouch1X = Math.abs(prevTouch1.clientX - currentTouch1.clientX);
+    const diffTouch1Y = Math.abs(prevTouch1.clientY - currentTouch1.clientY);
+    const diffTouch2X = Math.abs(prevTouch2.clientX - currentTouch2.clientX);
+    const diffTouch2Y = Math.abs(prevTouch2.clientY - currentTouch2.clientY);
+
+    // make sure all the touches have moved more than 1/3 of a pixel before proceeding
+    const threshold = .3;
+    if (diffTouch1X < threshold && diffTouch1Y < threshold && diffTouch2X < threshold && diffTouch2Y < threshold) {
+      return { dismiss: true };
+    }
+
+    // the distance between the two current touches
+    const touchDistance = distanceBetweenTouch(e.targetTouches[0], e.targetTouches[1]);
+
+    // how far have the touches moved since the previous touch
+    const distanceDiff = this.state.prevTouchDistance ? touchDistance - this.state.prevTouchDistance : touchDistance;
+
+    // direction each touch is moving on the x and y axis
+    const touch1DirectionX = prevTouch1.clientX > currentTouch1.clientX ? 'left' : 'right';
+    const touch2DirectionX = prevTouch2.clientX > currentTouch2.clientX ? 'left' : 'right';
+    const touch1DirectionY = prevTouch1.clientY > currentTouch1.clientY ? 'up' : 'down';
+    const touch2DirectionY = prevTouch2.clientY > currentTouch2.clientY ? 'up' : 'down';
+
+    return {
+      distanceDiff,
+      touch1DirectionX,
+      touch2DirectionX,
+      touch1DirectionY,
+      touch2DirectionY,
+      touchDistance,
+    };
+  }
+
   handleTouchMove(e) {
 
     if (e.targetTouches.length !== 2 && !this.needsManualScroll) {
@@ -414,13 +477,18 @@ class Illustration extends Component {
       // prevent browser default handling of 2-touch scroll
       // check first to make sure the event is cancelable as
       // samsung browser makes touchmove events not cancelable
-      // after a second or two
+      // after a second or two.
       e.preventDefault();
-    } else {
-      if (!this.loggedTouchMoveFailure) {
+    } else if (this.touchMoveFailures < 10) {
+      this.touchMoveFailures++;
+      if (this.touchMoveFailures === 10) {
         // track any other browsers that do this
-        logger.log('touchmove event is not cancelable');
-        this.loggedTouchMoveFailure = true;
+        // note: this also pops up from time-to-time on browsers
+        // that do allow touchmove events to be cancelable,
+        // but it has always occurred at a proper time, which
+        // isn't the case for samsung internet. make sure 10 failures
+        // occur before logging.
+        logger.log('touchmove event is not cancelable', { event: e });
       }
     }
 
@@ -437,39 +505,121 @@ class Illustration extends Component {
       });
     }
 
-    if (this.state.isDragging) {
-      const newX = this.state.canvasX - diffX;
-      const newY = this.state.canvasY - diffY;
-      this.moveCanvas(newX, newY);
-    } else if (Math.abs(diffX) > 5 || Math.abs(diffY) > 5) {
-      this.setState({ isDragging: true}, () => {
-        this.handleTouchMoveNotThrottled(e);
-      });
+    const newState = { prevTouchEvent: e };
+
+    const {
+      dismiss,
+      distanceDiff,
+      touch1DirectionX,
+      touch2DirectionX,
+      touch1DirectionY,
+      touch2DirectionY,
+      touchDistance,
+    } = this.evaluateTouchData(e);
+
+    if (dismiss) {
+      return;
     }
+
+    if (touch1DirectionX === touch2DirectionX && touch1DirectionY === touch2DirectionY) {
+
+      // touches are moving the same way along the x and y axis: likely a pan gesture
+
+      if (this.state.prevTouchEventType === 'zoom') {
+        // if the previous touch event type was zoom, make sure this pan isn't a false alarm,
+        // which can occur when transitioning between zooming in and zooming out and vice versa.
+        // how to detect a false alarm? make sure the touches have moved apart by at least
+        // 5 pixels. this doesn't catch all false positive, but it does catch most :)
+        if (Math.abs(distanceDiff) < 5) {
+          // return: don't update state with this event's data
+          return;
+        }
+      }
+
+      newState.prevTouchEventType = 'pan';
+      newState.prevTouchDistance = touchDistance;
+
+      if (this.state.prevTouchEventType === 'pan') {
+
+        // do not react the first time a gesture is identified -- only the second.
+        // helps to prevent false positives
+
+        if (this.state.isDragging) {
+          const newX = this.state.canvasX - diffX;
+          const newY = this.state.canvasY - diffY;
+          this.moveCanvas(newX, newY);
+        } else {
+          // return: don't update state with this event's data
+          return this.setState({ isDragging: true}, () => {
+            this.handleTouchMoveNotThrottled(e);
+          });
+        }
+      }
+
+    } else if (Math.abs(distanceDiff) > 5 && (touch1DirectionX !== touch2DirectionX || touch1DirectionY !== touch2DirectionY)) {
+
+      // touches are moving the opposite way along the x and y axis and have moved apart at least 1 pixel: zoom gesture
+
+      newState.prevTouchEventType = 'zoom';
+      newState.prevTouchDistance = touchDistance;
+
+      if (this.state.prevTouchEventType === 'zoom') {
+
+        // do not react the first time a gesture is identified -- only the second.
+        // helps to prevent false positives
+
+        newState.isDragging = false;
+
+        const zoomAmount = (distanceDiff / 4) / 100;
+        const newZoom = this.props.scale + zoomAmount;
+        this.props.zoomTo(newZoom * 100);
+      }
+    }
+
+    this.setState(newState)
   }
 
   handleTouchStart(e) {
 
-    // do not limit this event to 2-touch events because, in some browsers,
-    // an event can go from 1-touch to 2-touch without triggering touchstart again
-    // if (e.targetTouches.length !== 2) {
-    //   return;
-    // }
-
     const { offsetX, offsetY } = getOffsetCoords(e);
 
-    this.setState({
+    const newState = {
       dragStartX: offsetX,
       dragStartY: offsetY,
-      isDragging: true,
-    });
+      prevTouchEvent: e,
+    }
+
+    if (e.targetTouches.length === 2) {
+      newState.prevTouchDistance = distanceBetweenTouch(e.targetTouches[0], e.targetTouches[1]);
+    }
+
+    this.setState(newState);
 
     this.props.onKeyboardFocusChange(false);
   }
 
-  handleTouchEnd() {
+  stopTouchMove() {
     this.handleTouchMoveThrottled.cancel();
-    this.setState({ isDragging: false });
+    this.setState({
+      isDragging: false,
+      prevTouchDistance: null,
+      prevTouchEvent: null,
+      prevTouchEventType: null,
+    });
+  }
+
+  handleTouchEnd(e) {
+
+    if (e.touches.length >= 2) {
+      // still 2 touches. do not trigger state change
+      return;
+    }
+
+    this.stopTouchMove();
+  }
+
+  handleTouchCancel() {
+    this.stopTouchMove();
   }
 
   /**
@@ -803,6 +953,7 @@ class Illustration extends Component {
                   width={this.props.imageWidth}
                   needsManualScroll={this.needsManualScroll}
                   onMouseDown={this.handleMouseDown}
+                  onTouchCancel={this.handleTouchCancel}
                   onTouchStart={this.handleTouchStart}
                   onTouchMove={this.handleTouchMoveThrottled}
                   onTouchEnd={this.handleTouchEnd}
@@ -913,6 +1064,7 @@ Illustration.propTypes = {
   toggleFullscreen: PropTypes.func.isRequired,
   zoomIn: PropTypes.func.isRequired,
   zoomInLimitReached: PropTypes.bool,
+  zoomTo: PropTypes.func.isRequired,
   zoomOut: PropTypes.func.isRequired,
   zoomOutLimitReached: PropTypes.bool,
 };
