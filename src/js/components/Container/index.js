@@ -261,7 +261,7 @@ class Game extends Component {
       });
 
       if (this.state.gameComplete) {
-        setTimeout(this.props.onGameComplete, 1500)
+        setTimeout(this.props.onGameComplete, 1000)
         dataLayer.push({
           event: 'unlock_achievement',
           achievement_id: 'game_complete',
