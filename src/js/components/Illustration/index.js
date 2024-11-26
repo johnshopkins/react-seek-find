@@ -421,11 +421,24 @@ class Illustration extends Component {
 
   evaluateTouchData(e) {
 
+    const numTouches = e.targetTouches.length;
+
+    if (numTouches === 1) {
+      return { oneTouchPan: true };
+    }
+
     let prevTouchEvent = this.state.prevTouchEvent;
 
     if (!prevTouchEvent) {
       logger.log('No previous touch event', { event: e });
       prevTouchEvent = e;
+    }
+
+    // going from 1 to 2 touches: prevTouch2 will be undefined
+    // record this as a 1-touch event. next time around, both
+    // touches will be present in prevTouchEvent.
+    if (numTouches === 2 && prevTouchEvent.targetTouches.length < 2) {
+      return { oneTouchPan: true };
     }
 
     const prevTouch1 = prevTouchEvent.targetTouches[0];
@@ -469,7 +482,15 @@ class Illustration extends Component {
 
   handleTouchMove(e) {
 
-    if (e.targetTouches.length !== 2 && !this.needsManualScroll) {
+    // this.props.isFullscreen
+
+    // for embedded game: return unless 2 touches or the browser needs a manual scroll
+    const touchMoveEmbedded = !this.props.isFullscreen && e.targetTouches.length !== 2 && !this.needsManualScroll;
+
+    // for fullscreen game: return if there are more than 2 touches
+    const touchMoveFullscreen = this.props.isFullscreen && e.targetTouches.length > 2;
+
+    if (touchMoveEmbedded || touchMoveFullscreen) {
       return;
     }
 
@@ -510,6 +531,7 @@ class Illustration extends Component {
     const {
       dismiss,
       distanceDiff,
+      oneTouchPan,
       touch1DirectionX,
       touch2DirectionX,
       touch1DirectionY,
@@ -521,8 +543,9 @@ class Illustration extends Component {
       return;
     }
 
-    if (touch1DirectionX === touch2DirectionX && touch1DirectionY === touch2DirectionY) {
+    if (oneTouchPan || (touch1DirectionX === touch2DirectionX && touch1DirectionY === touch2DirectionY)) {
 
+      // one-touch pan (fullscreen only)
       // touches are moving the same way along the x and y axis: likely a pan gesture
 
       if (this.state.prevTouchEventType === 'zoom') {
@@ -570,7 +593,7 @@ class Illustration extends Component {
 
         newState.isDragging = false;
 
-        const zoomAmount = (distanceDiff / 4) / 100;
+        const zoomAmount = (distanceDiff / 3) / 100;
         const newZoom = this.props.scale + zoomAmount;
         this.props.zoomTo(newZoom * 100);
       }
@@ -977,10 +1000,9 @@ class Illustration extends Component {
           <div className="utilities" style={containerStyles}>
 
             <div className="instructions-and-hint">
-
-            <button className="fullscreen" onClick={this.props.toggleFullscreen} tabIndex={this.props.disableTabbing ? '-1' : null}>
-              {!this.props.isFullscreen ? <MaximizeIcon tooltip="Enter fullscreen" /> : <MinimizeIcon tooltip="Exit fullscreen" />}
-            </button>
+              <button className="fullscreen" onClick={this.props.toggleFullscreen} tabIndex={this.props.disableTabbing ? '-1' : null}>
+                {!this.props.isFullscreen ? <MaximizeIcon tooltip="Enter fullscreen" /> : <MinimizeIcon tooltip="Exit fullscreen" />}
+              </button>
 
               <button className="instructions" onClick={this.props.openInstructions} tabIndex={this.props.disableTabbing ? '-1' : null}>
                 <InstructionsIcon tooltip="How to play" />
