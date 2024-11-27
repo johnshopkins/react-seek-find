@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import LoadingIcon from '../Icons/Loading'
 import roundToThousandth from '../../lib/roundToThousandth';
+import * as settings from '../../../css/utils/shared-variables.scss';
 import './style.scss';
 
 /**
  * The background image
  */
-export default function Background({ containerHeight, containerWidth, gamePlacementX, gamePlacementY, height, imageSrc, onReady, scale, width }) {
+export default function Background({ containerHeight, containerWidth, gamePlacementX, gamePlacementY, height, imageSrc, isPinchZooming, onReady, scale, width }) {
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -22,6 +23,14 @@ export default function Background({ containerHeight, containerWidth, gamePlacem
     top: `${(containerHeight / 2) - (loadingIconSize / 2) - gamePlacementY}px`,
   }
 
+  const imageStyle = {
+    display: isLoading ? 'none' : 'block'
+  }
+
+  if (!isPinchZooming) {
+    imageStyle.transition = `all ${settings.canvasTransition}`;
+  }
+
   return (
     <>
       {isLoading && <LoadingIcon className="loading" style={loadingStyle} tooltip="Loading" />}
@@ -31,7 +40,7 @@ export default function Background({ containerHeight, containerWidth, gamePlacem
         src={imageSrc}
         width={scaledWidth}
         height={scaledHeight}
-        style={{ display: isLoading ? 'none' : 'block' }}
+        style={imageStyle}
         onLoad={() => {
           onReady();
           setIsLoading(false);

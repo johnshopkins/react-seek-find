@@ -5,7 +5,6 @@ img.game-background {
   max-width: none !important;
   position: relative;
   z-index: var(--stack-background);
-  transition: all #{map.get($shared-vars, 'canvasTransition')};
 }
 
 .loading {

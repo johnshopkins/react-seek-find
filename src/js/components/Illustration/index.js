@@ -894,7 +894,7 @@ class Illustration extends Component {
 
     if (this.state.isDragging) {
       gameClasses.push('grabbing');
-    } else {
+    } else if (!this.state.isPinchZooming) {
       gameStyles.transition = `all ${settings.canvasTransition}`;
       gamePlacementStyles.transition = `all ${settings.canvasTransition}`;
     }
@@ -975,6 +975,7 @@ class Illustration extends Component {
               height={this.props.imageHeight}
               width={this.props.imageWidth}
               scale={this.props.scale}
+              isPinchZooming={this.state.isPinchZooming}
             />
           </div>
         </div>
