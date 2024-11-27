@@ -427,7 +427,7 @@ class Illustration extends Component {
 
     if (numTouches === 1) {
       // the only 1-touch event we allow is panning (in fullscreen)
-      return { isPanning: true };
+      return { isDragging: true };
     }
 
     let prevTouchEvent = this.state.prevTouchEvent;
@@ -442,7 +442,7 @@ class Illustration extends Component {
     // record this as a 1-touch event. next time around, both touches
     // will be present in this.state.prevTouchEvent.
     if (numTouches === 2 && prevTouchEvent.targetTouches.length < 2) {
-      return { isPanning: true };
+      return { isDragging: true };
     }
 
     const prevTouch1 = prevTouchEvent.targetTouches[0];
