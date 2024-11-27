@@ -85,6 +85,7 @@ class Illustration extends Component {
 
       loading: true,
       isDragging: false,
+      isPinchZooming: false,
       dragStartX: null,
       dragStartY: null,
       alreadyFound: null,
@@ -94,7 +95,7 @@ class Illustration extends Component {
       hintsGiven: [],
     };
 
-    this.evaluateTouchData = this.evaluateTouchData.bind(this);
+    this.evaluateTouchMove = this.evaluateTouchMove.bind(this);
     this.getGameOffset = this.getGameOffset.bind(this);
     this.removeAlreadyFound = this.removeAlreadyFound.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
@@ -198,6 +199,7 @@ class Illustration extends Component {
       'hint',
       'hintActive',
       'isDragging',
+      'isPinchZooming',
       'loading',
     ];
 
@@ -419,49 +421,51 @@ class Illustration extends Component {
     }
   }
 
-  evaluateTouchData(e) {
+  evaluateTouchMove(e) {
 
     const numTouches = e.targetTouches.length;
 
     if (numTouches === 1) {
-      return { oneTouchPan: true };
+      // the only 1-touch event we allow is panning (in fullscreen)
+      return { isPanning: true };
     }
 
     let prevTouchEvent = this.state.prevTouchEvent;
 
     if (!prevTouchEvent) {
+      // this should not happen anymore, but if it does, log for further debugging
       logger.log('No previous touch event', { event: e });
       prevTouchEvent = e;
     }
 
-    // going from 1 to 2 touches: prevTouch2 will be undefined
-    // record this as a 1-touch event. next time around, both
-    // touches will be present in prevTouchEvent.
+    // going from 1 to 2 touches: prevTouch2 will be undefined.
+    // record this as a 1-touch event. next time around, both touches
+    // will be present in this.state.prevTouchEvent.
     if (numTouches === 2 && prevTouchEvent.targetTouches.length < 2) {
-      return { oneTouchPan: true };
+      return { isPanning: true };
     }
 
     const prevTouch1 = prevTouchEvent.targetTouches[0];
     const prevTouch2 = prevTouchEvent.targetTouches[1];
-
     const currentTouch1 = e.targetTouches[0];
     const currentTouch2 = e.targetTouches[1];
 
-    const diffTouch1X = Math.abs(prevTouch1.clientX - currentTouch1.clientX);
-    const diffTouch1Y = Math.abs(prevTouch1.clientY - currentTouch1.clientY);
-    const diffTouch2X = Math.abs(prevTouch2.clientX - currentTouch2.clientX);
-    const diffTouch2Y = Math.abs(prevTouch2.clientY - currentTouch2.clientY);
+    const diffs = [
+      Math.abs(prevTouch1.clientX - currentTouch1.clientX),
+      Math.abs(prevTouch1.clientY - currentTouch1.clientY),
+      Math.abs(prevTouch2.clientX - currentTouch2.clientX),
+      Math.abs(prevTouch2.clientY - currentTouch2.clientY),
+    ]
 
     // make sure all the touches have moved more than 1/3 of a pixel before proceeding
-    const threshold = .3;
-    if (diffTouch1X < threshold && diffTouch1Y < threshold && diffTouch2X < threshold && diffTouch2Y < threshold) {
+    if (Math.max(...diffs) < 0.3) {
       return { dismiss: true };
     }
 
     // the distance between the two current touches
     const touchDistance = distanceBetweenTouch(e.targetTouches[0], e.targetTouches[1]);
 
-    // how far have the touches moved since the previous touch
+    // how far the touches have moved since the previous touch
     const distanceDiff = this.state.prevTouchDistance ? touchDistance - this.state.prevTouchDistance : touchDistance;
 
     // direction each touch is moving on the x and y axis
@@ -470,51 +474,42 @@ class Illustration extends Component {
     const touch1DirectionY = prevTouch1.clientY > currentTouch1.clientY ? 'up' : 'down';
     const touch2DirectionY = prevTouch2.clientY > currentTouch2.clientY ? 'up' : 'down';
 
-    return {
-      distanceDiff,
-      touch1DirectionX,
-      touch2DirectionX,
-      touch1DirectionY,
-      touch2DirectionY,
-      touchDistance,
-    };
+    const isPanning = touch1DirectionX === touch2DirectionX && touch1DirectionY === touch2DirectionY;
+    const isPinchZooming = touch1DirectionX !== touch2DirectionX || touch1DirectionY !== touch2DirectionY;
+    
+    return { distanceDiff, isPanning, isPinchZooming, touchDistance };
   }
 
   handleTouchMove(e) {
 
-    // this.props.isFullscreen
-
     // for embedded game: return unless 2 touches or the browser needs a manual scroll
-    const touchMoveEmbedded = !this.props.isFullscreen && e.targetTouches.length !== 2 && !this.needsManualScroll;
+    const embeddedAllowTouchMove = !this.props.isFullscreen && (e.targetTouches.length === 2 || this.needsManualScroll);
 
     // for fullscreen game: return if there are more than 2 touches
-    const touchMoveFullscreen = this.props.isFullscreen && e.targetTouches.length > 2;
+    const fullscreenAllowTouchMove = this.props.isFullscreen && e.targetTouches.length <= 2;
 
-    if (touchMoveEmbedded || touchMoveFullscreen) {
+    if (!embeddedAllowTouchMove && !fullscreenAllowTouchMove) {
       return;
     }
 
     if (e.cancelable) {
-      // prevent browser default handling of 2-touch scroll
-      // check first to make sure the event is cancelable as
-      // samsung browser makes touchmove events not cancelable
-      // after a second or two.
+      // prevent the browser default handling of a 2-touch scroll. check first to make
+      // sure the event is cancelable, as samsung browser makes touchmove events not
+      // cancelable after a second or two (requiring a manual 1-touch scroll).
       e.preventDefault();
+
     } else if (this.touchMoveFailures < 10) {
       this.touchMoveFailures++;
       if (this.touchMoveFailures === 10) {
-        // track any other browsers that do this
-        // note: this also pops up from time-to-time on browsers
-        // that do allow touchmove events to be cancelable,
-        // but it has always occurred at a proper time, which
-        // isn't the case for samsung internet. make sure 10 failures
-        // occur before logging.
+        // track any other browsers that do this. note: this also pops up from
+        // time-to-time on browsers that do allow touchmove events to be cancelable,
+        // but it has always occurred at the proper time, which isn't the case with
+        // samsung internet. make sure 10 failures occur before logging.
         logger.log('touchmove event is not cancelable', { event: e });
       }
     }
 
     const { offsetX, offsetY } = getOffsetCoords(e);
-
     const diffX = this.state.dragStartX - offsetX;
     const diffY = this.state.dragStartY - offsetY;
 
@@ -526,80 +521,66 @@ class Illustration extends Component {
       });
     }
 
-    const newState = { prevTouchEvent: e };
-
-    const {
-      dismiss,
-      distanceDiff,
-      oneTouchPan,
-      touch1DirectionX,
-      touch2DirectionX,
-      touch1DirectionY,
-      touch2DirectionY,
-      touchDistance,
-    } = this.evaluateTouchData(e);
+    // now that we know we can proceed with acting on the touchmove event, evaluate the data
+    const { dismiss, distanceDiff, isPanning, isPinchZooming, touchDistance } = this.evaluateTouchMove(e);
 
     if (dismiss) {
       return;
     }
 
-    if (oneTouchPan || (touch1DirectionX === touch2DirectionX && touch1DirectionY === touch2DirectionY)) {
+    const newState = { prevTouchEvent: e };
 
-      // one-touch pan (fullscreen only)
-      // touches are moving the same way along the x and y axis: likely a pan gesture
+    if (isPanning) {
 
       if (this.state.prevTouchEventType === 'zoom') {
-        // if the previous touch event type was zoom, make sure this pan isn't a false alarm,
-        // which can occur when transitioning between zooming in and zooming out and vice versa.
-        // how to detect a false alarm? make sure the touches have moved apart by at least
-        // 5 pixels. this doesn't catch all false positive, but it does catch most :)
-        if (Math.abs(distanceDiff) < 5) {
-          // return: don't update state with this event's data
-          return;
-        }
+        // update drag start state, then rerun touchmove handler
+        return this.setState({
+          dragStartX: offsetX,
+          dragStartY: offsetY,
+          prevTouchEventType: 'pan'
+        }, () => {
+          this.handleTouchMoveNotThrottled(e);
+        });
       }
 
       newState.prevTouchEventType = 'pan';
       newState.prevTouchDistance = touchDistance;
 
-      if (this.state.prevTouchEventType === 'pan') {
-
-        // do not react the first time a gesture is identified -- only the second.
-        // helps to prevent false positives
-
-        if (this.state.isDragging) {
-          const newX = this.state.canvasX - diffX;
-          const newY = this.state.canvasY - diffY;
-          this.moveCanvas(newX, newY);
-        } else {
-          // return: don't update state with this event's data
-          return this.setState({ isDragging: true}, () => {
-            this.handleTouchMoveNotThrottled(e);
-          });
-        }
+      if (this.state.isDragging) {
+        const newX = this.state.canvasX - diffX;
+        const newY = this.state.canvasY - diffY;
+        this.moveCanvas(newX, newY);
+      } else {
+        return this.setState({
+          isDragging: true,
+          isPinchZooming: false,
+          prevTouchEventType: 'pan'
+        }, () => {
+          this.handleTouchMoveNotThrottled(e);
+        });
       }
 
-    } else if (Math.abs(distanceDiff) > 5 && (touch1DirectionX !== touch2DirectionX || touch1DirectionY !== touch2DirectionY)) {
-
-      // touches are moving the opposite way along the x and y axis and have moved apart at least 1 pixel: zoom gesture
+    } else if (isPinchZooming) {
 
       newState.prevTouchEventType = 'zoom';
       newState.prevTouchDistance = touchDistance;
 
-      if (this.state.prevTouchEventType === 'zoom') {
-
-        // do not react the first time a gesture is identified -- only the second.
-        // helps to prevent false positives
-
-        newState.isDragging = false;
-
+      if (this.state.isPinchZooming) {
         const zoomAmount = (distanceDiff / 3) / 100;
         const newZoom = this.props.scale + zoomAmount;
         this.props.zoomTo(newZoom * 100);
+      } else {
+        return this.setState({
+          isDragging: false,
+          isPinchZooming: true,
+          prevTouchEventType: 'zoom'
+        }, () => {
+          this.handleTouchMoveNotThrottled(e);
+        });
       }
     }
 
-    this.setState(newState)
+    this.setState(newState);
   }
 
   handleTouchStart(e) {
@@ -625,6 +606,7 @@ class Illustration extends Component {
     this.handleTouchMoveThrottled.cancel();
     this.setState({
       isDragging: false,
+      isPinchZooming: false,
       prevTouchDistance: null,
       prevTouchEvent: null,
       prevTouchEventType: null,
