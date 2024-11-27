@@ -533,10 +533,10 @@ class Illustration extends Component {
     if (isDragging) {
 
       newState.prevTouchEventType = 'pan';
-      newState.prevTouchDistance = touchDistance;
 
       if (this.state.isDragging) {
         // drag gesture already initiated
+        newState.prevTouchDistance = touchDistance;
         const newX = this.state.canvasX - diffX;
         const newY = this.state.canvasY - diffY;
         this.moveCanvas(newX, newY);
@@ -560,10 +560,10 @@ class Illustration extends Component {
     } else if (isPinchZooming) {
 
       newState.prevTouchEventType = 'zoom';
-      newState.prevTouchDistance = touchDistance;
 
       if (this.state.isPinchZooming) {
         // pinch gesture already initiated
+        newState.prevTouchDistance = touchDistance;
         const zoomAmount = (distanceDiff / 3) / 100;
         const newZoom = this.props.scale + zoomAmount;
         this.props.zoomTo(newZoom * 100);
