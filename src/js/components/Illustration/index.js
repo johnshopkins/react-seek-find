@@ -474,10 +474,10 @@ class Illustration extends Component {
     const touch1DirectionY = prevTouch1.clientY > currentTouch1.clientY ? 'up' : 'down';
     const touch2DirectionY = prevTouch2.clientY > currentTouch2.clientY ? 'up' : 'down';
 
-    const isPanning = touch1DirectionX === touch2DirectionX && touch1DirectionY === touch2DirectionY;
+    const isDragging = touch1DirectionX === touch2DirectionX && touch1DirectionY === touch2DirectionY;
     const isPinchZooming = touch1DirectionX !== touch2DirectionX || touch1DirectionY !== touch2DirectionY;
     
-    return { distanceDiff, isPanning, isPinchZooming, touchDistance };
+    return { distanceDiff, isDragging, isPinchZooming, touchDistance };
   }
 
   handleTouchMove(e) {
@@ -522,7 +522,7 @@ class Illustration extends Component {
     }
 
     // now that we know we can proceed with acting on the touchmove event, evaluate the data
-    const { dismiss, distanceDiff, isPanning, isPinchZooming, touchDistance } = this.evaluateTouchMove(e);
+    const { dismiss, distanceDiff, isDragging, isPinchZooming, touchDistance } = this.evaluateTouchMove(e);
 
     if (dismiss) {
       return;
@@ -530,7 +530,6 @@ class Illustration extends Component {
 
     const newState = { prevTouchEvent: e };
 
-    if (isPanning) {
 
       if (this.state.prevTouchEventType === 'zoom') {
         // update drag start state, then rerun touchmove handler
@@ -542,6 +541,7 @@ class Illustration extends Component {
           this.handleTouchMoveNotThrottled(e);
         });
       }
+    if (isDragging) {
 
       newState.prevTouchEventType = 'pan';
       newState.prevTouchDistance = touchDistance;
