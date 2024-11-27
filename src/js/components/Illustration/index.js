@@ -928,6 +928,7 @@ class Illustration extends Component {
                     object={this.state.hint}
                     scale={this.props.scale}
                     test={this.props.test}
+                    isPinchZooming={this.state.isPinchZooming}
                   />
                 }
                 {this.state.alreadyFound &&
@@ -947,6 +948,7 @@ class Illustration extends Component {
                   width={this.props.imageWidth}
                   found={this.state.found}
                   scale={this.props.scale}
+                  isPinchZooming={this.state.isPinchZooming}
                 />
                 <Findable
                   disableTabbing={this.props.disableTabbing}
@@ -962,6 +964,7 @@ class Illustration extends Component {
                   onTouchStart={this.handleTouchStart}
                   onTouchMove={this.handleTouchMoveThrottled}
                   onTouchEnd={this.handleTouchEnd}
+                  isPinchZooming={this.state.isPinchZooming}
               />
               </>
             }

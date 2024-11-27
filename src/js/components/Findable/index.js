@@ -1,4 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import * as settings from '../../../css/utils/shared-variables.scss';
 import './style.scss';
 
 /**
@@ -9,6 +10,7 @@ import './style.scss';
 export default forwardRef(({
   disableTabbing,
   height,
+  isPinchZooming,
   needsManualScroll,
   objects,
   onFind,
@@ -72,6 +74,16 @@ export default forwardRef(({
 
     }
   }), [objects, onFind, scale]);
+
+  const canvasStyle = {
+    touchAction: !needsManualScroll ? 'pan-y' : 'none',
+    height: `${height * scale}px`,
+    width: `${width * scale}px`
+  }
+
+  if (!isPinchZooming) {
+    canvasStyle.transition = `height ${settings.canvasTransition}, width ${settings.canvasTransition}`;
+  }
 
   return (
     <canvas

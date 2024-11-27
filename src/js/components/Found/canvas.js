@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useRef } from 'react';
+import * as settings from '../../../css/utils/shared-variables.scss';
 
-export default memo(function Found({ object, height, scale, width }) {
+export default memo(function Found({ isPinchZooming, object, height, scale, width }) {
 
   const ref = useRef(null);
 
@@ -11,16 +12,22 @@ export default memo(function Found({ object, height, scale, width }) {
 
   }, [object]);
 
+  const canvasStyle = {
+    height: `${height * scale}px`,
+    width: `${width * scale}px`
+  };
+
+  if (!isPinchZooming) {
+    canvasStyle.transition = `height ${settings.canvasTransition}, width ${settings.canvasTransition}`;
+  }
+
   return (
     <canvas
       ref={ref}
       className="found"
       height={height}
       width={width}
-      style={{
-        height: `${height * scale}px`,
-        width: `${width * scale}px`
-      }}
+      style={canvasStyle}
     />
   )
 

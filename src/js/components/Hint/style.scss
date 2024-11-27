@@ -5,7 +5,6 @@ canvas.hint {
   animation: fade 15000ms;
   pointer-events: none;
   position: absolute;
-  transition: height #{map.get($shared-vars, 'canvasTransition')}, width #{map.get($shared-vars, 'canvasTransition')};
   z-index: var(--stack-hint);
 }
 

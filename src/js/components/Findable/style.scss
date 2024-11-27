@@ -4,7 +4,6 @@
 canvas.findable {
   outline: 0;
   position: absolute;
-  transition: all #{map.get($shared-vars, 'canvasTransition')};
   z-index: var(--stack-findable);
   pointer-events: auto;
 }

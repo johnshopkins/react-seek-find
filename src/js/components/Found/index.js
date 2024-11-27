@@ -2,7 +2,7 @@ import React from 'react';
 import FoundCanvas from './canvas';
 import './style.scss';
 
-export default function Found({ found, height, scale, width }) {
+export default function Found({ found, height, isPinchZooming, scale, width }) {
   return (
     <div className="found-container">
       {found.map((object, i) => 
@@ -12,6 +12,7 @@ export default function Found({ found, height, scale, width }) {
           object={object}
           scale={scale}
           key={i}
+          isPinchZooming={isPinchZooming}
         />
       )}
     </div>
