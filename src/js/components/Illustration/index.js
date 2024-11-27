@@ -466,7 +466,7 @@ class Illustration extends Component {
     const touchDistance = distanceBetweenTouch(e.targetTouches[0], e.targetTouches[1]);
 
     // how far the touches have moved since the previous touch
-    const distanceDiff = this.state.prevTouchDistance ? touchDistance - this.state.prevTouchDistance : touchDistance;
+    const distanceDiff = this.state.prevTouchDistance ? touchDistance - this.state.prevTouchDistance : 0;
 
     // direction each touch is moving on the x and y axis
     const touch1DirectionX = prevTouch1.clientX > currentTouch1.clientX ? 'left' : 'right';
@@ -530,32 +530,29 @@ class Illustration extends Component {
 
     const newState = { prevTouchEvent: e };
 
-
-      if (this.state.prevTouchEventType === 'zoom') {
-        // update drag start state, then rerun touchmove handler
-        return this.setState({
-          dragStartX: offsetX,
-          dragStartY: offsetY,
-          prevTouchEventType: 'pan'
-        }, () => {
-          this.handleTouchMoveNotThrottled(e);
-        });
-      }
     if (isDragging) {
 
       newState.prevTouchEventType = 'pan';
       newState.prevTouchDistance = touchDistance;
 
       if (this.state.isDragging) {
+        // drag gesture already initiated
         const newX = this.state.canvasX - diffX;
         const newY = this.state.canvasY - diffY;
         this.moveCanvas(newX, newY);
       } else {
-        return this.setState({
-          isDragging: true,
-          isPinchZooming: false,
-          prevTouchEventType: 'pan'
-        }, () => {
+        // initialize the drag gesture
+        newState.isDragging = true;
+        newState.isPinchZooming = false;
+        newState.prevTouchDistance = null;
+
+        if (this.state.prevTouchEventType === 'zoom') {
+          // reset dragStart
+          newState.dragStartX = offsetX;
+          newState.dragStartY = offsetY;
+        }
+
+        return this.setState(newState, () => {
           this.handleTouchMoveNotThrottled(e);
         });
       }
@@ -566,15 +563,17 @@ class Illustration extends Component {
       newState.prevTouchDistance = touchDistance;
 
       if (this.state.isPinchZooming) {
+        // pinch gesture already initiated
         const zoomAmount = (distanceDiff / 3) / 100;
         const newZoom = this.props.scale + zoomAmount;
         this.props.zoomTo(newZoom * 100);
       } else {
-        return this.setState({
-          isDragging: false,
-          isPinchZooming: true,
-          prevTouchEventType: 'zoom'
-        }, () => {
+        // initialize the pinch gesture
+        newState.isDragging = false;
+        newState.isPinchZooming = true;
+        newState.prevTouchDistance = null;
+
+        return this.setState(newState, () => {
           this.handleTouchMoveNotThrottled(e);
         });
       }
