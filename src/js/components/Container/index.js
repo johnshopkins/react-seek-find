@@ -424,7 +424,12 @@ class Game extends Component {
 
   toggleFullscreen() {
     this.setState((state) => {
-      return { isFullscreen: !state.isFullscreen }
+      const newValue = !state.isFullscreen;
+      return { isFullscreen: newValue };
+    }, () => {
+      if (!this.state.isFullscreen) {
+        this.props.onExitFullscreen();
+      }
     });
   }
 
@@ -504,6 +509,7 @@ Game.defaultProps = {
   foundKeepAlive: 2000,
   hintKeepAlive: 10000,
   objects: [],
+  onExitFullscreen: () => {},
   onGameComplete: () => {},
   onResize: () => {},
   test: false,
@@ -516,6 +522,7 @@ Game.propTypes = {
   height: PropTypes.number,
   hintKeepAlive: PropTypes.number,
   image: PropTypes.string.isRequired,
+  onExitFullscreen: PropTypes.func.isRequired,
   onGameComplete: PropTypes.func.isRequired,
   onResize: PropTypes.func.isRequired,
   width: PropTypes.number,

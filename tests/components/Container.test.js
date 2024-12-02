@@ -888,9 +888,12 @@ describe('Container', () => {
 
       test('Enter/exit fullscreen mode via button', async () => {
 
+        const handleExitFullscreen = jest.fn();
+
         const { container } = await renderGame({
           containerHeight: null,
-          containerWidth: null
+          containerWidth: null,
+          onExitFullscreen: handleExitFullscreen,
         });
         
         const root = document.getElementsByTagName('html')[0];
@@ -911,13 +914,18 @@ describe('Container', () => {
         expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
         expect(fullscreenButton).toHaveTextContent('Enter fullscreen');
 
+        expect(handleExitFullscreen).toHaveBeenCalledTimes(1);
+
       });
 
       test('Exit fullscreen mode via Escape key', async () => {
 
+        const handleExitFullscreen = jest.fn();
+
         const { container } = await renderGame({
           containerHeight: null,
-          containerWidth: null
+          containerWidth: null,
+          onExitFullscreen: handleExitFullscreen,
         });
 
         const root = document.getElementsByTagName('html')[0];
@@ -936,6 +944,8 @@ describe('Container', () => {
         await user.keyboard('{Escape}');
         expect(root).not.toHaveClass('fullscreen')
         expect(outerContainer).toHaveStyle({ height: '380px', width: '600px' });
+
+        expect(handleExitFullscreen).toHaveBeenCalledTimes(1);
 
       });
 
