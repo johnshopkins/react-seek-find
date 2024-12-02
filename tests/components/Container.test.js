@@ -544,6 +544,9 @@ describe('Container', () => {
           fireEvent(canvas, getTouchEvent('touchstart', { targetTouches: [{ clientX: 328, clientY: 306 }, { clientX: 303, clientY: 200 }] }));
           
           // two-touch scroll
+          fireEvent(canvas, getTouchEvent('touchmove', { targetTouches: [{ clientX: 210, clientY: 210 }, { clientX: 185, clientY: 185 }] }));
+          act(() => jest.runAllTimers());
+
           fireEvent(canvas, getTouchEvent('touchmove', { targetTouches: [{ clientX: 200, clientY: 200 }, { clientX: 175, clientY: 175 }] }));
           act(() => jest.runAllTimers());
 
