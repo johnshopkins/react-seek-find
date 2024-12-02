@@ -604,6 +604,8 @@ class Illustration extends Component {
   stopTouchMove() {
     this.handleTouchMoveThrottled.cancel();
     this.setState({
+      dragStartX: null,
+      dragStartY: null,
       isDragging: false,
       isPinchZooming: false,
       prevTouchDistance: null,
@@ -614,7 +616,12 @@ class Illustration extends Component {
 
   handleTouchEnd(e) {
 
-    if (e.touches.length >= 2) {
+    if (this.props.isFullscreen && e.touches.length >= 1) {
+      // still 1+ touches. do not trigger state change
+      return;
+    }
+
+    if (!this.props.isFullscreen && e.touches.length >= 2) {
       // still 2 touches. do not trigger state change
       return;
     }
