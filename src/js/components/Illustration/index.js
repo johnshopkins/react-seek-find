@@ -135,22 +135,27 @@ class Illustration extends Component {
    */
   getCenterAnchor(x, y) {
 
-    let anchorX;
-    let anchorY;
+    // let anchorX;
+    // let anchorY;
 
-    if (this.containerWidth >= this.scaledImageWidth) {
-      anchorX = x - (this.scaledImageWidth / 2);
-    } else {
-      anchorX = x - (this.props.containerWidth / 2);
-    }
+    // if (this.containerWidth >= this.scaledImageWidth) {
+    //   anchorX = x - (this.scaledImageWidth / 2);
+    // } else {
+    //   anchorX = x - (this.props.containerWidth / 2);
+    // }
 
-    if (this.containerHeight >= this.scaledImageHeight) {
-      anchorY = y - (this.scaledImageHeight / 2);
-    } else {
-      anchorY = y - (this.props.containerHeight / 2);
-    }
+    // if (this.containerHeight >= this.scaledImageHeight) {
+    //   anchorY = y - (this.scaledImageHeight / 2);
+    // } else {
+    //   anchorY = y - (this.props.containerHeight / 2);
+    // }
 
-    return { anchorX, anchorY };
+    // return { anchorX, anchorY };
+
+    return {
+      anchorX: x - (this.props.containerWidth / 2),
+      anchorY: y - (this.props.containerHeight / 2)
+    };
   }
 
   /**
@@ -163,22 +168,27 @@ class Illustration extends Component {
    */
   getOriginFromCenterAnchor(x, y) {
 
-    let originX;
-    let originY;
+    // let originX;
+    // let originY;
 
-    if (this.containerWidth >= this.scaledImageWidth) {
-      originX = x + (this.scaledImageWidth / 2);
-    } else {
-      originX = x + (this.props.containerWidth / 2);
-    }
+    // if (this.containerWidth >= this.scaledImageWidth) {
+    //   originX = x + (this.scaledImageWidth / 2);
+    // } else {
+    //   originX = x + (this.props.containerWidth / 2);
+    // }
 
-    if (this.containerHeight >= this.scaledImageHeight) {
-      originY = y + (this.scaledImageHeight / 2);
-    } else {
-      originY = y + (this.props.containerHeight / 2);
-    }
+    // if (this.containerHeight >= this.scaledImageHeight) {
+    //   originY = y + (this.scaledImageHeight / 2);
+    // } else {
+    //   originY = y + (this.props.containerHeight / 2);
+    // }
 
-    return { originX, originY };
+    // return { originX, originY };
+
+    return {
+      originX: x + (this.props.containerWidth / 2),
+      originY: y + (this.props.containerHeight / 2),
+    };
   }
 
   /**
