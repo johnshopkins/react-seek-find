@@ -69,6 +69,10 @@ class Illustration extends Component {
       anchorX,
       anchorY,
 
+      anchorToCenter: true,
+      zoomAnchorX: null,
+      zoomAnchorY: null,
+
       gamePlacementX,
       gamePlacementY,
 
@@ -99,6 +103,7 @@ class Illustration extends Component {
     this.getGameOffset = this.getGameOffset.bind(this);
     this.removeAlreadyFound = this.removeAlreadyFound.bind(this);
     this.moveCanvas = this.moveCanvas.bind(this);
+    this.getOriginFromZoomAnchor = this.getOriginFromZoomAnchor.bind(this);
     this.getRandomHint = this.getRandomHint.bind(this);
     this.handleContainerMouseDown = this.handleContainerMouseDown.bind(this);
     this.handleFoundObject = this.handleFoundObject.bind(this);
@@ -189,6 +194,22 @@ class Illustration extends Component {
       originX: x + (this.props.containerWidth / 2),
       originY: y + (this.props.containerHeight / 2),
     };
+  }
+
+  getOriginFromZoomAnchor(x, y) {
+
+    let originX;
+    let originY;
+
+    // this point needs to be this many pixels from the container origin to maintain
+    // correct percentage
+    const fromContainerOriginX = this.props.containerWidth * this.state.zoomAnchorPercentageX;
+    const fromContainerOriginY = this.props.containerHeight * this.state.zoomAnchorPercentageY;
+
+    originX = x + fromContainerOriginX;
+    originY = y + fromContainerOriginY;
+
+    return { originX, originY };
   }
 
   /**
@@ -296,7 +317,9 @@ class Illustration extends Component {
       }
 
       // translate to coordinates that moveCanvas can use (expects (x, y) to be origin)
-      const originCoordinates = this.getOriginFromCenterAnchor(newX, newY);
+      const originCoordinates = this.state.anchorToCenter ?
+        this.getOriginFromCenterAnchor(newX, newY) :
+        this.getOriginFromZoomAnchor(newX, newY);
 
       this.moveCanvas(originCoordinates.originX, originCoordinates.originY);
     }
@@ -552,6 +575,7 @@ class Illustration extends Component {
         this.moveCanvas(newX, newY);
       } else {
         // initialize the drag gesture
+        newState.anchorToCenter = true;
         newState.isDragging = true;
         newState.isPinchZooming = false;
         newState.prevTouchDistance = null;
@@ -576,12 +600,51 @@ class Illustration extends Component {
         newState.prevTouchDistance = touchDistance;
         const zoomAmount = (distanceDiff / 3) / 100;
         const newZoom = this.props.scale + zoomAmount;
-        this.props.zoomTo(newZoom * 100);
+
+        // get center of two touches
+        const offsetTouch1 = getOffsetCoords(e, e.targetTouches[0]);
+        const offsetTouch2 = getOffsetCoords(e, e.targetTouches[1]);
+
+        const midX = -Math.abs((offsetTouch2.offsetX + offsetTouch1.offsetX) / 2);
+        const midY = -Math.abs((offsetTouch2.offsetY + offsetTouch1.offsetY) / 2);
+
+        newState.anchorX = midX;
+        newState.anchorY = midY;
+
+        // center of pinch (x, y) coords within the container
+        const xWithinContainer = this.state.canvasX - midX;
+        const yWithinContainer = this.state.canvasY - midY;
+
+        newState.zoomAnchorPercentageX = xWithinContainer / this.props.containerWidth;
+        newState.zoomAnchorPercentageY = yWithinContainer / this.props.containerHeight;
+
+        return this.setState(newState, () => {
+          this.props.zoomTo(newZoom * 100);
+        });
+
       } else {
         // initialize the pinch gesture
+        newState.anchorToCenter = false;
         newState.isDragging = false;
         newState.isPinchZooming = true;
         newState.prevTouchDistance = null;
+
+        // get center of two touches
+        const offsetTouch1 = getOffsetCoords(e, e.targetTouches[0]);
+        const offsetTouch2 = getOffsetCoords(e, e.targetTouches[1]);
+
+        const midX = -Math.abs((offsetTouch2.offsetX + offsetTouch1.offsetX) / 2);
+        const midY = -Math.abs((offsetTouch2.offsetY + offsetTouch1.offsetY) / 2);
+
+        newState.anchorX = midX;
+        newState.anchorY = midY;
+
+        // center of pinch (x, y) coords within the container
+        const xWithinContainer = this.state.canvasX - midX;
+        const yWithinContainer = this.state.canvasY - midY;
+
+        newState.zoomAnchorPercentageX = xWithinContainer / this.props.containerWidth;
+        newState.zoomAnchorPercentageY = yWithinContainer / this.props.containerHeight;
 
         return this.setState(newState, () => {
           this.handleTouchMoveNotThrottled(e);
@@ -613,7 +676,16 @@ class Illustration extends Component {
 
   stopTouchMove() {
     this.handleTouchMoveThrottled.cancel();
+
+
+    // reset center anchor
+    const { anchorX, anchorY } = this.getCenterAnchor(this.state.canvasX, this.state.canvasY);
+
+    // reset other state vars
     this.setState({
+      anchorToCenter: true,
+      anchorX,
+      anchorY,
       dragStartX: null,
       dragStartY: null,
       isDragging: false,

@@ -1449,6 +1449,50 @@ describe('Container', () => {
 
       });
 
+      test('Pinch zoom', async () => {
+
+        const { container } = await renderGame({ containerHeight: 410, objects: [boxObject] });
+
+        const gamePlacement = container.querySelector('.game-placement');
+        const game = container.querySelector('.game');
+        const image = screen.getByAltText('Seek and find');
+        const canvas = container.querySelector('canvas.findable');
+
+        // initial placement of canvas, relative to the document
+        jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 126, y: 105 });
+
+        // zoom out
+        fireEvent(canvas, getTouchEvent('touchstart', { targetTouches: [
+          { clientX: 350, clientY: 330 },
+          { clientX: 150, clientY: 230 }
+        ]}));
+        act(() => jest.runAllTimers());
+
+        fireEvent(canvas, getTouchEvent('touchmove', { targetTouches: [
+          { clientX: 335, clientY: 315 },
+          { clientX: 165, clientY: 245 }
+        ]}));
+        act(() => jest.runAllTimers());
+
+        fireEvent(canvas, getTouchEvent('touchmove', { targetTouches: [
+          { clientX: 320, clientY: 300 },
+          { clientX: 180, clientY: 260 }
+        ]}));
+        act(() => jest.runAllTimers());
+
+        fireEvent(canvas, getTouchEvent('touchmove', { targetTouches: [
+          { clientX: 310, clientY: 290 },
+          { clientX: 190, clientY: 270 }
+        ]}));
+        act(() => jest.runAllTimers());
+
+        expect(gamePlacement).toHaveStyle({ left: '0px', top: '0px' });
+        expect(game).toHaveStyle({ left: '14.687px', top: '14.767px'  });
+        expect(image).toHaveAttribute('height', '644.124');
+        expect(image).toHaveAttribute('width', '736.141');
+
+      });
+
     });
 
     describe('Hint', () => {
