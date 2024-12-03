@@ -299,21 +299,25 @@ class Illustration extends Component {
       let newY = this.state.anchorY * scaleDiff;
 
       if (this.props.isKeyboardFocused) {
-        const containerBounds = this.containerRef.current.getBoundingClientRect();
+        // use sights as the zoom anchor
+        // const containerBounds = this.containerRef.current.getBoundingClientRect();
         const gameBounds = this.gameRef.current.getBoundingClientRect();
         const sightsPosition = this.sightsRef.current.getSightsPosition(scaleDiff);
 
-        if (this.containerWidth >= this.scaledImageWidth) {
-          newX = (containerBounds.x - sightsPosition.x) * scaleDiff;
-        } else {
-          newX = (gameBounds.x - sightsPosition.x) * scaleDiff;
-        }
+        // if (this.containerWidth >= this.scaledImageWidth) {
+        //   newX = (containerBounds.x - sightsPosition.x) * scaleDiff;
+        // } else {
+        //   newX = (gameBounds.x - sightsPosition.x) * scaleDiff;
+        // }
 
-        if (this.containerHeight >= this.scaledImageHeight) {
-          newY = (containerBounds.y - sightsPosition.y) * scaleDiff;
-        } else {
-          newY = (gameBounds.y - sightsPosition.y) * scaleDiff;
-        }
+        // if (this.containerHeight >= this.scaledImageHeight) {
+        //   newY = (containerBounds.y - sightsPosition.y) * scaleDiff;
+        // } else {
+        //   newY = (gameBounds.y - sightsPosition.y) * scaleDiff;
+        // }
+
+        newX = (gameBounds.x - sightsPosition.x) * scaleDiff;
+        newY = (gameBounds.y - sightsPosition.y) * scaleDiff;
       }
 
       // translate to coordinates that moveCanvas can use (expects (x, y) to be origin)
