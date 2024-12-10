@@ -55,7 +55,7 @@ export default forwardRef(({
       canvas.removeEventListener('toucheancel', onTouchCancel);
     }
 
-  }, [onTouchEnd, onTouchMove]);
+  }, [onTouchCancel, onTouchEnd, onTouchMove]);
 
   useImperativeHandle(ref, () => ({
     checkGuess: (positionX, positionY) => {
@@ -94,11 +94,7 @@ export default forwardRef(({
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}
       tabIndex={disableTabbing ? '-1' : '0'}
-      style={{
-        touchAction: !needsManualScroll ? 'pan-y' : 'none',
-        height: `${height * scale}px`,
-        width: `${width * scale}px`
-      }}
+      style={canvasStyle}
     />
   )
 
