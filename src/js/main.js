@@ -1,4 +1,5 @@
 import FindableObject from './objects/FindableObject';
+import FindableObjectGroup from './objects/FindableObjectGroup';
 import Game from './components/Container';
 
-export { FindableObject, Game };
+export { FindableObject, FindableObjectGroup, Game };
