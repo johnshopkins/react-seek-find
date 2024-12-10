@@ -80,7 +80,7 @@ $iconRatio: 0.4;
 
       svg {
         background: #fff;
-        fill: green;
+        fill: var(--jhu-brand-homewood-green);
         height: calc(#{map.get($shared-vars, 'legendThumbnailHeight_small')}px * $iconRatio);
         width: calc(#{map.get($shared-vars, 'legendThumbnailHeight_small')}px * $iconRatio);
         position: absolute;
