@@ -70,7 +70,7 @@ $iconRatio: 0.4;
     }
     
     .thumbnail {
-      background: #000;
+      // background: #000;
       height: #{map.get($shared-vars, 'legendThumbnailHeight_small')}px;
       width: #{map.get($shared-vars, 'legendThumbnailHeight_small')}px;
 
