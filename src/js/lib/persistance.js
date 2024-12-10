@@ -1,18 +1,16 @@
 import { local as localStorage } from './storage';
 
-const localStorageKey = 'hopkins-seek-find';
-
-const clearGameState = () => {
-  localStorage.remove(localStorageKey)
+const clearGameState = (key = 'hopkins-seek-find') => {
+  localStorage.remove(key)
 };
 
-const loadGameState = () => {
-  return localStorage.get(localStorageKey) || [];
+const loadGameState = (key = 'hopkins-seek-find') => {
+  return localStorage.get(key) || [];
 };
 
-const saveGameState = (data) => {
+const saveGameState = (data, key = 'hopkins-seek-find') => {
   try {
-    return localStorage.set(localStorageKey, data);
+    return localStorage.set(key, data);
   } catch (e) {
     return false;
   }

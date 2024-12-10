@@ -27,14 +27,14 @@ class Game extends Component {
     this.containerRef = createRef();
 
     // // for testing
-    // clearGameState();
+    // clearGameState(this.props.storageKey);
 
     // combine stored user data with default user data
     const userData = {
       gameComplete: false,
       found: [],
       seenInstructions: false,
-      ...loadGameState()
+      ...loadGameState(this.props.storageKey)
     }
 
     // combine stored and default state
@@ -284,7 +284,7 @@ class Game extends Component {
       gameComplete: this.state.gameComplete,
       seenInstructions: this.state.seenInstructions,
       ...changed
-    })
+    }, this.props.storageKey)
   }
 
   replay() {
@@ -512,6 +512,7 @@ Game.defaultProps = {
   onExitFullscreen: () => {},
   onGameComplete: () => {},
   onResize: () => {},
+  storageKey: 'hopkins-seek-find',
   test: false,
 };
 
@@ -527,6 +528,7 @@ Game.propTypes = {
   onResize: PropTypes.func.isRequired,
   width: PropTypes.number,
   objects: PropTypes.array,
+  storageKey: PropTypes.string,
   test: PropTypes.bool,
 };
 
