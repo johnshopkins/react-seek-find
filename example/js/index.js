@@ -5,6 +5,7 @@ import { FindableObject, Game } from '../../src/js/main';
 
 import image from '../images/art.png';
 import Seal from './objects/Seal';
+import Birds from './objects/Birds';
 
 import Box from './objects/Box';
 import Circle from './objects/Circle';
@@ -23,9 +24,11 @@ root.render(
     // test={true}
     objects={[
       Seal,
+      Birds,
       // ...moreObjects
     ]}
-    // onGameComplete={() => console.log('hooray!')}
+    // bonusObjects={[Birds]}
+    onGameComplete={() => console.log('hooray!')}
     // onResize={(data) => console.log('resize', data)}
   />
   // <Game
