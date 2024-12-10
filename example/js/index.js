@@ -3,9 +3,8 @@ global.logger = console;
 const { createRoot } = ReactDOM;
 import { FindableObject, Game } from '../../src/js/main';
 
-import image from '../images/background.png';
-import Beanie from './objects/Beanie';
-import Football from './objects/Football';
+import image from '../images/art.png';
+import Seal from './objects/Seal';
 
 import Box from './objects/Box';
 import Circle from './objects/Circle';
@@ -19,15 +18,12 @@ root.render(
   <Game
     container={elem} // image should always be wider than this element
     image={image}
-    imageHeight={2448}
-    imageWidth={1584}
-    // imageWidth={2448}
-    // imageHeight={1584}
+    imageHeight={2672}
+    imageWidth={4750}
     // test={true}
     objects={[
-      Beanie,
-      Football,
-      ...moreObjects
+      Seal,
+      // ...moreObjects
     ]}
     // onGameComplete={() => console.log('hooray!')}
     // onResize={(data) => console.log('resize', data)}
