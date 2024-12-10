@@ -30,7 +30,15 @@ export default forwardRef(({
     const context = canvasRef.current.getContext('2d');
 
     objects.map(object => {
-      object.plotted = object.create.call(this, context);
+      if (object.getType() === 'single') {
+        object.plotted = object.create.call(this, context);
+      } else {
+        // group
+        object.objects.map(childObject => {
+          childObject.plotted = childObject.create.call(this, context);
+          return childObject;
+        });
+      }
       return object;
     });
 
@@ -66,12 +74,29 @@ export default forwardRef(({
       const y = positionY / scale;
 
       for (const object of objects) {
-        if (context.isPointInPath(object.plotted, x, y)) {
-          onFind(object, x, y);
+
+        let found = false;
+        
+        if (object.getType() === 'single') {
+          if (context.isPointInPath(object.plotted, x, y)) {
+            onFind(object, x, y);
+            found = true
+          }
+        } else {
+          // group
+          for (const childObject of object.objects) {
+            if (context.isPointInPath(childObject.plotted, x, y)) {
+              onFind(childObject, x, y);
+              found = true;
+              break;
+            }
+          }
+        }
+
+        if (found) {
           break;
         }
       }
-
     }
   }), [objects, onFind, scale]);
 

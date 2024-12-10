@@ -33,6 +33,7 @@ class Game extends Component {
     const userData = {
       gameComplete: false,
       found: [],
+      toFind: this.props.objects.reduce((accumulator, object) => accumulator + (object.getType() === 'single' ? 1 : object.objects.length), 0),
       seenInstructions: false,
       ...loadGameState(this.props.storageKey)
     }
@@ -250,7 +251,7 @@ class Game extends Component {
       found.push(foundObject.id);
 
       return {
-        gameComplete: found.length === Object.values(this.objects).length,
+        gameComplete: found.length === this.state.toFind,
         found,
       }
 
@@ -496,6 +497,7 @@ class Game extends Component {
           <Legend
             breakpoint={this.state.breakpoint}
             found={this.state.found}
+            toFind={this.state.toFind}
             objects={Object.values(this.objects)}
             width={this.state.width}
           />

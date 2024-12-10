@@ -19,6 +19,10 @@ class FindableObject {
     this.hint = this.hint.bind(this);
   }
 
+  getType() {
+    return 'single';
+  }
+
   create (context, fill = false) {
 
     const path = this.createFunction();

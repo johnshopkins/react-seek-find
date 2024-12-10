@@ -11,7 +11,7 @@ import './style.scss';
  * tabbed to when tabbing was disabled (due to instructions overlay
  * being opened), so I had to specify a tabIndex value to prevent that.
  */
-export default function Legend({ breakpoint, found, objects, width }) {
+export default function Legend({ bonusObjects, breakpoint, found, gameComplete, objects, toFind, width }) {
 
   const [isPointerDown, setIsPointerDown] = useState(false);
   const [direction, setDirection] = useState(null);
@@ -19,9 +19,11 @@ export default function Legend({ breakpoint, found, objects, width }) {
 
   const thumbnailSize = parseInt(settings[`legendThumbnailHeight_${breakpoint}`]);
 
+  const findableObjects = !gameComplete ? objects : [...bonusObjects, ...objects];
+
   const buttonWidth = parseInt(settings.utilitiesIconHeight) + (parseInt(settings.buttonPadding) * 2);
   const availableSpace = width - (buttonWidth * 2) - (parseInt(settings[`legendPadding_${breakpoint}`]) * 4);
-  const legendWidth = objects.length * thumbnailSize + (objects.length -1) * parseInt(settings[`legendGap_${breakpoint}`]);
+  const legendWidth = findableObjects.length * thumbnailSize + (findableObjects.length -1) * parseInt(settings[`legendGap_${breakpoint}`]);
 
   const needsPagination = legendWidth > availableSpace;
 
@@ -78,7 +80,7 @@ export default function Legend({ breakpoint, found, objects, width }) {
 
   return (
     <div className="legend-container" tabIndex="-1">
-      <div className="label">Can you find us all? {found.length}/{objects.length}</div>
+      <div className="label">Can you find us all? {found.length}/{toFind}</div>
         <div className="legend-scroll">
           {needsPagination &&
             <button
@@ -95,7 +97,7 @@ export default function Legend({ breakpoint, found, objects, width }) {
             <div className="thumbnails" style={{ left: `${positionX}px` }}>
               <Thumbnails
                 found={found}
-                objects={objects}
+                objects={findableObjects}
               />
             </div>
           </div>
