@@ -72,16 +72,38 @@ $iconRatio: 0.35;
     }
 
     .legend-group {
+      --background-color: #{$jhu-blue-40};
       display: flex;
       gap: #{map.get($shared-vars, 'legendGap_small')}px;
       padding: #{map.get($shared-vars, 'legendPadding_small')}px;
       position: relative;
+
+      &:nth-child(2) {
+        --background-color: #{$jhu-blue-70};
+      }
     }
     
     .thumbnail {
       // background: #000;
       height: #{map.get($shared-vars, 'legendThumbnailHeight_small')}px;
+      position: relative;
       width: #{map.get($shared-vars, 'legendThumbnailHeight_small')}px;
+      z-index: 0;
+
+      &:before {
+        --background-size: 85%;
+        background: var(--background-color);
+        border-radius: 8px;
+        content: '';
+        display: block;
+        height: var(--background-size);
+        left: calc((100% - var(--background-size)) / 2);
+        // opacity: 0.5;
+        position: absolute;
+        top: calc((100% - var(--background-size)) / 2);
+        width: var(--background-size);
+        z-index: -1;
+      }
 
       img {
         width: 100%;
