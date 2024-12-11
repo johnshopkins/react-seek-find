@@ -16,5 +16,6 @@ export default new FindableObject(
     return path;
   },
   { x: 10, y: 10 },
+  'jhu',
   100
 );

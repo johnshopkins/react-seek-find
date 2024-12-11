@@ -53,6 +53,9 @@ root.render(
   //   ]}
   //   onGameComplete={() => console.log('hooray!')}
   //   initialScale={100}
+  //   groups={[
+  //     new FindableObjectGroup('jhu', 'JHU', '#68ace5'),
+  //   ]}
   //   test={true}
   // />
 );
