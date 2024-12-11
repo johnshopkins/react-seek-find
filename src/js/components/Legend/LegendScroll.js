@@ -22,23 +22,26 @@ export default function LegendScroll({ availableSpace, found, groups, legendWidt
 
     let intervalId;
 
+    const scroll = () => {
+      setPositionX((prevPositionX) => {
+
+        const newValue = direction === 'left' ? prevPositionX + thumbnailSize : prevPositionX - thumbnailSize;
+
+        if (direction === 'left' && newValue >= minPositionX) {
+          setIsPointerDown(false);
+          return minPositionX;
+        } else if (direction === 'right' && newValue <= maxPositionX) {
+          setIsPointerDown(false);
+          return maxPositionX;
+        }
+
+        return newValue;
+      });
+    }
+
     if (isPointerDown) {
-      intervalId = setInterval(function () {
-        setPositionX((prevPositionX) => {
-
-          const newValue = direction === 'left' ? prevPositionX + thumbnailSize : prevPositionX - thumbnailSize;
-
-          if (direction === 'left' && newValue >= minPositionX) {
-            setIsPointerDown(false);
-            return minPositionX;
-          } else if (direction === 'right' && newValue <= maxPositionX) {
-            setIsPointerDown(false);
-            return maxPositionX;
-          }
-
-          return newValue;
-        });
-      }, 100);
+      scroll();
+      intervalId = setInterval(scroll, 100);
     }
 
     return () => clearInterval(intervalId);
