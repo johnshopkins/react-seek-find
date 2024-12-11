@@ -6,8 +6,6 @@ export default memo(function Thumbnails({ found, group }) {
 
   const toFind = group.objects.reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0);
 
-  console.log(group.color);
-
   const style = {};
   if (group.color) {
     style.backgroundColor = group.color;
