@@ -119,15 +119,7 @@ export default function Legend({ bonusObjects, breakpoint, found, gameComplete, 
           }
           <div className="legend" style={{width: `${availableSpace}px` }}>
             <div className="thumbnails" style={{ left: `${positionX}px` }}>
-              {Object.values(sorted).map((group, i) => {
-                return (
-                  <ThumbnailGroup
-                    found={found}
-                    group={group}
-                    key={i}
-                  />
-                )
-              })}
+              {Object.values(sorted).map((group, i) => <ThumbnailGroup found={found} group={group} key={i} />)}
             </div>
           </div>
           {needsPagination &&
