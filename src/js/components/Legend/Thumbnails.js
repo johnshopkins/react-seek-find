@@ -11,7 +11,7 @@ export default memo(function Thumbnails({ found, objects }) {
       let leftToFind = 0;
       let status = 'not found';
 
-      if (type === 'single') {
+      if (type === '1:1') {
         status = found.includes(object.id) ? 'found' : 'not found';
       } else {
         // group

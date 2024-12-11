@@ -20,7 +20,7 @@ class FindableObject {
   }
 
   getType() {
-    return 'single';
+    return '1:1';
   }
 
   create (context, fill = false) {
@@ -32,9 +32,9 @@ class FindableObject {
       context.fill(path);
     }
 
-    // // for testing
-    // context.fillStyle = "rgb(0, 0, 0, 50%)";
-    // context.fill(path);
+    // for testing
+    context.fillStyle = "rgb(0, 0, 0, 50%)";
+    context.fill(path);
 
     return path;
   }

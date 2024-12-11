@@ -1,4 +1,4 @@
-class FindableObjectGroup {
+class OneToManyFindableObject {
   /**
    * Creates a findable object group
    * @param {*} id       Unique name
@@ -13,8 +13,8 @@ class FindableObjectGroup {
   }
 
   getType() {
-    return 'group';
+    return '1:many';
   }
 }
 
-export default FindableObjectGroup;
+export default OneToManyFindableObject;

@@ -30,7 +30,7 @@ export default forwardRef(({
     const context = canvasRef.current.getContext('2d');
 
     objects.map(object => {
-      if (object.getType() === 'single') {
+      if (object.getType() === '1:1') {
         object.plotted = object.create.call(this, context);
       } else {
         // group
@@ -77,7 +77,7 @@ export default forwardRef(({
 
         let found = false;
         
-        if (object.getType() === 'single') {
+        if (object.getType() === '1:1') {
           if (context.isPointInPath(object.plotted, x, y)) {
             onFind(object, x, y);
             found = true

@@ -33,7 +33,7 @@ class Game extends Component {
     const userData = {
       gameComplete: false,
       found: [],
-      toFind: this.props.objects.reduce((accumulator, object) => accumulator + (object.getType() === 'single' ? 1 : object.objects.length), 0),
+      toFind: this.props.objects.reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0),
       seenInstructions: false,
       ...loadGameState(this.props.storageKey)
     }

@@ -1,16 +1,16 @@
 global.logger = console;
 
 const { createRoot } = ReactDOM;
-import { FindableObject, Game } from '../../src/js/main';
 
+import { Game } from '../../src/js/main';
 import image from '../images/art.png';
+import Dart from './objects/Dart';
+import Mascot from './objects/Mascot';
 import Seal from './objects/Seal';
 import Birds from './objects/Birds';
 
-import Box from './objects/Box';
-import Circle from './objects/Circle';
-
-import moreObjects from './objects/MoreObjects';
+// import Box from './objects/Box';
+// import Circle from './objects/Circle';
 
 const elem = document.getElementById('root');
 const root = createRoot(elem);
@@ -23,9 +23,10 @@ root.render(
     imageWidth={4750}
     // test={true}
     objects={[
+      Dart,
+      Mascot,
       Seal,
       Birds,
-      // ...moreObjects
     ]}
     // bonusObjects={[Birds]}
     onGameComplete={() => console.log('hooray!')}
