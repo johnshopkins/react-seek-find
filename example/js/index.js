@@ -2,15 +2,21 @@ global.logger = console;
 
 const { createRoot } = ReactDOM;
 
-import { Game } from '../../src/js/main';
-import image from '../images/art.png';
+import { FindableObjectGroup, Game } from '../../src/js/main';
+import image from '../images/art.jpg';
 import Dart from './objects/Dart';
 import Mascot from './objects/Mascot';
 import Seal from './objects/Seal';
 import Birds from './objects/Birds';
+import moreObjects from './objects/MoreObjects';
 
 // import Box from './objects/Box';
 // import Circle from './objects/Circle';
+
+const groups = [
+  new FindableObjectGroup('jhu', 'JHU', '#68ace5'),
+  new FindableObjectGroup('fun', 'Fun'),
+]
 
 const elem = document.getElementById('root');
 const root = createRoot(elem);
@@ -19,15 +25,17 @@ root.render(
   <Game
     container={elem} // image should always be wider than this element
     image={image}
-    imageHeight={2672}
-    imageWidth={4750}
+    imageWidth={3750}
+    imageHeight={2109}
     // test={true}
     objects={[
       Dart,
       Mascot,
       Seal,
       Birds,
+      ...moreObjects,
     ]}
+    groups={groups}
     // bonusObjects={[Birds]}
     onGameComplete={() => console.log('hooray!')}
     // onResize={(data) => console.log('resize', data)}
@@ -45,6 +53,9 @@ root.render(
   //   ]}
   //   onGameComplete={() => console.log('hooray!')}
   //   initialScale={100}
+  //   groups={[
+  //     new FindableObjectGroup('jhu', 'JHU', '#68ace5'),
+  //   ]}
   //   test={true}
   // />
 );

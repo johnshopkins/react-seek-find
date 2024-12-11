@@ -16,4 +16,4 @@ const create = () => {
   return path;
 }
 
-export default new FindableObject('mascot', 'Mascot', thumbnail, create, { x: 50, y: 50 }, 200);
+export default new FindableObject('mascot', 'Mascot', thumbnail, create, { x: 50, y: 50 }, 'jhu', 200);

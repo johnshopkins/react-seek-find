@@ -13,4 +13,4 @@ const create = () => {
   return path;
 }
 
-export default new FindableObject('seal', 'Seal', thumbnail, create, { x: 885, y: 1315 });
+export default new FindableObject('seal', 'Seal', thumbnail, create, { x: 885, y: 1315 }, 'jhu');

@@ -6,7 +6,9 @@ $iconRatio: 0.35;
 .container {
 
   .legend-container {
+    background: var(--jhu-brand-heritage-blue);
     bottom: 0;
+    height: calc(#{map.get($shared-vars, 'legendThumbnailHeight_small')}px + (#{map.get($shared-vars, 'legendPadding_small')}px * 2));
     position: sticky;
     z-index: var(--stack-legend);
 
@@ -16,9 +18,9 @@ $iconRatio: 0.35;
       display: flex;
       flex: 1;
       gap: #{map.get($shared-vars, 'legendPadding_small')}px;
+      height: 100%;
       min-width: 100%;
-      overflow: hidden;
-      padding: #{map.get($shared-vars, 'legendPadding_small')}px;
+      overflow-x: clip;
 
       user-select: none;
       // -moz-user-select: none;
@@ -27,6 +29,7 @@ $iconRatio: 0.35;
 
       button {
         @include button(round);
+        margin: 0 #{map.get($shared-vars, 'legendPadding_small')}px;
 
         svg {
           height: #{map.get($shared-vars, 'utilitiesIconHeight')}px;
@@ -51,15 +54,14 @@ $iconRatio: 0.35;
       position: absolute;
       text-transform: uppercase;
       transform: rotate(-2deg);
-      z-index: 1;
     }
   }
 
   .legend {
     display: flex;
     gap: #{map.get($shared-vars, 'legendPadding_small')}px;
-    height: #{map.get($shared-vars, 'legendThumbnailHeight_small')}px;
-    overflow: hidden;
+    height: 100%;
+    overflow-x: clip;
     position: relative;
 
     .thumbnails {
@@ -67,6 +69,13 @@ $iconRatio: 0.35;
       gap: #{map.get($shared-vars, 'legendGap_small')}px;
       position: absolute;
       transition: left #{map.get($shared-vars, 'canvasTransition')};
+    }
+
+    .legend-group {
+      display: flex;
+      gap: #{map.get($shared-vars, 'legendGap_small')}px;
+      padding: #{map.get($shared-vars, 'legendPadding_small')}px;
+      position: relative;
     }
     
     .thumbnail {
@@ -79,7 +88,10 @@ $iconRatio: 0.35;
       }
 
       .badge {
+        align-content: center;
+        display: flex;
         height: calc(#{map.get($shared-vars, 'legendThumbnailHeight_small')}px * $iconRatio);
+        justify-content: center;
         width: calc(#{map.get($shared-vars, 'legendThumbnailHeight_small')}px * $iconRatio);
         position: absolute;
 
@@ -90,13 +102,21 @@ $iconRatio: 0.35;
         }
 
         &.found {
+          background: #fff;
+          
+          // a trick i found that rounds the corners without adding a thicker border -jen
+          border: 0px solid var(--jhu-brand-white);
+          border-radius: 3px;
+
           svg {
-            background: #fff;
             fill: var(--jhu-brand-homewood-green);
           }
         }
 
         &.not-found {
+          border: 2px solid var(--jhu-brand-white);
+          border-radius: 9999em;
+          
           span {
             color: var(--jhu-brand-white);
             position: absolute;
@@ -114,6 +134,8 @@ $iconRatio: 0.35;
 
   &.medium {
     .legend-container {
+      height: calc(#{map.get($shared-vars, 'legendThumbnailHeight_medium')}px + (#{map.get($shared-vars, 'legendPadding_medium')}px * 2));
+
       .legend-scroll {
         gap: #{map.get($shared-vars, 'legendPadding_small')}px;
       }
@@ -121,7 +143,6 @@ $iconRatio: 0.35;
 
     .legend {
       gap: #{map.get($shared-vars, 'legendGap_medium')}px;
-      height: #{map.get($shared-vars, 'legendThumbnailHeight_medium')}px;
 
       .thumbnails {
         gap: #{map.get($shared-vars, 'legendGap_medium')}px;
@@ -141,6 +162,8 @@ $iconRatio: 0.35;
 
   &.large {
     .legend-container {
+      height: calc(#{map.get($shared-vars, 'legendThumbnailHeight_large')}px + (#{map.get($shared-vars, 'legendPadding_large')}px * 2));
+
       .legend-scroll {
         gap: #{map.get($shared-vars, 'legendPadding_small')}px;
       }
@@ -148,7 +171,6 @@ $iconRatio: 0.35;
 
     .legend {
       gap: #{map.get($shared-vars, 'legendGap_large')}px;
-      height: #{map.get($shared-vars, 'legendThumbnailHeight_large')}px;
 
       .thumbnails {
         gap: #{map.get($shared-vars, 'legendGap_large')}px;
@@ -168,6 +190,8 @@ $iconRatio: 0.35;
 
   &.xlarge {
     .legend-container {
+      height: calc(#{map.get($shared-vars, 'legendThumbnailHeight_xlarge')}px + (#{map.get($shared-vars, 'legendPadding_xlarge')}px * 2));
+
       .legend-scroll {
         gap: #{map.get($shared-vars, 'legendPadding_small')}px;
       }
@@ -175,7 +199,6 @@ $iconRatio: 0.35;
 
     .legend {
       gap: #{map.get($shared-vars, 'legendGap_xlarge')}px;
-      height: #{map.get($shared-vars, 'legendThumbnailHeight_xlarge')}px;
 
       .thumbnails {
         gap: #{map.get($shared-vars, 'legendGap_xlarge')}px;
