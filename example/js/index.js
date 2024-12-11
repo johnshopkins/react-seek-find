@@ -14,7 +14,7 @@ import moreObjects from './objects/MoreObjects';
 // import Circle from './objects/Circle';
 
 const groups = [
-  new FindableObjectGroup('jhu', 'JHU',  '#68ace5'),
+  new FindableObjectGroup('jhu', 'JHU', '#68ace5'),
   new FindableObjectGroup('fun', 'Fun'),
 ]
 

@@ -25,9 +25,9 @@ export default function Legend({ bonusObjects, breakpoint, found, gameComplete, 
   const sorted = {};
   groups.forEach(group => {
     sorted[group.id] = {
-      name: group.name,
       objects: [],
       found: 0,
+      ...group
     };
   });
   objects.forEach(object => {

@@ -4,14 +4,17 @@ import CircleIcon from '../Icons/Circle';
 
 export default memo(function Thumbnails({ found, group }) {
 
-  console.log('ThumbnailGroup', group);
-
   const toFind = group.objects.reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0);
 
-  console.log(group.objects);
+  console.log(group.color);
+
+  const style = {};
+  if (group.color) {
+    style.backgroundColor = group.color;
+  }
 
   return (
-    <div className="legend-group">
+    <div className="legend-group" style={style}>
       <div className="label">{group.name} finds {group.found}/{toFind}</div>
       {group.objects.map((object, i) => {
 
