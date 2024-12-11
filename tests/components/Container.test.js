@@ -8,7 +8,7 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
 import { Game } from '../../src/js/main';
-import { FindableObject } from '../../src/js/main';
+import { FindableObject, FindableObjectGroup } from '../../src/js/main';
 import getMouseEvent from '../helpers/getMouseEvent';
 import getPointerEvent from '../helpers/getPointerEvent';
 import getTouchEvent from '../helpers/getTouchEvent';
@@ -69,6 +69,7 @@ const boxObject = new FindableObject(
     return path;
   },
   { x: 250, y: 250 },
+  'jhu',
   425
 );
 
@@ -88,6 +89,7 @@ const circleObject = new FindableObject(
     return path;
   },
   { x: 10, y: 10 },
+  'jhu',
   200
 );
 
@@ -112,6 +114,7 @@ for (let y = 100; y < 800; y += 200) {
         return path;
       },
       { x: x - 50, y: y - 50 },
+      'jhu',
       200
     ));
     i++;
@@ -122,6 +125,9 @@ const getProps = (override) => {
   return {
     containerWidth: 600,
     containerHeight: 400,
+    groups: [
+      new FindableObjectGroup('jhu', 'JHU')
+    ],
     imageWidth: 800,
     imageHeight: 700,
     image: 'https://picsum.photos/800/700',
@@ -346,7 +352,7 @@ describe('Container', () => {
       const legendImageContainers = container.querySelectorAll('.legend-container .thumbnail');
       const legendImages = await within(legend).findAllByRole('img');
 
-      expect(legendLabel).toHaveTextContent('Can you find us all? 0/2');
+      expect(legendLabel).toHaveTextContent('JHU finds 0/2');
       expect(within(legendImageContainers[0]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(within(legendImageContainers[1]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
@@ -364,7 +370,7 @@ describe('Container', () => {
       fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 450, offsetY: 250 }));
 
       // object found
-      expect(legendLabel).toHaveTextContent('Can you find us all? 1/2');
+      expect(legendLabel).toHaveTextContent('JHU finds 1/2');
       expect(within(legendImageContainers[0]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
@@ -400,7 +406,7 @@ describe('Container', () => {
       fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 350, offsetY: 350 }));
 
       // object found
-      expect(legendLabel).toHaveTextContent('Can you find us all? 2/2');
+      expect(legendLabel).toHaveTextContent('JHU finds 2/2');
       expect(within(legendImageContainers[0]).getByTitle('Found')).toBeInTheDocument();
       expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: found');
@@ -1698,7 +1704,7 @@ describe('Container', () => {
           act(() => jest.advanceTimersByTime(1000));
           act(() => fireEvent.pointerUp(scrollRightButton))
 
-          expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // max
+          expect(thumbnails).toHaveStyle({ 'left': '-784px' }); // max
           expect(scrollLeftButton).not.toBeDisabled();
           expect(scrollRightButton).toBeDisabled();
 
@@ -1707,14 +1713,14 @@ describe('Container', () => {
           act(() => jest.advanceTimersByTime(1000));
           act(() => fireEvent.pointerUp(scrollRightButton))
 
-          expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // still at max
+          expect(thumbnails).toHaveStyle({ 'left': '-784px' }); // still at max
 
           // hold down the scroll left button for 1 second
           act(() => fireEvent.pointerDown(scrollLeftButton))
           act(() => jest.advanceTimersByTime(1000));
           act(() => fireEvent.pointerUp(scrollLeftButton))
 
-          expect(thumbnails).toHaveStyle({ 'left': '-379px' });
+          expect(thumbnails).toHaveStyle({ 'left': '-384px' });
 
           // hold down the scroll left button for 1 more second
           act(() => fireEvent.pointerDown(scrollLeftButton))
@@ -1762,7 +1768,7 @@ describe('Container', () => {
           act(() => jest.advanceTimersByTime(1000));
           await user.keyboard('{/Enter}');
 
-          expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // max
+          expect(thumbnails).toHaveStyle({ 'left': '-784px' }); // max
           expect(scrollLeftButton).not.toBeDisabled();
           expect(scrollRightButton).toBeDisabled();
 
@@ -1771,7 +1777,7 @@ describe('Container', () => {
           act(() => jest.advanceTimersByTime(1000));
           await user.keyboard('{/Enter}');
 
-          expect(thumbnails).toHaveStyle({ 'left': '-779px' }); // still at max
+          expect(thumbnails).toHaveStyle({ 'left': '-784px' }); // still at max
 
           await user.tab({ shift: true });
           expect(scrollLeftButton).toHaveFocus();
@@ -1781,7 +1787,7 @@ describe('Container', () => {
           act(() => jest.advanceTimersByTime(1000));
           await user.keyboard('{/Enter}');
 
-          expect(thumbnails).toHaveStyle({ 'left': '-379px' });
+          expect(thumbnails).toHaveStyle({ 'left': '-384px' });
 
           // hold down the scroll left button for 1 more second
           await user.keyboard('{Enter>}');
