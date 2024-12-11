@@ -39,6 +39,13 @@ class Game extends Component {
       ...loadGameState(this.props.storageKey)
     }
 
+    // organize the objects by ID
+    const objects = {};
+    const findableObjects = !userData.gameComplete ? this.props.objects : [...this.props.objects, ...this.props.bonusObjects];
+    findableObjects.forEach(object => {
+      objects[object.id] = object;
+    });
+
     // combine stored and default state
     this.state = {
       focused: false,
@@ -47,15 +54,10 @@ class Game extends Component {
       browserHeight: document.documentElement.clientHeight,
       browserWidth: document.documentElement.clientWidth,
       openInstructions: userData.seenInstructions === false,
+      objects: objects,
       ...this.getViewState(true),
       ...userData,
     };
-
-    // organize the objects by ID
-    this.objects = {};
-    this.props.objects.forEach(object => {
-      this.objects[object.id] = object;
-    });
 
     this.closeInstructions = this.closeInstructions.bind(this);
     this.getViewState = this.getViewState.bind(this);
@@ -501,7 +503,7 @@ class Game extends Component {
             imageWidth={this.props.imageWidth}
             isFullscreen={this.state.isFullscreen}
             isKeyboardFocused={this.state.isKeyboardFocused}
-            objects={Object.values(this.objects)}
+            objects={Object.values(this.state.objects)}
             onFind={this.handleFoundObject}
             onKeyboardFocusChange={this.handleKeyboardFocusChange}
             openInstructions={this.openInstructions}
@@ -522,7 +524,7 @@ class Game extends Component {
             found={this.state.found}
             gameComplete={this.state.gameComplete}
             groups={this.props.groups}
-            objects={Object.values(this.objects)}
+            objects={Object.values(this.state.objects)}
             width={this.state.width}
           />
         </div>
