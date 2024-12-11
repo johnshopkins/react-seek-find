@@ -21,7 +21,6 @@ $iconRatio: 0.35;
       height: 100%;
       min-width: 100%;
       overflow: hidden;
-      padding: 0 #{map.get($shared-vars, 'legendPadding_small')}px;
 
       user-select: none;
       // -moz-user-select: none;
@@ -30,7 +29,7 @@ $iconRatio: 0.35;
 
       button {
         @include button(round);
-        // margin: #{map.get($shared-vars, 'legendPadding_small')}px;
+        margin: 0 #{map.get($shared-vars, 'legendPadding_small')}px;
 
         svg {
           height: #{map.get($shared-vars, 'utilitiesIconHeight')}px;
