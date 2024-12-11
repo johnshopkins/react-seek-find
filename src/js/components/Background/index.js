@@ -28,7 +28,7 @@ export default function Background({ containerHeight, containerWidth, gamePlacem
   }
 
   if (!isPinchZooming) {
-    imageStyle.transition = `all ${settings.canvasTransition}`;
+    imageStyle.transition = `height ${settings.canvasTransition}, width ${settings.canvasTransition}`;
   }
 
   return (

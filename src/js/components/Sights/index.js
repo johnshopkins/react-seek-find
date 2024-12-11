@@ -143,7 +143,7 @@ export default forwardRef(({ checkGuess, height, onSightsMove, show, width }, re
   }
 
   if (useTransition) {
-    containerStyle.transition = `all ${settings.canvasTransition}`;
+    containerStyle.transition = `left ${settings.canvasTransition}, top ${settings.canvasTransition}`;
   }
 
   return (

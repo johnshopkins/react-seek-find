@@ -987,8 +987,8 @@ class Illustration extends Component {
     if (this.state.isDragging) {
       gameClasses.push('grabbing');
     } else if (!this.state.isPinchZooming) {
-      gameStyles.transition = `all ${settings.canvasTransition}`;
-      gamePlacementStyles.transition = `all ${settings.canvasTransition}`;
+      gameStyles.transition = `left ${settings.canvasTransition}, top ${settings.canvasTransition}`;
+      gamePlacementStyles.transition = `left ${settings.canvasTransition}, top ${settings.canvasTransition}`;
     }
 
     return (
