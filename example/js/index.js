@@ -3,7 +3,7 @@ global.logger = console;
 const { createRoot } = ReactDOM;
 
 import { FindableObjectGroup, Game } from '../../src/js/main';
-import image from '../images/art.png';
+import image from '../images/art.jpg';
 import Dart from './objects/Dart';
 import Mascot from './objects/Mascot';
 import Seal from './objects/Seal';
@@ -25,8 +25,8 @@ root.render(
   <Game
     container={elem} // image should always be wider than this element
     image={image}
-    imageHeight={2672}
-    imageWidth={4750}
+    imageWidth={3750}
+    imageHeight={2109}
     // test={true}
     objects={[
       Dart,
