@@ -1695,7 +1695,7 @@ describe('Container', () => {
           act(() => jest.advanceTimersByTime(1000));
           act(() => fireEvent.pointerUp(scrollRightButton));
 
-          expect(thumbnails).toHaveStyle({ 'left': '-400px' }); // 10 x thumbnailWidth (40)
+          expect(thumbnails).toHaveStyle({ 'left': '-440px' }); // 10 x thumbnailWidth (40) + initial 40px move
           expect(scrollLeftButton).not.toBeDisabled();
           expect(scrollRightButton).not.toBeDisabled();
 
@@ -1720,7 +1720,7 @@ describe('Container', () => {
           act(() => jest.advanceTimersByTime(1000));
           act(() => fireEvent.pointerUp(scrollLeftButton))
 
-          expect(thumbnails).toHaveStyle({ 'left': '-384px' });
+          expect(thumbnails).toHaveStyle({ 'left': '-344px' });
 
           // hold down the scroll left button for 1 more second
           act(() => fireEvent.pointerDown(scrollLeftButton))
@@ -1759,7 +1759,7 @@ describe('Container', () => {
           act(() => jest.advanceTimersByTime(1000));
           await user.keyboard('{/Enter}');
 
-          expect(thumbnails).toHaveStyle({ 'left': '-400px' }); // 10 x thumbnailWidth (40)
+          expect(thumbnails).toHaveStyle({ 'left': '-440px' }); // 10 x thumbnailWidth (40)
           expect(scrollLeftButton).not.toBeDisabled();
           expect(scrollRightButton).not.toBeDisabled();
 
@@ -1787,7 +1787,7 @@ describe('Container', () => {
           act(() => jest.advanceTimersByTime(1000));
           await user.keyboard('{/Enter}');
 
-          expect(thumbnails).toHaveStyle({ 'left': '-384px' });
+          expect(thumbnails).toHaveStyle({ 'left': '-344px' });
 
           // hold down the scroll left button for 1 more second
           await user.keyboard('{Enter>}');
