@@ -39,7 +39,16 @@ export default function Legend({ bonusObjects, breakpoint, found, gameComplete, 
 
   const buttonWidth = parseInt(settings.utilitiesIconHeight) + (parseInt(settings.buttonPadding) * 2);
   const availableSpace = width - (buttonWidth * 2) - (parseInt(settings[`legendPadding_${breakpoint}`]) * 4);
-  const legendWidth = findableObjects.length * thumbnailSize + (findableObjects.length -1) * parseInt(settings[`legendGap_${breakpoint}`]);
+  const legendWidth = (
+    // thumbnails themselves
+    (findableObjects.length * thumbnailSize) +
+
+    // gap between thumbnails
+    ((findableObjects.length -1) * parseInt(settings[`legendGap_${breakpoint}`])) +
+
+    // padding around groups - subtract 1 to not include the padding-right of the last group
+    ((groups.length * 2 - 1) * parseInt(settings[`legendPadding_${breakpoint}`]))
+  );
 
   const needsPagination = legendWidth > availableSpace;
 
