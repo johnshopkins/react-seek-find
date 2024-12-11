@@ -3,14 +3,14 @@ import { FindableObject } from '../../../src/js/main';
 import thumbnail from '../../images/seal.png';
 
 const create = () => {
-  const path = new Path2D();
+  const ctx = new Path2D();
 
-  path.moveTo(1027.3, 1893.2);
-  path.bezierCurveTo(1019.7, 1939.6, 1077.5, 1966.1, 1116.7, 1948.4);
-  path.bezierCurveTo(1122.3, 1918.5, 1083.0, 1875.8, 1027.3, 1893.2);
-  path.closePath();
-
-  return path;
+  ctx.moveTo(811.0, 1494.3);
+  ctx.bezierCurveTo(805.0, 1531.0, 850.6, 1551.9, 881.6, 1537.9);
+  ctx.bezierCurveTo(886.0, 1514.3, 855.0, 1480.6, 811.0, 1494.3);
+  ctx.closePath();
+  
+  return ctx;
 }
 
-export default new FindableObject('seal', 'Seal', thumbnail, create, { x: 885, y: 1315 }, 'jhu');
+export default new FindableObject('seal', 'Seal', thumbnail, create, { x: 376, y: 1036 }, 'jhu');

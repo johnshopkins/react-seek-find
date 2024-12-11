@@ -15,4 +15,4 @@ const create = () => {
   return path;
 }
 
-export default new FindableObject('dart', 'Dart', thumbnail, create, { x: 250, y: 250 }, 'jhu');
+export default new FindableObject('dart', 'Dart', thumbnail, create, { x: 250, y: 250 }, 'fun', 200);

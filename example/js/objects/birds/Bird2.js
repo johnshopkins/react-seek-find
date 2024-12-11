@@ -1,25 +1,25 @@
 import { FindableObject } from '../../../../src/js/main';
 
 const create = () => {
-  const path = new Path2D();
+  const ctx = new Path2D();
 
-  path.moveTo(466.3, 445.9);
-  path.bezierCurveTo(460.7, 445.8, 453.4, 452.3, 449.2, 457.5);
-  path.bezierCurveTo(449.2, 457.5, 412.3, 498.9, 410.3, 507.3);
-  path.bezierCurveTo(412.6, 516.3, 422.4, 518.0, 432.1, 517.3);
-  path.lineTo(431.9, 533.5);
-  path.lineTo(437.4, 531.1);
-  path.lineTo(437.4, 516.9);
-  path.bezierCurveTo(437.4, 516.9, 443.6, 516.0, 444.7, 515.2);
-  path.lineTo(444.7, 528.1);
-  path.lineTo(449.8, 525.9);
-  path.lineTo(449.8, 513.0);
-  path.bezierCurveTo(469.7, 506.7, 477.8, 498.8, 474.9, 470.3);
-  path.bezierCurveTo(474.9, 470.3, 483.7, 465.7, 483.8, 457.4);
-  path.bezierCurveTo(481.9, 452.3, 473.6, 446.0, 466.3, 445.9);
-  path.closePath();
+  ctx.moveTo(368.1, 351.9);
+  ctx.bezierCurveTo(363.7, 351.9, 357.9, 357.0, 354.6, 361.1);
+  ctx.bezierCurveTo(354.6, 361.1, 325.5, 393.8, 323.9, 400.4);
+  ctx.bezierCurveTo(325.7, 407.6, 333.5, 408.9, 341.1, 408.3);
+  ctx.lineTo(341.0, 421.1);
+  ctx.lineTo(345.4, 419.2);
+  ctx.lineTo(345.4, 408.0);
+  ctx.bezierCurveTo(345.4, 408.0, 350.2, 407.3, 351.0, 406.7);
+  ctx.lineTo(351.0, 416.8);
+  ctx.lineTo(355.1, 415.1);
+  ctx.lineTo(355.1, 404.9);
+  ctx.bezierCurveTo(370.8, 399.9, 377.2, 393.7, 374.9, 371.2);
+  ctx.bezierCurveTo(374.9, 371.2, 381.8, 367.5, 381.9, 361.0);
+  ctx.bezierCurveTo(380.4, 357.0, 373.9, 352.0, 368.1, 351.9);
+  ctx.closePath();
 
-  return path;
+  return ctx;
 }
 
 export default new FindableObject('bird2', 'Bird 2', null, create, { x: 0, y: 0 });
