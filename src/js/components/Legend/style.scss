@@ -100,13 +100,21 @@ $iconRatio: 0.35;
         }
 
         &.found {
+          background: #fff;
+          
+          // a trick i found that rounds the corners without adding a thicker border -jen
+          border: 0px solid var(--jhu-brand-white);
+          border-radius: 3px;
+
           svg {
-            background: #fff;
             fill: var(--jhu-brand-homewood-green);
           }
         }
 
         &.not-found {
+          border: 2px solid var(--jhu-brand-white);
+          border-radius: 9999em;
+          
           span {
             color: var(--jhu-brand-white);
             position: absolute;
