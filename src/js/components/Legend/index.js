@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ArrowIcon from '../Icons/Arrow';
-import Thumbnails from './Thumbnails';
+import ThumbnailGroup from './ThumbnailGroup';
 import * as settings from '../../../css/utils/shared-variables.scss';
 import './style.scss';
 
@@ -11,7 +11,7 @@ import './style.scss';
  * tabbed to when tabbing was disabled (due to instructions overlay
  * being opened), so I had to specify a tabIndex value to prevent that.
  */
-export default function Legend({ bonusObjects, breakpoint, found, gameComplete, objects, toFind, width }) {
+export default function Legend({ bonusObjects, breakpoint, found, gameComplete, groups, objects, width }) {
 
   const [isPointerDown, setIsPointerDown] = useState(false);
   const [direction, setDirection] = useState(null);
@@ -20,6 +20,22 @@ export default function Legend({ bonusObjects, breakpoint, found, gameComplete, 
   const thumbnailSize = parseInt(settings[`legendThumbnailHeight_${breakpoint}`]);
 
   const findableObjects = !gameComplete ? objects : [...bonusObjects, ...objects];
+
+  // sort objects into groups
+  const sorted = {};
+  groups.forEach(group => {
+    sorted[group.id] = {
+      name: group.name,
+      objects: [],
+      found: 0,
+    };
+  });
+  objects.forEach(object => {
+    sorted[object.group].objects.push(object);
+    if (found.includes(object.id)) {
+      sorted[object.group].found++;
+    }
+  });
 
   const buttonWidth = parseInt(settings.utilitiesIconHeight) + (parseInt(settings.buttonPadding) * 2);
   const availableSpace = width - (buttonWidth * 2) - (parseInt(settings[`legendPadding_${breakpoint}`]) * 4);
@@ -80,7 +96,6 @@ export default function Legend({ bonusObjects, breakpoint, found, gameComplete, 
 
   return (
     <div className="legend-container" tabIndex="-1">
-      <div className="label">Can you find us all? {found.length}/{toFind}</div>
         <div className="legend-scroll">
           {needsPagination &&
             <button
@@ -95,10 +110,15 @@ export default function Legend({ bonusObjects, breakpoint, found, gameComplete, 
           }
           <div className="legend" style={{width: `${availableSpace}px` }}>
             <div className="thumbnails" style={{ left: `${positionX}px` }}>
-              <Thumbnails
-                found={found}
-                objects={findableObjects}
-              />
+              {Object.values(sorted).map((group, i) => {
+                return (
+                  <ThumbnailGroup
+                    found={found}
+                    group={group}
+                    key={i}
+                  />
+                )
+              })}
             </div>
           </div>
           {needsPagination &&

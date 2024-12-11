@@ -3,6 +3,10 @@ import CheckIcon from '../Icons/Check';
 import CircleIcon from '../Icons/Circle';
 
 export default memo(function Thumbnails({ found, objects }) {
+
+  console.log(objects);
+
+  return "<p>test</p>"
   return (
     <>
     {objects.map((object, i) => {

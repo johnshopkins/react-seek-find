@@ -31,6 +31,7 @@ class Game extends Component {
 
     // combine stored user data with default user data
     const userData = {
+      bonusComplete: false,
       gameComplete: false,
       found: [],
       toFind: this.props.objects.reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0),
@@ -64,6 +65,7 @@ class Game extends Component {
     this.handleKeyboardFocusChange = this.handleKeyboardFocusChange.bind(this);
     this.handleFoundObject = this.handleFoundObject.bind(this);
     this.openInstructions = this.openInstructions.bind(this);
+    this.playBonusRound = this.playBonusRound.bind(this);
     this.replay = this.replay.bind(this);
     this.saveGame = this.saveGame.bind(this);
     this.scaleToFit = this.scaleToFit.bind(this);
@@ -268,6 +270,8 @@ class Game extends Component {
           event: 'unlock_achievement',
           achievement_id: 'game_complete',
         });
+
+        this.playBonusRound();
       }
 
       this.saveGame({
@@ -299,6 +303,24 @@ class Game extends Component {
       seenInstructions: true,
       gameComplete: false,
     });
+  }
+
+  playBonusRound() {
+
+    console.log('play bonus round', this.props.bonusObjects);
+
+    this.setState({
+      // update objects
+      // found: [],
+      // gameComplete: false,
+    })
+
+    // this.saveGame({
+    //   found: [],
+    //   seenInstructions: true,
+    //   gameComplete: false,
+    // });
+
   }
   
   zoomIn(callback = () => {}) {
@@ -495,9 +517,11 @@ class Game extends Component {
             zoomOutLimitReached={this.state.zoomOutLimitReached}
           />
           <Legend
+            bonusObjects={this.props.bonusObjects}
             breakpoint={this.state.breakpoint}
             found={this.state.found}
-            toFind={this.state.toFind}
+            gameComplete={this.state.gameComplete}
+            groups={this.props.groups}
             objects={Object.values(this.objects)}
             width={this.state.width}
           />
@@ -508,6 +532,7 @@ class Game extends Component {
 }
 
 Game.defaultProps = {
+  bonusObjects: [],
   foundKeepAlive: 2000,
   hintKeepAlive: 10000,
   objects: [],
@@ -519,6 +544,7 @@ Game.defaultProps = {
 };
 
 Game.propTypes = {
+  bonusObjects: PropTypes.array,
   containerHeight: PropTypes.number, // for testing convenience
   containerWidth: PropTypes.number, // for testing convenience
   foundKeepAlive: PropTypes.number,

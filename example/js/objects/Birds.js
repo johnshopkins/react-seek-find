@@ -8,4 +8,4 @@ import Bird2 from './birds/Bird2';
 export default new OneToManyFindableObject('birds', 'Birds', thumbnail, [
   Bird1,
   Bird2
-]);
+], 'fun');
