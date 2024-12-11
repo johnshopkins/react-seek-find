@@ -20,7 +20,7 @@ $iconRatio: 0.35;
       gap: #{map.get($shared-vars, 'legendPadding_small')}px;
       height: 100%;
       min-width: 100%;
-      overflow: hidden;
+      overflow-x: clip;
       padding: 0 #{map.get($shared-vars, 'legendPadding_small')}px;
 
       user-select: none;
@@ -62,7 +62,7 @@ $iconRatio: 0.35;
     display: flex;
     gap: #{map.get($shared-vars, 'legendPadding_small')}px;
     height: 100%;
-    overflow: hidden;
+    overflow-x: clip;
     position: relative;
 
     .thumbnails {
@@ -89,7 +89,10 @@ $iconRatio: 0.35;
       }
 
       .badge {
+        align-content: center;
+        display: flex;
         height: calc(#{map.get($shared-vars, 'legendThumbnailHeight_small')}px * $iconRatio);
+        justify-content: center;
         width: calc(#{map.get($shared-vars, 'legendThumbnailHeight_small')}px * $iconRatio);
         position: absolute;
 
