@@ -1101,14 +1101,14 @@ class Illustration extends Component {
                 <InstructionsIcon tooltip="How to play" />
               </button>
 
-              {!this.props.bonusComplete &&
+              {((this.props.isBonus && !this.props.bonusComplete) || (!this.props.isBonus && !this.props.gameComplete)) &&
                 <button className="hint" onClick={this.toggleHint} tabIndex={this.props.disableTabbing ? '-1' : null}>
                   {this.state.hintActive && <SlashIcon className="slash" aria-hidden="true" />}
                   <LightbulbIcon className="lightbulb" tooltip={!this.state.hintActive ? 'Give me a hint' : 'Remove hint'} />
                 </button>
               }
 
-              {this.props.bonusComplete &&
+              {((this.props.isBonus && this.props.bonusComplete) || (!this.props.isBonus && this.props.gameComplete)) &&
                 <button className="replay" onClick={this.replay} tabIndex={this.props.disableTabbing ? '-1' : null}>
                   <ReplayIcon tooltip="Play again" />
                 </button>

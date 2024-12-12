@@ -48,6 +48,7 @@ class Game extends Component {
     // combine stored and default state
     this.state = {
       focused: false,
+      isBonus: this.props.bonusObjects.length > 0,
       isFullscreen: false,
       isKeyboardFocused: false,
       browserHeight: document.documentElement.clientHeight,
@@ -535,6 +536,7 @@ class Game extends Component {
             found={this.state.found}
             foundKeepAlive={this.props.foundKeepAlive}
             gameComplete={this.state.gameComplete}
+            isBonus={this.state.isBonus}
             bonusComplete={this.state.bonusComplete}
             hintKeepAlive={this.props.hintKeepAlive}
             imageHeight={this.props.imageHeight}
