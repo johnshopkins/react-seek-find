@@ -17,7 +17,6 @@ $iconRatio: 0.35;
       background: var(--jhu-brand-heritage-blue);
       display: flex;
       flex: 1;
-      gap: #{map.get($shared-vars, 'legendPadding_small')}px;
       height: 100%;
       min-width: 100%;
       overflow-x: clip;
@@ -157,10 +156,6 @@ $iconRatio: 0.35;
   &.medium {
     .legend-container {
       height: calc(#{map.get($shared-vars, 'legendThumbnailHeight_medium')}px + (#{map.get($shared-vars, 'legendPadding_medium')}px * 2));
-
-      .legend-scroll {
-        gap: #{map.get($shared-vars, 'legendPadding_small')}px;
-      }
     }
 
     .legend {
@@ -185,10 +180,6 @@ $iconRatio: 0.35;
   &.large {
     .legend-container {
       height: calc(#{map.get($shared-vars, 'legendThumbnailHeight_large')}px + (#{map.get($shared-vars, 'legendPadding_large')}px * 2));
-
-      .legend-scroll {
-        gap: #{map.get($shared-vars, 'legendPadding_small')}px;
-      }
     }
 
     .legend {
@@ -213,10 +204,6 @@ $iconRatio: 0.35;
   &.xlarge {
     .legend-container {
       height: calc(#{map.get($shared-vars, 'legendThumbnailHeight_xlarge')}px + (#{map.get($shared-vars, 'legendPadding_xlarge')}px * 2));
-
-      .legend-scroll {
-        gap: #{map.get($shared-vars, 'legendPadding_small')}px;
-      }
     }
 
     .legend {
