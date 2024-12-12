@@ -557,10 +557,8 @@ class Game extends Component {
             zoomOutLimitReached={this.state.zoomOutLimitReached}
           />
           <Legend
-            bonusObjects={this.props.bonusObjects}
             breakpoint={this.state.breakpoint}
             found={this.state.found}
-            gameComplete={this.state.gameComplete}
             groups={this.props.groups}
             objects={Object.values(this.state.objects)}
             width={this.state.width}

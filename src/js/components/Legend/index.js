@@ -10,12 +10,9 @@ import './style.scss';
  * tabbed to when tabbing was disabled (due to instructions overlay
  * being opened), so I had to specify a tabIndex value to prevent that.
  */
-export default function Legend({ bonusObjects, breakpoint, found, gameComplete, groups, objects, width }) {
-
+export default function Legend({ breakpoint, found, groups, objects, width }) {
 
   const thumbnailSize = parseInt(settings[`legendThumbnailHeight_${breakpoint}`]);
-
-  const findableObjects = !gameComplete ? objects : [...bonusObjects, ...objects];
 
   // sort objects into groups
   const sorted = {};
@@ -26,10 +23,22 @@ export default function Legend({ bonusObjects, breakpoint, found, gameComplete, 
       ...group
     };
   });
+  
   objects.forEach(object => {
+
     sorted[object.group].objects.push(object);
-    if (found.includes(object.id)) {
-      sorted[object.group].found++;
+
+    if (object.getType() === '1:1') {
+
+      if (found.includes(object.id)) {
+        sorted[object.group].found++;
+      }
+    } else {
+      object.objects.forEach(o => {
+        if (found.includes(o.id)) {
+          sorted[object.group].found++;
+        }
+      })
     }
   });
 
