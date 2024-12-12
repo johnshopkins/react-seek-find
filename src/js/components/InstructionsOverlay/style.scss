@@ -21,25 +21,74 @@ html.fullscreen {
   z-index: var(--stack-overlay);
   
   .overlay {
-    background: var(--jhu-grayscale-0);
+    background: var(--jhu-brand-heritage-blue);
     box-sizing: border-box;
+    color: $jhu-blue-20;
+    display: flex;
+    flex-direction: column;
+    // gap: 3rem;
+    max-height: 80%;
     overflow-x: hidden;
     overflow-y: auto;
-    max-height: 80%;
+    padding: 1.5rem;
     width: 80%;
     z-index: calc(var(--stack-overlay) + 1);
 
     > * {
-      padding-left: 2.5rem;
-      padding-right: 2.5rem;
+      border: solid 2px var(--jhu-blue-60);
+      padding-left: 1rem;
+      padding-right: 1rem;
+
+      + * {
+        border-top: none;
+        padding-top: 3rem;
+      }
 
       &:first-child {
-        padding-top: 2.5rem;
+        border-bottom: none;
+        padding-top: 1rem;
       }
 
       &:last-child {
-        padding-bottom: 2.5rem;
+        padding-bottom: 1rem;
       }
+
+      &:not(:last-child) {
+        border-bottom: none;
+      }
+    }
+
+    a,
+    h1,
+    h2,
+    h3,
+    h4,
+    strong {
+      color: var(--jhu-grayscale-0);
+    }
+
+    ol,
+    ul {
+      padding-left: 1.25rem;
+    }
+
+    .overlay-header {
+
+      h1 {
+        margin: 0;
+      }
+
+      button {
+
+        + h1 {
+          margin-top: 0;
+        }
+      }
+    }
+
+    .overlay-footer {
+      background: linear-gradient(0deg, var(--jhu-blue-80) 50%, transparent 100%);
+      position: static;
     }
   }
 
