@@ -8,11 +8,12 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
 import { Game } from '../../src/js/main';
-import { FindableObject, FindableObjectGroup } from '../../src/js/main';
+import { FindableObject, FindableObjectGroup, OneToManyFindableObject } from '../../src/js/main';
 import getMouseEvent from '../helpers/getMouseEvent';
 import getPointerEvent from '../helpers/getPointerEvent';
 import getTouchEvent from '../helpers/getTouchEvent';
 import { saveGameState } from '../../src/js/lib/persistance';
+import Findable from '../../src/js/components/Findable';
 
 // mock settings so i don't have to keep updating tests for sizing changes
 jest.mock('../../src/css/utils/shared-variables.scss', () => {
@@ -93,6 +94,32 @@ const circleObject = new FindableObject(
   200
 );
 
+const starObject = new FindableObject(
+  'star',
+  'star',
+  'https://picsum.photos/143/143',
+  () => {
+    const path = new Path2D();
+    path.moveTo(668.7, 523.3);
+    path.lineTo(682.4, 551.0);
+    path.lineTo(713.0, 555.5);
+    path.lineTo(690.9, 577.0);
+    path.lineTo(696.1, 607.5);
+    path.lineTo(668.7, 593.1);
+    path.lineTo(641.4, 607.5);
+    path.lineTo(646.6, 577.0);
+    path.lineTo(624.5, 555.5);
+    path.lineTo(655.1, 551.0);
+    path.lineTo(668.7, 523.3);
+    path.closePath();
+    path.name = 'star'; // for mocking mockImplementation
+    return path;
+  },
+  { x: 460, y: 319 },
+  'fun',
+  200
+);
+
 // for when you need a bunch of objects to test
 const bunchOfObjects = [];
 let i = 0;
@@ -126,12 +153,13 @@ const getProps = (override) => {
     containerWidth: 600,
     containerHeight: 400,
     groups: [
-      new FindableObjectGroup('jhu', 'JHU')
+      new FindableObjectGroup('jhu', 'JHU'),
+      new FindableObjectGroup('fun', 'Fun')
     ],
     imageWidth: 800,
     imageHeight: 700,
     image: 'https://picsum.photos/800/700',
-    objects: [boxObject, circleObject],
+    objects: [boxObject, circleObject, starObject],
     test: true,
     ...override
   }
@@ -337,8 +365,17 @@ describe('Game', () => {
 
       const dataLayer = []
       const onGameComplete = jest.fn();
+      const onBonusComplete = jest.fn();
 
-      const { container } = await renderGame({ onGameComplete });
+      const bonusObject = new OneToManyFindableObject(
+        'boxes', 'Boxes', 'https://picsum.photos/143/143', [...bunchOfObjects.slice(0, 2)], 'fun'
+      );
+
+      const { container } = await renderGame({
+        onBonusComplete,
+        onGameComplete,
+        bonusObjects: [bonusObject]
+      });
 
       const utilities = container.querySelector('.utilities');
 
@@ -352,18 +389,21 @@ describe('Game', () => {
 
       // legend images show a status of not found
       const legend = container.querySelector('.legend-container');
-      const legendLabel = container.querySelector('.legend-container .label');
-      const legendImageContainers = container.querySelectorAll('.legend-container .thumbnail');
-      const legendImages = await within(legend).findAllByRole('img');
+      const legendLabels = container.querySelectorAll('.legend-container .legend-group .label');
+      let legendImageContainers = container.querySelectorAll('.legend-container .thumbnail');
+      let legendImages = await within(legend).findAllByRole('img');
 
-      expect(legendLabel).toHaveTextContent('JHU finds 0/2');
+      expect(legendLabels[0]).toHaveTextContent('JHU finds 0/2');
+      expect(legendLabels[1]).toHaveTextContent('Fun finds 0/1');
       expect(within(legendImageContainers[0]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(within(legendImageContainers[1]).queryByTitle('Found')).not.toBeInTheDocument();
+      expect(within(legendImageContainers[2]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: not found');
+      expect(legendImages[2]).toHaveAttribute('alt', 'Object to find: star; Status: not found');
 
-      const canvas = container.querySelector('canvas.findable');
-      const context = canvas.getContext('2d');
+      let canvas = container.querySelector('canvas.findable');
+      let context = canvas.getContext('2d');
 
       // initial placement of canvas within the page
       jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 0, y: 0 });
@@ -374,11 +414,14 @@ describe('Game', () => {
       fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 450, offsetY: 250 }));
 
       // object found
-      expect(legendLabel).toHaveTextContent('JHU finds 1/2');
+      expect(legendLabels[0]).toHaveTextContent('JHU finds 1/2');
+      expect(legendLabels[1]).toHaveTextContent('Fun finds 0/1');
       expect(within(legendImageContainers[0]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[2]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: found');
+      expect(legendImages[2]).toHaveAttribute('alt', 'Object to find: star; Status: not found');
       dataLayer.push({ event: 'level_up', level: 1 });
       expect(window.dataLayer).toEqual(dataLayer);
 
@@ -390,8 +433,10 @@ describe('Game', () => {
       // found objects are still the same
       expect(within(legendImageContainers[0]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[2]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: not found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: found');
+      expect(legendImages[2]).toHaveAttribute('alt', 'Object to find: star; Status: not found');
 
       // mock a click on the circle, again
       context.isPointInPath.mockImplementation(path => path.name === 'circle');
@@ -410,12 +455,34 @@ describe('Game', () => {
       fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 350, offsetY: 350 }));
 
       // object found
-      expect(legendLabel).toHaveTextContent('JHU finds 2/2');
+      expect(legendLabels[0]).toHaveTextContent('JHU finds 2/2');
+      expect(legendLabels[1]).toHaveTextContent('Fun finds 0/1');
       expect(within(legendImageContainers[0]).getByTitle('Found')).toBeInTheDocument();
       expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[2]).queryByTitle('Found')).not.toBeInTheDocument();
       expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: found');
       expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: found');
-      dataLayer.push({ event: 'level_up', level: 2 }, { event: 'unlock_achievement', achievement_id: 'game_complete' });
+      expect(legendImages[2]).toHaveAttribute('alt', 'Object to find: star; Status: not found');
+      expect(alreadyFound).toHaveStyle({ left: '450px', top: '250px' });
+      dataLayer.push({ event: 'level_up', level: 2 });
+      expect(window.dataLayer).toEqual(dataLayer);
+      
+
+      // mock a click on star
+      context.isPointInPath.mockImplementation(path => path.name === 'star');
+      fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 680, offsetY: 530 }, true));
+      fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 680, offsetY: 530 }));
+
+      // object found
+      expect(legendLabels[0]).toHaveTextContent('JHU finds 2/2');
+      expect(legendLabels[1]).toHaveTextContent('Fun finds 1/1');
+      expect(within(legendImageContainers[0]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[2]).getByTitle('Found')).toBeInTheDocument();
+      expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: found');
+      expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: found');
+      expect(legendImages[2]).toHaveAttribute('alt', 'Object to find: star; Status: found');
+      dataLayer.push({ event: 'level_up', level: 3 }, { event: 'unlock_achievement', achievement_id: 'game_complete' });
       expect(window.dataLayer).toEqual(dataLayer);
 
       act(() => {
@@ -424,6 +491,76 @@ describe('Game', () => {
 
       // game complete
       expect(onGameComplete).toHaveBeenCalledTimes(1);
+
+
+      // bonus round
+
+      // refresh some vars
+      canvas = container.querySelector('canvas.findable');
+      context = canvas.getContext('2d');
+      legendImageContainers = container.querySelectorAll('.legend-container .thumbnail');
+      legendImages = await within(legend).findAllByRole('img');
+
+      expect(legendLabels[0]).toHaveTextContent('JHU finds 2/2');
+      expect(legendLabels[1]).toHaveTextContent('Fun finds 1/3');
+      
+      expect(within(legendImageContainers[0]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[2]).queryByTitle('Found')).not.toBeInTheDocument(); // bonus
+      expect(within(legendImageContainers[3]).getByTitle('Found')).toBeInTheDocument();
+      
+      expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: found');
+      expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: found');
+      expect(legendImages[2]).toHaveAttribute('alt', 'Object to find: Boxes; Status: 0/2 found');
+      expect(legendImages[3]).toHaveAttribute('alt', 'Object to find: star; Status: found');
+
+
+      // mock a click on box0
+      context.isPointInPath.mockImplementation(path => path.name === 'box0');
+      fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 60, offsetY: 60 }, true));
+      fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 60, offsetY: 60 }));
+
+      // object found
+      expect(legendLabels[0]).toHaveTextContent('JHU finds 2/2');
+      expect(legendLabels[1]).toHaveTextContent('Fun finds 2/3');
+      expect(within(legendImageContainers[0]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[2]).queryByTitle('Found')).not.toBeInTheDocument(); // bonus
+      expect(within(legendImageContainers[3]).getByTitle('Found')).toBeInTheDocument();
+      expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: found');
+      expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: found');
+      expect(legendImages[2]).toHaveAttribute('alt', 'Object to find: Boxes; Status: 1/2 found');
+      expect(legendImages[3]).toHaveAttribute('alt', 'Object to find: star; Status: found');
+      dataLayer.push({ event: 'level_up', level: 4 });
+      expect(window.dataLayer).toEqual(dataLayer);
+
+
+      // mock a click on box1
+      context.isPointInPath.mockImplementation(path => path.name === 'box1');
+      fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 260, offsetY: 60 }, true));
+      fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 260, offsetY: 60 }));
+
+      // object found
+      expect(legendLabels[0]).toHaveTextContent('JHU finds 2/2');
+      expect(legendLabels[1]).toHaveTextContent('Fun finds 3/3');
+      expect(within(legendImageContainers[0]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[1]).getByTitle('Found')).toBeInTheDocument();
+      expect(within(legendImageContainers[2]).getByTitle('Found')).toBeInTheDocument(); // bonus
+      expect(within(legendImageContainers[3]).getByTitle('Found')).toBeInTheDocument();
+      expect(legendImages[0]).toHaveAttribute('alt', 'Object to find: box; Status: found');
+      expect(legendImages[1]).toHaveAttribute('alt', 'Object to find: circle; Status: found');
+      expect(legendImages[2]).toHaveAttribute('alt', 'Object to find: Boxes; Status: found');
+      expect(legendImages[3]).toHaveAttribute('alt', 'Object to find: star; Status: found');
+      dataLayer.push({ event: 'level_up', level: 5 }, { event: 'unlock_achievement', achievement_id: 'bonus_complete' });
+      expect(window.dataLayer).toEqual(dataLayer);
+
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      // bonus complete
+      expect(onBonusComplete).toHaveBeenCalledTimes(1);
 
       // hint button is hidden
       expect(hintButton).not.toBeVisible();
@@ -1857,12 +1994,13 @@ describe('Game', () => {
 
   test('Replay', async () => {
 
+    const onBonusComplete = jest.fn();
     const onGameComplete = jest.fn();
 
-    const { container } = await renderGame({ onGameComplete });
+    const { container } = await renderGame({ onBonusComplete, onGameComplete });
 
-    const canvas = container.querySelector('canvas.findable');
-    const context = canvas.getContext('2d');
+    let canvas = container.querySelector('canvas.findable');
+    let context = canvas.getContext('2d');
 
     // initial placement of canvas within the page
     jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({ x: 0, y: 0 });
@@ -1876,6 +2014,11 @@ describe('Game', () => {
     context.isPointInPath.mockImplementation(path => path.name === 'box');
     fireEvent(canvas, getMouseEvent('mousedown', { clientX: 100, clientY: 100 }));
     fireEvent(canvas, getMouseEvent('mouseup', { clientX: 100, clientY: 100 }));
+
+    // mock a click on star
+    context.isPointInPath.mockImplementation(path => path.name === 'star');
+    fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 680, offsetY: 530 }, true));
+    fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 680, offsetY: 530 }));
     
     jest.runAllTimers();
 
