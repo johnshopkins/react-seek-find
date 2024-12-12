@@ -14,6 +14,11 @@ export default function LegendScroll({ availableSpace, found, groups, legendWidt
   const minPositionX = 0;
   const maxPositionX = -Math.abs(legendWidth - availableSpace);
 
+  if (positionX < maxPositionX) {
+    // on screen resize
+    setPositionX(maxPositionX);
+  }
+
   useEffect(() => {
 
     if (!needsPagination) {
