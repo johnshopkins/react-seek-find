@@ -29,4 +29,4 @@ const create = () => {
   return ctx;
 }
 
-export default new FindableObject('bird1', 'Bird 1', null, create, { x: 135, y: 600 });
+export default new FindableObject('bird1', 'Bird 1', null, create, { x: 135, y: 600 }, 'fun');

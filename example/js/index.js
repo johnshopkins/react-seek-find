@@ -9,12 +9,21 @@ import Box from './objects/Box';
 import Circle from './objects/Circle';
 import Star from './objects/Star';
 import image from '../images/art.jpg';
-import Dart from './objects/Dart';
-import Fish from './objects/Fish';
-import Glove from './objects/Glove';
-import Seal from './objects/Seal';
+
 import Birds from './objects/Birds';
-import moreObjects from './objects/MoreObjects';
+import Jay from './objects/Jay';
+import ViolinPlayer from './objects/ViolinPlayer';
+import GlovelessMan from './objects/GlovelessMan';
+import Glove from './objects/Glove';
+import FoamFinger from './objects/FoamFinger';
+import Fish from './objects/Fish';
+import Clock from './objects/Clock';
+import CoffeeMug from './objects/CoffeeMug';
+import Basketball from './objects/Basketball';
+import RonAndBarney from './objects/RonAndBarney';
+import Dart from './objects/Dart';
+import MortarBoard from './objects/MortarBoard';
+import Seal from './objects/Seal';
 
 const groups = [
   new FindableObjectGroup('jhu', 'JHU', '#68ace5'),
@@ -39,7 +48,6 @@ if (testing) {
         Box,
         Circle,
         Star,
-        Birds,
         // ...moreObjects,
       ]}
       onGameComplete={() => console.log('hooray!')}
@@ -57,9 +65,18 @@ if (testing) {
       imageHeight={2109}
       // test={true}
       objects={[
-        Dart,
+        Jay,
+        // ViolinPlayer,
+        // GlovelessMan,
+        // Glove,
+        // FoamFinger,
         Fish,
-        Glove,
+        Clock,
+        CoffeeMug,
+        Basketball,
+        RonAndBarney,
+        Dart,
+        MortarBoard,
         Seal,
         // ...moreObjects,
       ]}
