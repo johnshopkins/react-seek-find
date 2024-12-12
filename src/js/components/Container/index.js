@@ -535,6 +535,7 @@ class Game extends Component {
             found={this.state.found}
             foundKeepAlive={this.props.foundKeepAlive}
             gameComplete={this.state.gameComplete}
+            bonusComplete={this.state.bonusComplete}
             hintKeepAlive={this.props.hintKeepAlive}
             imageHeight={this.props.imageHeight}
             imageSrc={this.props.image}
