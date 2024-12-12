@@ -846,7 +846,17 @@ class Illustration extends Component {
    */
   getRandomHint() {
 
-    const availableObjects = Object.values(this.props.objects).filter(object => {
+    // extract out 1:many into separate objects
+    const objects = []
+    Object.values(this.props.objects).forEach(object => {
+      if (object.getType() === '1:1') {
+        objects.push(object);
+      } else {
+        objects.push(...object.objects);
+      }
+    })
+
+    const availableObjects = objects.filter(object => {
       // not found and not already given as a hint (until all objects are given as a hint)
       return !this.props.found.includes(object.id) && !this.state.hintsGiven.includes(object.id);
     });
