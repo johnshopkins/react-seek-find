@@ -114,7 +114,7 @@ for (let y = 100; y < 800; y += 200) {
         return path;
       },
       { x: x - 50, y: y - 50 },
-      'jhu',
+      'fun',
       200
     ));
     i++;
@@ -1590,7 +1590,13 @@ describe('Game', () => {
 
     test('Duplicate hints aren\'t given until all hints are shown', async () => {
 
-      const { container } = await renderGame({ objects: bunchOfObjects.slice(0, 10) });
+      const { container } = await renderGame({
+        objects: bunchOfObjects.slice(0, 10),
+        groups: [
+          new FindableObjectGroup('jhu', 'JHU'),
+          new FindableObjectGroup('fun', 'Fun')
+        ]
+      });
       const hintButton = screen.getByRole('button', { name: 'Give me a hint' });
 
       const hintsGiven = [];
@@ -1623,7 +1629,13 @@ describe('Game', () => {
     test('If an item is found, it does not get factored into hints anymore', async () => {
 
       const objects = bunchOfObjects.slice(0, 10);
-      const { container } = await renderGame({ objects });
+      const { container } = await renderGame({
+        objects,
+        groups: [
+          new FindableObjectGroup('jhu', 'JHU'),
+          new FindableObjectGroup('fun', 'Fun')
+        ]
+      });
 
       const canvas = container.querySelector('canvas.findable');
       const context = canvas.getContext('2d');
@@ -1680,11 +1692,23 @@ describe('Game', () => {
 
     });
 
+    test('Legend groups', async () => {
+
+
+
+    });
+
     describe('Pointers', () => {
 
       test('Can scroll when there are more thumbnails than space allows', async() => {
 
-        const { container } = await renderGame({ objects: bunchOfObjects });
+        const { container } = await renderGame({
+          objects: bunchOfObjects,
+          groups: [
+            new FindableObjectGroup('jhu', 'JHU'),
+            new FindableObjectGroup('fun', 'Fun')
+          ]
+        });
         
         const legend = container.querySelector('.legend-container');
 
@@ -1721,7 +1745,7 @@ describe('Game', () => {
         act(() => jest.advanceTimersByTime(1000));
         act(() => fireEvent.pointerUp(scrollRightButton))
 
-        expect(thumbnails).toHaveStyle({ 'left': '-784px' }); // max
+        expect(thumbnails).toHaveStyle({ 'left': '-794px' }); // max
         expect(scrollLeftButton).not.toBeDisabled();
         expect(scrollRightButton).toBeDisabled();
 
@@ -1730,14 +1754,14 @@ describe('Game', () => {
         act(() => jest.advanceTimersByTime(1000));
         act(() => fireEvent.pointerUp(scrollRightButton))
 
-        expect(thumbnails).toHaveStyle({ 'left': '-784px' }); // still at max
+        expect(thumbnails).toHaveStyle({ 'left': '-794px' }); // still at max
 
         // hold down the scroll left button for 1 second
         act(() => fireEvent.pointerDown(scrollLeftButton))
         act(() => jest.advanceTimersByTime(1000));
         act(() => fireEvent.pointerUp(scrollLeftButton))
 
-        expect(thumbnails).toHaveStyle({ 'left': '-344px' });
+        expect(thumbnails).toHaveStyle({ 'left': '-354px' });
 
         // hold down the scroll left button for 1 more second
         act(() => fireEvent.pointerDown(scrollLeftButton))
@@ -1756,7 +1780,13 @@ describe('Game', () => {
 
       test('Keyboard users can navigate the legend', async() => {
 
-        const { container } = await renderGame({ objects: bunchOfObjects });
+        const { container } = await renderGame({
+          objects: bunchOfObjects,
+          groups: [
+            new FindableObjectGroup('jhu', 'JHU'),
+            new FindableObjectGroup('fun', 'Fun')
+          ]
+        });
         
         const legend = container.querySelector('.legend-container');
 
@@ -1789,7 +1819,7 @@ describe('Game', () => {
         act(() => jest.advanceTimersByTime(1000));
         await user.keyboard('{/Enter}');
 
-        expect(thumbnails).toHaveStyle({ 'left': '-784px' }); // max
+        expect(thumbnails).toHaveStyle({ 'left': '-794px' }); // max
         expect(scrollLeftButton).not.toBeDisabled();
         expect(scrollRightButton).toBeDisabled();
 
@@ -1798,7 +1828,7 @@ describe('Game', () => {
         act(() => jest.advanceTimersByTime(1000));
         await user.keyboard('{/Enter}');
 
-        expect(thumbnails).toHaveStyle({ 'left': '-784px' }); // still at max
+        expect(thumbnails).toHaveStyle({ 'left': '-794px' }); // still at max
 
         await user.tab({ shift: true });
         expect(scrollLeftButton).toHaveFocus();
@@ -1808,7 +1838,7 @@ describe('Game', () => {
         act(() => jest.advanceTimersByTime(1000));
         await user.keyboard('{/Enter}');
 
-        expect(thumbnails).toHaveStyle({ 'left': '-344px' });
+        expect(thumbnails).toHaveStyle({ 'left': '-354px' });
 
         // hold down the scroll left button for 1 more second
         await user.keyboard('{Enter>}');
