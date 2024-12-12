@@ -34,7 +34,6 @@ class Game extends Component {
       bonusComplete: false,
       gameComplete: false,
       found: [],
-      toFind: this.props.objects.reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0),
       seenInstructions: false,
       ...loadGameState(this.props.storageKey)
     }
@@ -55,6 +54,7 @@ class Game extends Component {
       browserWidth: document.documentElement.clientWidth,
       openInstructions: userData.seenInstructions === false,
       objects: objects,
+      toFind: this.props.objects.reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0),
       ...this.getViewState(true),
       ...userData,
     };
@@ -248,16 +248,28 @@ class Game extends Component {
       return false;
     }
 
+    const gameAlreadyComplete = this.state.gameComplete;
+
     this.setState(state => {
 
-      const found = [...state.found]; // handle immutably to prevent bugs
+      const newState = {
+        found: [...state.found] // handle immutably to prevent bugs
+      };
 
-      found.push(foundObject.id);
+      newState.found.push(foundObject.id);
 
-      return {
-        gameComplete: found.length === this.state.toFind,
-        found,
+      const round = !state.gameComplete ? 'game' : 'bonus'
+      newState[`${round}Complete`] = newState.found.length === this.state.toFind;
+
+      if (!state.gameComplete) {
+        // game round
+        newState.gameComplete = newState.found.length === this.state.toFind;
+      } else {
+        // bonus round
+        newState.bonusComplete = newState.found.length === this.state.toFind;
       }
+
+      return newState;
 
     }, () => {
 
@@ -266,17 +278,32 @@ class Game extends Component {
         level: this.state.found.length,
       });
 
-      if (this.state.gameComplete) {
-        setTimeout(this.props.onGameComplete, 1000)
+      if (!gameAlreadyComplete && this.state.gameComplete) {
+
+        setTimeout(() => {
+          this.props.onGameComplete();
+          this.playBonusRound();
+        }, 1000)
+
         dataLayer.push({
           event: 'unlock_achievement',
           achievement_id: 'game_complete',
         });
 
-        this.playBonusRound();
+      } else if (this.state.bonusComplete) {
+
+        setTimeout(() => {
+          this.props.onBonusComplete();
+        }, 1000)
+
+        dataLayer.push({
+          event: 'unlock_achievement',
+          achievement_id: 'bonus_complete',
+        });
       }
 
       this.saveGame({
+        bonusComplete: this.state.bonusComplete,
         found: this.state.found,
         gameComplete: this.state.gameComplete,
       })
@@ -287,6 +314,7 @@ class Game extends Component {
 
   saveGame(changed = {}) {
     saveGameState({
+      bonusComplete: this.state.bonusComplete,
       found: this.state.found,
       gameComplete: this.state.gameComplete,
       seenInstructions: this.state.seenInstructions,
@@ -295,34 +323,44 @@ class Game extends Component {
   }
 
   replay() {
+
+    const objects = {};
+    this.props.objects.forEach(object => {
+      objects[object.id] = object;
+    });
+
     this.setState({
       found: [],
       gameComplete: false,
+      bonusComplete: false,
+      objects
     })
 
     this.saveGame({
       found: [],
       seenInstructions: true,
       gameComplete: false,
+      bonusComplete: false,
     });
   }
 
   playBonusRound() {
 
-    console.log('play bonus round', this.props.bonusObjects);
+    this.setState(state => {
 
-    this.setState({
-      // update objects
-      // found: [],
-      // gameComplete: false,
-    })
+      const objects = {};
+      const findableObjects = !state.gameComplete ? this.props.objects : [...this.props.bonusObjects, ...this.props.objects];
+      findableObjects.forEach(object => {
+        objects[object.id] = object;
+      });
 
-    // this.saveGame({
-    //   found: [],
-    //   seenInstructions: true,
-    //   gameComplete: false,
-    // });
+      const toFind = Object.values(objects).reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0);
 
+      return {
+        objects,
+        toFind
+      }
+    });
   }
   
   zoomIn(callback = () => {}) {
@@ -538,6 +576,7 @@ Game.defaultProps = {
   foundKeepAlive: 2000,
   hintKeepAlive: 10000,
   objects: [],
+  onBonusComplete: () => {},
   onExitFullscreen: () => {},
   onGameComplete: () => {},
   onResize: () => {},
@@ -554,6 +593,7 @@ Game.propTypes = {
   hintKeepAlive: PropTypes.number,
   image: PropTypes.string.isRequired,
   onExitFullscreen: PropTypes.func.isRequired,
+  onBonusComplete: PropTypes.func.isRequired,
   onGameComplete: PropTypes.func.isRequired,
   onResize: PropTypes.func.isRequired,
   width: PropTypes.number,

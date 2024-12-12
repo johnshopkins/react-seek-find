@@ -220,6 +220,11 @@ class Illustration extends Component {
    * @returns 
    */
   shouldComponentUpdate(nextProps, nextState) {
+
+    if (this.props.objects.length !== nextProps.objects.length) {
+      return true;
+    }
+
     const stateVars = [
       'alreadyFound',
       'canvasX',
