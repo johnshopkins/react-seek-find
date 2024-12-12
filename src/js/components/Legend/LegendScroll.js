@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ArrowIcon from '../Icons/Arrow';
 import ThumbnailGroup from './ThumbnailGroup';
-import './style.scss';
 
 export default function LegendScroll({ availableSpace, found, groups, legendWidth, thumbnailSize }) {
 

@@ -1,7 +1,11 @@
+/*global Modernizr*/
 import React from 'react';
 import LegendScroll from './LegendScroll';
+import LegendSwipe from './LegendSwipe';
 import * as settings from '../../../css/utils/shared-variables.scss';
 import './style.scss';
+
+require('../../lib/modernizr');
 
 /**
  * Manages the legend.
@@ -11,6 +15,8 @@ import './style.scss';
  * being opened), so I had to specify a tabIndex value to prevent that.
  */
 export default function Legend({ breakpoint, found, groups, objects, width }) {
+
+  const isTouchDevice = Modernizr.touchevents;
 
   const thumbnailSize = parseInt(settings[`legendThumbnailHeight_${breakpoint}`]);
 
@@ -57,13 +63,20 @@ export default function Legend({ breakpoint, found, groups, objects, width }) {
 
   return (
     <div className="legend-container" tabIndex="-1">
-      <LegendScroll
-        availableSpace={availableSpace}
-        found={found}
-        groups={sorted}
-        legendWidth={legendWidth}
-        thumbnailSize={thumbnailSize}
-      />
+      {/* {isTouchDevice ? */}
+        <LegendSwipe
+          width={width}
+          found={found}
+          groups={sorted}
+        /> :
+        {/* <LegendScroll
+          availableSpace={availableSpace}
+          found={found}
+          groups={sorted}
+          legendWidth={legendWidth}
+          thumbnailSize={thumbnailSize}
+        />
+      } */}
     </div>
   )
 }
