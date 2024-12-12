@@ -5,7 +5,8 @@ const { createRoot } = ReactDOM;
 import { FindableObjectGroup, Game } from '../../src/js/main';
 import image from '../images/art.jpg';
 import Dart from './objects/Dart';
-import Mascot from './objects/Mascot';
+import Fish from './objects/Fish';
+import Glove from './objects/Glove';
 import Seal from './objects/Seal';
 import Birds from './objects/Birds';
 import moreObjects from './objects/MoreObjects';
@@ -30,14 +31,15 @@ root.render(
     // test={true}
     objects={[
       Dart,
-      Mascot,
+      Fish,
+      Glove,
       Seal,
-      Birds,
-      ...moreObjects,
+      // ...moreObjects,
     ]}
     groups={groups}
-    // bonusObjects={[Birds]}
-    onGameComplete={() => console.log('hooray!')}
+    bonusObjects={[Birds]}
+    onGameComplete={() => console.log('onGameComplete')}
+    onBonusComplete={() => console.log('onBonusComplete')}
     // onResize={(data) => console.log('resize', data)}
   />
   // <Game
