@@ -37,10 +37,10 @@ export default function Legend({ bonusObjects, breakpoint, found, gameComplete, 
   const availableSpace = width - (buttonWidth * 2) - (parseInt(settings[`legendPadding_${breakpoint}`]) * 4);
   const legendWidth = (
     // thumbnails themselves
-    (findableObjects.length * thumbnailSize) +
+    (objects.length * thumbnailSize) +
 
     // gap between thumbnails
-    ((findableObjects.length -1) * parseInt(settings[`legendGap_${breakpoint}`])) +
+    ((objects.length -1) * parseInt(settings[`legendGap_${breakpoint}`])) +
 
     // padding around groups - subtract 1 to not include the padding-right of the last group
     ((groups.length * 2 - 1) * parseInt(settings[`legendPadding_${breakpoint}`]))
