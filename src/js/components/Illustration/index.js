@@ -844,17 +844,7 @@ class Illustration extends Component {
    * before any duplicates can occur
    * @returns Findable  object
    */
-  getRandomHint() {
-
-    // extract out 1:many into separate objects
-    const objects = []
-    Object.values(this.props.objects).forEach(object => {
-      if (object.getType() === '1:1') {
-        objects.push(object);
-      } else {
-        objects.push(...object.objects);
-      }
-    })
+  getRandomHint(objects) {
 
     const availableObjects = objects.filter(object => {
       // not found and not already given as a hint (until all objects are given as a hint)
@@ -868,7 +858,17 @@ class Illustration extends Component {
 
   showHint() {
 
-    const hint = this.getRandomHint();
+    // extract out 1:many into separate objects
+    const objects = []
+    Object.values(this.props.objects).forEach(object => {
+      if (object.getType() === '1:1') {
+        objects.push(object);
+      } else {
+        objects.push(...object.objects);
+      }
+    })
+
+    const hint = this.getRandomHint(objects);
 
     // const hint = notFound[random];
     const coords = hint.hintCoords;
@@ -894,7 +894,7 @@ class Illustration extends Component {
       hintsGiven.push(hint.id);
 
       // reset hintsGiven, if all objects have been hinted
-      const notFound = this.props.objects.length - this.props.found.length;
+      const notFound = objects.length - this.props.found.length;
       if (hintsGiven.length === notFound) {
         hintsGiven = [];
       }
