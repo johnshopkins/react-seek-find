@@ -22,9 +22,7 @@ $iconRatio: 0.35;
       overflow-x: clip;
 
       user-select: none;
-      // -moz-user-select: none;
       -webkit-user-select: none;
-      // -ms-user-select: none;
 
       button {
         @include button(round);
@@ -53,6 +51,10 @@ $iconRatio: 0.35;
       position: absolute;
       text-transform: uppercase;
       transform: rotate(-2deg);
+
+      // attempt to fix a bug on chrome pixel
+      user-select: none;
+      -webkit-user-select: none;
     }
   }
 
