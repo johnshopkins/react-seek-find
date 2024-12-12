@@ -1,6 +1,6 @@
 import { FindableObject } from '../../../src/js/main';
 
-import thumbnail from '../../images/dart.png';
+import thumbnail from '../../images/jay.png';
 
 const create = () => {
   const ctx = new Path2D();

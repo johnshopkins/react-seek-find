@@ -66,10 +66,10 @@ if (testing) {
       // test={true}
       objects={[
         Jay,
-        // ViolinPlayer,
-        // GlovelessMan,
-        // Glove,
-        // FoamFinger,
+        ViolinPlayer,
+        GlovelessMan,
+        Glove,
+        FoamFinger,
         Fish,
         Clock,
         CoffeeMug,
