@@ -564,7 +564,7 @@ class Game extends Component {
             found={this.state.found}
             groups={this.props.groups}
             objects={Object.values(this.state.objects)}
-            width={this.state.width}
+            width={this.state.illustrationContainerWidth}
           />
         </div>
       </div>
