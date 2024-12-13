@@ -35,7 +35,7 @@ class LegendScrollComponent extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handlePointerCancel = this.handlePointerCancel.bind(this);
     this.handlePointerDown = this.handlePointerDown.bind(this);
-    this.handlePointerMove = throttle(this.handlePointerMove.bind(this), 15);
+    this.handlePointerMove = throttle(this.handlePointerMove.bind(this), 30);
     this.handlePointerUp = this.handlePointerUp.bind(this);
     this.scroll = this.scroll.bind(this);
   }
@@ -141,9 +141,6 @@ class LegendScrollComponent extends Component {
       return false;
     }
     
-    if (Math.abs(this.state.prevTouchMoveEvent.clientX - e.clientX) < 0.3) {
-      return;
-    }
 
     const diffX = (this.state.prevTouchMoveEvent.clientX - e.clientX);
     const distance = Math.abs(diffX);
