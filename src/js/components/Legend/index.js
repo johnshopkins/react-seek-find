@@ -1,3 +1,4 @@
+/*global Modernizr*/
 import React from 'react';
 import LegendNoScroll from './LegendNoScroll';
 import LegendScroll from './LegendScroll';
@@ -43,6 +44,12 @@ export default function Legend({ breakpoint, found, groups, objects, width }) {
     }
   });
 
+  // padding around groups - subtract 1 (if not touch events) to not include the padding-right
+  // of the last group - the padding around the button takes care of that 
+  const paddingAroundGroups = Modernizr.touchevents ? 
+    ((groups.length * 2) * parseInt(settings[`legendPadding_${breakpoint}`])) :
+    ((groups.length * 2 - 1) * parseInt(settings[`legendPadding_${breakpoint}`]));
+
   const legendWidth = (
     // thumbnails themselves
     (objects.length * thumbnailSize) +
@@ -50,8 +57,7 @@ export default function Legend({ breakpoint, found, groups, objects, width }) {
     // gap between thumbnails
     ((objects.length -1) * parseInt(settings[`legendGap_${breakpoint}`])) +
 
-    // padding around groups - subtract 1 to not include the padding-right of the last group
-    ((groups.length * 2 - 1) * parseInt(settings[`legendPadding_${breakpoint}`]))
+    paddingAroundGroups
   );
 
   return (

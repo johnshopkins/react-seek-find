@@ -1,11 +1,13 @@
 /*global Modernizr*/
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import ArrowIcon from '../Icons/Arrow';
 import ThumbnailGroups from './ThumbnailGroups';
+import getOffsetCoords from '../../lib/get-offset-coords';
 import * as settings from '../../../css/utils/shared-variables.scss';
 import './style.scss';
 
+const throttle = require('lodash.throttle');
 require('../../lib/modernizr');
 
 class LegendScrollComponent extends Component {
@@ -14,12 +16,15 @@ class LegendScrollComponent extends Component {
     super(props);
 
     this.isTouchEvents = Modernizr.touchevents;
+
+    this.legendScrollRef = createRef(null);
     this.intervalId = null;
 
     const { availableSpace, minPositionX, maxPositionX } = this.getSpacingStates();
 
     this.state = {
       availableSpace,
+      dragStartX: 0,
       minPositionX,
       maxPositionX,
       direction: null,
@@ -29,9 +34,11 @@ class LegendScrollComponent extends Component {
 
     this.getSpacingStates = this.getSpacingStates.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handlePointerCancel = this.handlePointerCancel.bind(this);
     this.handlePointerDown = this.handlePointerDown.bind(this);
+    this.handlePointerMove = throttle(this.handlePointerMove.bind(this), 15);
     this.handlePointerUp = this.handlePointerUp.bind(this);
-    this.scrollViaButton = this.scrollViaButton.bind(this);
+    this.scroll = this.scroll.bind(this);
   }
 
   getSpacingStates() {
@@ -54,15 +61,24 @@ class LegendScrollComponent extends Component {
     if (e.key !== 'Enter') {
       return;
     }
-    this.handlePointerDown(direction)
+    this.handlePointerDown(e, direction, 'keyup')
   }
 
-  scrollViaButton(direction) {
+  scroll(direction, distance = 0) {
+
+    if (direction === 'right' && this.state.positionX === this.state.maxPositionX) {
+      return;
+    }
+
+    if (direction === 'left' && this.state.positionX === this.state.minPositionX) {
+      return;
+    }
+
     this.setState(state => {
       const newState = {};
       const prevPositionX = state.positionX;
 
-      const newValue = direction === 'left' ? prevPositionX + this.props.thumbnailSize : prevPositionX - this.props.thumbnailSize;
+      const newValue = direction === 'left' ? prevPositionX + distance : prevPositionX - distance;
 
       if (direction === 'left' && newValue >= this.state.minPositionX) {
         newState.pointerDown = false;
@@ -78,45 +94,75 @@ class LegendScrollComponent extends Component {
     })
   }
 
-  handlePointerDown(direction) {
+  handlePointerDown(e, direction = null, upEvent = 'pointerup') {
 
-    this.setState({
-      isPointerDown: true,
-      direction
-    }, () => {
+    if (this.isTouchEvents) {
 
-      window.addEventListener('pointerup', this.handlePointerUp, { once: true });
+      const { offsetX } = getOffsetCoords(e);
+      this.setState({ dragStartX: offsetX })
 
-      this.scrollViaButton(direction);
-      this.intervalId = setInterval(() => {
-        console.log('button is being pressed');
-        this.scrollViaButton(direction);
-      }, 100);
+      this.legendScrollRef.current.addEventListener('pointermove', this.handlePointerMove);
 
-    });
+    } else {
+
+      this.setState({
+        isPointerDown: true,
+        direction
+      }, () => {
+
+        this.scroll(direction, this.props.thumbnailSize);
+        this.intervalId = setInterval(() => {
+          this.scroll(direction, this.props.thumbnailSize);
+        }, 100);
+
+      });
+    }
+
+    this.legendScrollRef.current.addEventListener(upEvent, this.handlePointerUp, { once: true });
   };
+
+  handlePointerMove (e) {
+
+    const { offsetX } = getOffsetCoords(e);
+
+    const diffX = (this.state.dragStartX - offsetX);
+    const direction = diffX > 0 ? 'right' : 'left';
+
+    this.scroll(direction, Math.abs(diffX));
+  }
 
   handlePointerUp () {
     clearInterval(this.intervalId);
     this.setState({ isPointerDown: false });
   }
 
+  handlePointerCancel() {
+    this.handlePointerUp();
+    window.removeEventListener('pointerup', this.handlePointerUp, { once: true });
+  }
+
   render() {
+
+    const props = {
+      className: 'legend-scroll',
+      ref: this.legendScrollRef
+    }
+
+    if (this.isTouchEvents) {
+      props.onPointerDown = this.handlePointerDown;
+      props.onPointerCancel = this.handlePointerCancel;
+      props.style = { touchAction: 'none' };
+    }
 
     const scrollLeftDisabled = this.state.positionX === this.state.minPositionX;
     const scrollRightDisabled = this.state.positionX === this.state.maxPositionX;
 
     return (
-      <div className="legend-scroll">
+      <div {...props}>
         {!this.isTouchEvents &&
           <button
             onKeyDown={(e) => this.handleKeyDown(e, 'left')}
-            onKeyUp={this.handlePointerUp}
-            onPointerDown={e => {
-              if (!scrollLeftDisabled) {
-                this.handlePointerDown('left')
-              }
-            }}
+            onPointerDown={e => this.handlePointerDown(e, 'left')}
             onPointerCancel={this.handlePointerUp}
             disabled={scrollLeftDisabled}
           >
@@ -132,12 +178,7 @@ class LegendScrollComponent extends Component {
         {!this.isTouchEvents &&
           <button
             onKeyDown={(e) => this.handleKeyDown(e, 'right')}
-            onKeyUp={this.handlePointerUp}
-            onPointerDown={e => {
-              if (!scrollRightDisabled) {
-                this.handlePointerDown('right')
-              }
-            }}
+            onPointerDown={e => this.handlePointerDown(e, 'right')}
             onPointerCancel={this.handlePointerUp}
             disabled={scrollRightDisabled}
           >
@@ -156,7 +197,7 @@ LegendScrollComponent.defaultProps = {};
 LegendScrollComponent.propTypes = {
   breakpoint: PropTypes.string.isRequired,
   found: PropTypes.array.isRequired,
-  groups: PropTypes.array.isRequired,
+  groups: PropTypes.object.isRequired,
   width: PropTypes.number.isRequired,
   legendWidth: PropTypes.number.isRequired,
   thumbnailSize: PropTypes.number.isRequired,
