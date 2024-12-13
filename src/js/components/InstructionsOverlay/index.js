@@ -44,7 +44,7 @@ export default function InstructionsOverlay({ breakpoint, isAutoOpen, onClose, s
               <XMarkIcon />
             </button>
           }
-          <h1>How to play</h1>
+          <h1>Discover the hidden items</h1>
         </div>
         <div className="overlay-content">
           {Modernizr.touchevents ? 
