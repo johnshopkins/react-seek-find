@@ -60,6 +60,22 @@ class LegendScrollComponent extends Component {
     return { availableSpace, minPositionX, maxPositionX };
   }
 
+  componentDidUpdate(prevProps) {
+
+    if (prevProps.legendWidth !== this.props.legendWidth) {
+
+      const { availableSpace, minPositionX, maxPositionX } = this.getSpacingStates();
+      const newState = { availableSpace, minPositionX, maxPositionX };
+
+      if (this.state.positionX < maxPositionX) {
+        // on screen resize
+        newState.positionX = maxPositionX;
+      }
+
+      this.setState(newState)
+    }
+  }
+
   handleKeyDown(e, direction) {
     if (e.key !== 'Enter') {
       return;
