@@ -1,4 +1,5 @@
 import React from 'react';
+import LegendNoScroll from './LegendNoScroll';
 import LegendScroll from './LegendScroll';
 import * as settings from '../../../css/utils/shared-variables.scss';
 import './style.scss';
@@ -42,8 +43,6 @@ export default function Legend({ breakpoint, found, groups, objects, width }) {
     }
   });
 
-  const buttonWidth = parseInt(settings.utilitiesIconHeight) + (parseInt(settings.buttonPadding) * 2);
-  const availableSpace = width - (buttonWidth * 2) - (parseInt(settings[`legendPadding_${breakpoint}`]) * 4);
   const legendWidth = (
     // thumbnails themselves
     (objects.length * thumbnailSize) +
@@ -57,13 +56,21 @@ export default function Legend({ breakpoint, found, groups, objects, width }) {
 
   return (
     <div className="legend-container" tabIndex="-1">
-      <LegendScroll
-        availableSpace={availableSpace}
-        found={found}
-        groups={sorted}
-        legendWidth={legendWidth}
-        thumbnailSize={thumbnailSize}
-      />
+      {legendWidth > width ?
+        <LegendScroll
+          breakpoint={breakpoint}
+          found={found}
+          groups={sorted}
+          width={width}
+          legendWidth={legendWidth}
+          thumbnailSize={thumbnailSize}
+        /> :
+        <LegendNoScroll
+          found={found}
+          groups={sorted}
+          width={width}
+        />
+      }
     </div>
   )
 }

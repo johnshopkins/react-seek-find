@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import ArrowIcon from '../Icons/Arrow';
-import ThumbnailGroup from './ThumbnailGroup';
-import './style.scss';
+import ThumbnailGroups from './ThumbnailGroups';
+import * as settings from '../../../css/utils/shared-variables.scss';
 
-export default function LegendScroll({ availableSpace, found, groups, legendWidth, thumbnailSize }) {
+export default function LegendScroll({ breakpoint, found, groups, legendWidth, thumbnailSize, width }) {
 
   const [isPointerDown, setIsPointerDown] = useState(false);
   const [direction, setDirection] = useState(null);
   const [positionX, setPositionX] = useState(0);
 
-  const needsPagination = legendWidth > availableSpace;
+  const buttonWidth = parseInt(settings.utilitiesIconHeight) + (parseInt(settings.buttonPadding) * 2);
+  const availableSpace = width - (buttonWidth * 2) - (parseInt(settings[`legendPadding_${breakpoint}`]) * 4);
 
   const minPositionX = 0;
   const maxPositionX = -Math.abs(legendWidth - availableSpace);
@@ -20,10 +21,6 @@ export default function LegendScroll({ availableSpace, found, groups, legendWidt
   }
 
   useEffect(() => {
-
-    if (!needsPagination) {
-      return;
-    }
 
     let intervalId;
 
@@ -51,7 +48,7 @@ export default function LegendScroll({ availableSpace, found, groups, legendWidt
 
     return () => clearInterval(intervalId);
 
-  }, [direction, isPointerDown, maxPositionX, needsPagination, thumbnailSize]);
+  }, [direction, isPointerDown, maxPositionX, thumbnailSize]);
 
   const handlePointerDown = direction => {
     setIsPointerDown(true);
@@ -74,42 +71,39 @@ export default function LegendScroll({ availableSpace, found, groups, legendWidt
   const scrollRightDisabled = positionX === maxPositionX;
 
   return (
-      <div className="legend-scroll">
-        {needsPagination &&
-          <button
-            onKeyDown={(e) => handleKeyDown(e, 'left')}
-            onKeyUp={handlePointerUp}
-            onPointerDown={e => {
-              if (!scrollLeftDisabled) {
-                handlePointerDown('left')
-              }
-            }}
-            onPointerCancel={handlePointerUp}
-            disabled={scrollLeftDisabled}
-          >
-            <ArrowIcon className="left" tooltip="Scroll left" />
-          </button>
-        }
-        <div className="legend" style={{width: `${availableSpace}px` }}>
-          <div className="thumbnails" style={{ left: `${positionX}px` }}>
-            {Object.values(groups).map((group, i) => <ThumbnailGroup found={found} group={group} key={i} />)}
-          </div>
-        </div>
-        {needsPagination &&
-          <button
-            onKeyDown={(e) => handleKeyDown(e, 'right')}
-            onKeyUp={handlePointerUp}
-            onPointerDown={e => {
-              if (!scrollRightDisabled) {
-                handlePointerDown('right')
-              }
-            }}
-            onPointerCancel={handlePointerUp}
-            disabled={scrollRightDisabled}
-          >
-            <ArrowIcon className="right" tooltip="Scroll right" />
-          </button>
-        }
+    <div className="legend-scroll">
+      <button
+        onKeyDown={(e) => handleKeyDown(e, 'left')}
+        onKeyUp={handlePointerUp}
+        onPointerDown={e => {
+          if (!scrollLeftDisabled) {
+            handlePointerDown('left')
+          }
+        }}
+        onPointerCancel={handlePointerUp}
+        disabled={scrollLeftDisabled}
+      >
+        <ArrowIcon className="left" tooltip="Scroll left" />
+      </button>
+      <ThumbnailGroups
+        found={found}
+        groups={groups}
+        position={positionX}
+        width={availableSpace}
+      />
+      <button
+        onKeyDown={(e) => handleKeyDown(e, 'right')}
+        onKeyUp={handlePointerUp}
+        onPointerDown={e => {
+          if (!scrollRightDisabled) {
+            handlePointerDown('right')
+          }
+        }}
+        onPointerCancel={handlePointerUp}
+        disabled={scrollRightDisabled}
+      >
+        <ArrowIcon className="right" tooltip="Scroll right" />
+      </button>
     </div>
   )
 }
