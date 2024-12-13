@@ -68,4 +68,4 @@ const create = () => {
   return ctx;
 }
 
-export default new FindableObject('jay', 'Jay', thumbnail, create, { x: 685, y: 680 }, 'fun');
+export default new FindableObject('jay', 'Jay', thumbnail, create, { x: 685, y: 680 }, 'jhu');

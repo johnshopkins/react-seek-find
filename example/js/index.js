@@ -12,14 +12,12 @@ import image from '../images/art.jpg';
 
 import Birds from './objects/Birds';
 import Jay from './objects/Jay';
-import ViolinPlayer from './objects/ViolinPlayer';
+import Violinist from './objects/Violinist';
 import GlovelessMan from './objects/GlovelessMan';
 import Glove from './objects/Glove';
 import FoamFinger from './objects/FoamFinger';
 import Fish from './objects/Fish';
-import Clock from './objects/Clock';
 import CoffeeMug from './objects/CoffeeMug';
-import Basketball from './objects/Basketball';
 import RonAndBarney from './objects/RonAndBarney';
 import Dart from './objects/Dart';
 import MortarBoard from './objects/MortarBoard';
@@ -63,25 +61,26 @@ if (testing) {
       image={image}
       imageWidth={3750}
       imageHeight={2109}
-      // test={true}
       objects={[
+        RonAndBarney,
+        Dart,
+        Seal,
         Jay,
-        ViolinPlayer,
+        MortarBoard,
+
+        Violinist,
         GlovelessMan,
         Glove,
         FoamFinger,
         Fish,
-        Clock,
         CoffeeMug,
-        Basketball,
-        RonAndBarney,
-        Dart,
-        MortarBoard,
-        Seal,
-        // ...moreObjects,
+        // Clock,
+        // Basketball,
+      ]}
+      bonusObjects={[
+        Birds
       ]}
       groups={groups}
-      bonusObjects={[Birds]}
       onGameComplete={() => console.log('onGameComplete')}
       onBonusComplete={() => console.log('onBonusComplete')}
       // onResize={(data) => console.log('resize', data)}

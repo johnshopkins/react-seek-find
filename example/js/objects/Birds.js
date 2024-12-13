@@ -22,6 +22,7 @@ import Bird17 from './birds/Bird17';
 import Bird18 from './birds/Bird18';
 import Bird19 from './birds/Bird19';
 import Bird20 from './birds/Bird20';
+import Bird21 from './birds/Bird21';
 
 export default new OneToManyFindableObject('birds', 'Birds', thumbnail, [
   Bird1,
@@ -44,4 +45,5 @@ export default new OneToManyFindableObject('birds', 'Birds', thumbnail, [
   Bird18,
   Bird19,
   Bird20,
+  Bird21,
 ], 'fun');
