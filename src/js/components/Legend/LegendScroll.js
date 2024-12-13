@@ -53,13 +53,13 @@ class LegendScrollComponent extends Component {
 
   componentDidUpdate(prevProps) {
 
-    if (prevProps.legendWidth !== this.props.legendWidth) {
+    if (prevProps.legendWidth !== this.props.legendWidth || prevProps.width !== this.props.width) {
 
       const { availableSpace, minPositionX, maxPositionX } = this.getSpacingStates();
       const newState = { availableSpace, minPositionX, maxPositionX };
 
       if (this.state.positionX < maxPositionX) {
-        // on screen resize
+        // on screen resize, enter/exit fullscreen
         newState.positionX = maxPositionX;
       }
 
