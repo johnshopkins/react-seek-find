@@ -3,7 +3,6 @@ import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import ArrowIcon from '../Icons/Arrow';
 import ThumbnailGroups from './ThumbnailGroups';
-import getOffsetCoords from '../../lib/get-offset-coords';
 import * as settings from '../../../css/utils/shared-variables.scss';
 import './style.scss';
 
@@ -24,12 +23,12 @@ class LegendScrollComponent extends Component {
 
     this.state = {
       availableSpace,
-      dragStartX: 0,
       minPositionX,
       maxPositionX,
       direction: null,
       isPointerDown: false,
       positionX: 0,
+      prevTouchMoveEvent: null,
     }
 
     this.getSpacingStates = this.getSpacingStates.bind(this);
@@ -54,8 +53,6 @@ class LegendScrollComponent extends Component {
       // remove width padding of last group
       -Math.abs(this.props.legendWidth - parseInt(settings[`legendPadding_${this.props.breakpoint}`]) - availableSpace) :
       -Math.abs(this.props.legendWidth - availableSpace);
-
-    console.log({width: this.props.width, availableSpace, maxPositionX});
 
     return { availableSpace, minPositionX, maxPositionX };
   }
@@ -83,7 +80,7 @@ class LegendScrollComponent extends Component {
     this.handlePointerDown(e, direction, 'keyup')
   }
 
-  scroll(direction, distance = 0) {
+  scroll(direction, distance = 0, newState = {}) {
 
     if (direction === 'right' && this.state.positionX === this.state.maxPositionX) {
       return;
@@ -94,7 +91,6 @@ class LegendScrollComponent extends Component {
     }
 
     this.setState(state => {
-      const newState = {};
       const prevPositionX = state.positionX;
 
       const newValue = direction === 'left' ? prevPositionX + distance : prevPositionX - distance;
@@ -117,9 +113,7 @@ class LegendScrollComponent extends Component {
 
     if (this.isTouchEvents) {
 
-      const { offsetX } = getOffsetCoords(e);
-      this.setState({ dragStartX: offsetX })
-
+      this.setState({ isPointerDown: true, prevTouchMoveEvent: e });
       this.legendScrollRef.current.addEventListener('pointermove', this.handlePointerMove);
 
     } else {
@@ -142,22 +136,37 @@ class LegendScrollComponent extends Component {
 
   handlePointerMove (e) {
 
-    const { offsetX } = getOffsetCoords(e);
+    if (!this.state.isPointerDown) {
+      // sometimes a pointermove can trigger after pointer up
+      return false;
+    }
+    
+    if (Math.abs(this.state.prevTouchMoveEvent.clientX - e.clientX) < 0.3) {
+      return;
+    }
 
-    const diffX = (this.state.dragStartX - offsetX);
+    const diffX = (this.state.prevTouchMoveEvent.clientX - e.clientX);
+    const distance = Math.abs(diffX);
+
     const direction = diffX > 0 ? 'right' : 'left';
 
-    this.scroll(direction, Math.abs(diffX));
+    this.scroll(direction, distance, { prevTouchMoveEvent: e });
   }
 
   handlePointerUp () {
+    if (this.isTouchEvents) {
+      this.legendScrollRef.current.removeEventListener('pointermove', this.handlePointerMove);
+    }
+
     clearInterval(this.intervalId);
-    this.setState({ isPointerDown: false });
+    this.setState({
+      isPointerDown: false,
+      prevTouchMoveEvent: null
+    });
   }
 
   handlePointerCancel() {
     this.handlePointerUp();
-    window.removeEventListener('pointerup', this.handlePointerUp, { once: true });
   }
 
   render() {
