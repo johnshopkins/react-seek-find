@@ -41,18 +41,12 @@ class LegendScrollComponent extends Component {
   }
 
   getSpacingStates() {
-    let availableSpace = this.props.width;
 
-    if (!this.isTouchEvents) {
-      const buttonWidth = parseInt(settings.utilitiesIconHeight) + (parseInt(settings.buttonPadding) * 2);
-      availableSpace = this.props.width - (buttonWidth * 2) - (parseInt(settings[`legendPadding_${this.props.breakpoint}`]) * 4)
-    }
+    const buttonWidth = parseInt(settings.utilitiesIconHeight) + (parseInt(settings.buttonPadding) * 2);
+    const availableSpace = this.props.width - (buttonWidth * 2) - (parseInt(settings[`legendPadding_${this.props.breakpoint}`]) * 4)
 
     const minPositionX = 0;
-    const maxPositionX = !this.isTouchEvents ?
-      // remove width padding of last group
-      -Math.abs(this.props.legendWidth - parseInt(settings[`legendPadding_${this.props.breakpoint}`]) - availableSpace) :
-      -Math.abs(this.props.legendWidth - availableSpace);
+    const maxPositionX = -Math.abs(this.props.legendWidth - parseInt(settings[`legendPadding_${this.props.breakpoint}`]) - availableSpace);
 
     return { availableSpace, minPositionX, maxPositionX };
   }
@@ -77,7 +71,7 @@ class LegendScrollComponent extends Component {
     if (e.key !== 'Enter') {
       return;
     }
-    this.handlePointerDown(e, direction, 'keyup')
+    this.handlePointerDown(e, direction, 'button', 'keyup')
   }
 
   scroll(direction, distance = 0, newState = {}) {
@@ -109,15 +103,9 @@ class LegendScrollComponent extends Component {
     })
   }
 
-  handlePointerDown(e, direction = null, upEvent = 'pointerup') {
+  handlePointerDown(e, direction = null, method = 'button', upEvent = 'pointerup') {
 
-    if (this.isTouchEvents) {
-
-      this.setState({ isPointerDown: true, prevTouchMoveEvent: e });
-      this.legendScrollRef.current.addEventListener('pointermove', this.handlePointerMove);
-
-    } else {
-
+    if (method === 'button') {
       this.setState({
         isPointerDown: true,
         direction
@@ -129,6 +117,12 @@ class LegendScrollComponent extends Component {
         }, 100);
 
       });
+    } else {
+      this.setState({ isPointerDown: true, prevTouchMoveEvent: e });
+      this.legendScrollRef.current.addEventListener('pointermove', this.handlePointerMove);
+      this.legendScrollRef.current.addEventListener('pointerup', e => {
+        this.legendScrollRef.current.removeEventListener('pointermove', this.handlePointerMove);
+      }, { once: true });
     }
 
     this.legendScrollRef.current.addEventListener(upEvent, this.handlePointerUp, { once: true });
@@ -141,7 +135,6 @@ class LegendScrollComponent extends Component {
       return false;
     }
     
-
     const diffX = (this.state.prevTouchMoveEvent.clientX - e.clientX);
     const distance = Math.abs(diffX);
 
@@ -151,10 +144,6 @@ class LegendScrollComponent extends Component {
   }
 
   handlePointerUp () {
-    if (this.isTouchEvents) {
-      this.legendScrollRef.current.removeEventListener('pointermove', this.handlePointerMove);
-    }
-
     clearInterval(this.intervalId);
     this.setState({
       isPointerDown: false,
@@ -174,9 +163,9 @@ class LegendScrollComponent extends Component {
     }
 
     if (this.isTouchEvents) {
-      props.onPointerDown = this.handlePointerDown;
-      props.onPointerCancel = this.handlePointerCancel;
-      props.style = { touchAction: 'none' };
+      props.onPointerDown = e => this.handlePointerDown(e, null, 'swipe');
+      props.onPointerCancel = e => this.handlePointerCancel;
+      props.style = { touchAction: 'pan-y' };
     }
 
     const scrollLeftDisabled = this.state.positionX === this.state.minPositionX;
@@ -184,33 +173,28 @@ class LegendScrollComponent extends Component {
 
     return (
       <div {...props}>
-        {!this.isTouchEvents &&
-          <button
-            onKeyDown={(e) => this.handleKeyDown(e, 'left')}
-            onPointerDown={e => this.handlePointerDown(e, 'left')}
-            onPointerCancel={this.handlePointerUp}
-            disabled={scrollLeftDisabled}
-          >
-            <ArrowIcon className="left" tooltip="Scroll left" />
-          </button>
-        }
+        <button
+          onKeyDown={(e) => this.handleKeyDown(e, 'left')}
+          onPointerDown={e => this.handlePointerDown(e, 'left')}
+          onPointerCancel={this.handlePointerUp}
+          disabled={scrollLeftDisabled}
+        >
+          <ArrowIcon className="left" tooltip="Scroll left" />
+        </button>
         <ThumbnailGroups
           found={this.props.found}
           groups={this.props.groups}
           position={this.state.positionX}
           width={this.state.availableSpace}
         />
-        {!this.isTouchEvents &&
-          <button
-            onKeyDown={(e) => this.handleKeyDown(e, 'right')}
-            onPointerDown={e => this.handlePointerDown(e, 'right')}
-            onPointerCancel={this.handlePointerUp}
-            disabled={scrollRightDisabled}
-          >
-            <ArrowIcon className="right" tooltip="Scroll right" />
-          </button>
-        }
-        
+        <button
+          onKeyDown={(e) => this.handleKeyDown(e, 'right')}
+          onPointerDown={e => this.handlePointerDown(e, 'right')}
+          onPointerCancel={this.handlePointerUp}
+          disabled={scrollRightDisabled}
+        >
+          <ArrowIcon className="right" tooltip="Scroll right" />
+        </button>
       </div>
     )
 }
