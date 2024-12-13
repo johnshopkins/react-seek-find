@@ -50,7 +50,10 @@ class LegendScrollComponent extends Component {
     }
 
     const minPositionX = 0;
-    const maxPositionX = -Math.abs(this.props.legendWidth - availableSpace);
+    const maxPositionX = !this.isTouchEvents ?
+      // remove width padding of last group
+      -Math.abs(this.props.legendWidth - parseInt(settings[`legendPadding_${this.props.breakpoint}`]) - availableSpace) :
+      -Math.abs(this.props.legendWidth - availableSpace);
 
     console.log({width: this.props.width, availableSpace, maxPositionX});
 
