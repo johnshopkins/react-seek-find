@@ -74,8 +74,6 @@ if (testing) {
         FoamFinger,
         Fish,
         CoffeeMug,
-        // Clock,
-        // Basketball,
       ]}
       bonusObjects={[
         Birds
