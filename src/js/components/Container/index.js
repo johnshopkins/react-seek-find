@@ -56,7 +56,7 @@ class Game extends Component {
       browserWidth: document.documentElement.clientWidth,
       openInstructions: userData.seenInstructions === false,
       objects: objects,
-      toFind: this.props.objects.reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0),
+      toFind: Object.values(objects).reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0),
       ...this.getViewState(true),
       ...userData,
     };

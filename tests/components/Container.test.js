@@ -571,6 +571,48 @@ describe('Game', () => {
 
     });
 
+    test('onBonusRoundComplete fires if bonus round is completed in separate session', async () => {
+
+      localStorage.clear();
+      saveGameState({
+        found: ['box', 'circle', 'star'],
+        gameComplete: true,
+      });
+
+      const onBonusComplete = jest.fn();
+
+      const bonusObject = new OneToManyFindableObject(
+        'boxes', 'Boxes', 'https://picsum.photos/143/143', [...bunchOfObjects.slice(0, 2)], 'fun'
+      );
+
+      const { container } = await renderGame({
+        onBonusComplete,
+        bonusObjects: [bonusObject]
+      });
+
+      const canvas = container.querySelector('canvas.findable');
+      const context = canvas.getContext('2d');
+
+      // mock a click on box0
+      context.isPointInPath.mockImplementation(path => path.name === 'box0');
+      fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 60, offsetY: 60 }, true));
+      fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 60, offsetY: 60 }));
+
+      // mock a click on box1
+      context.isPointInPath.mockImplementation(path => path.name === 'box1');
+      fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 260, offsetY: 60 }, true));
+      fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 260, offsetY: 60 }));
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      // bonus complete
+      expect(onBonusComplete).toHaveBeenCalledTimes(1);
+
+    });
+
+
   });
 
   describe('Canvas movement', () => {
