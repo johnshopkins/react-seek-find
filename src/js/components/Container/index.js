@@ -40,7 +40,7 @@ class Game extends Component {
 
     // organize the objects by ID
     const objects = {};
-    const findableObjects = !userData.gameComplete ? this.props.objects : [...this.props.objects, ...this.props.bonusObjects];
+    const findableObjects = !userData.gameComplete ? this.props.objects : [...this.props.bonusObjects, ...this.props.objects];
     findableObjects.forEach(object => {
       objects[object.id] = object;
     });
