@@ -2070,7 +2070,9 @@ describe('Game', () => {
     fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 680, offsetY: 530 }, true));
     fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 680, offsetY: 530 }));
     
-    jest.runAllTimers();
+    act(() => {
+      jest.runAllTimers();
+    });
 
     // game complete
     expect(onGameComplete).toHaveBeenCalledTimes(1);
