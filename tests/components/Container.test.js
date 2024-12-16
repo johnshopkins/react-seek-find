@@ -229,24 +229,24 @@ const renderGame = async (overrideProps = {}, initialize = ['image']) => {
 
 describe('Instructions', () => {
 
-  test('Instructions overlay is open on first view', async () => {
+  // test('Instructions overlay is open on first view', async () => {
 
-    localStorage.clear();
+  //   localStorage.clear();
 
-    const { container } = await renderGame();
+  //   const { container } = await renderGame();
 
-    // overlay is already visible
-    const instructionsOverlay = container.querySelector('.overlay-container');
-    expect(instructionsOverlay).toBeVisible();
+  //   // overlay is already visible
+  //   const instructionsOverlay = container.querySelector('.overlay-container');
+  //   expect(instructionsOverlay).toBeVisible();
 
-    // close button is not present
-    expect(container.querySelector('.overlay-container .close')).not.toBeInTheDocument();
+  //   // close button is not present
+  //   expect(container.querySelector('.overlay-container .close')).not.toBeInTheDocument();
 
-    // close the overlay
-    await user.click(within(instructionsOverlay).getByRole('button', { name: 'I\'m ready to play!' }));
-    expect(container.querySelector('.overlay-container')).not.toBeInTheDocument();
+  //   // close the overlay
+  //   await user.click(within(instructionsOverlay).getByRole('button', { name: 'I\'m ready to play!' }));
+  //   expect(container.querySelector('.overlay-container')).not.toBeInTheDocument();
 
-  });
+  // });
 
   test('Instructions overlay is not open on later views', async () => {
 

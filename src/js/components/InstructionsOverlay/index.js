@@ -39,11 +39,11 @@ export default function InstructionsOverlay({ breakpoint, isAutoOpen, onClose, s
     <div className={`overlay-container ${breakpoint}`} style={style}>
       <div className="overlay" ref={overlay}>
         <div className="overlay-header">
-          {!isAutoOpen &&
+          {/* {!isAutoOpen && */}
             <button className="close" aria-label="Close instructions" onClick={close} ref={closeButton}>
               <XMarkIcon />
             </button>
-          }
+          {/* } */}
           <h1>Discover the hidden items</h1>
         </div>
         <div className="overlay-content">
