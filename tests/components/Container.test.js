@@ -1814,6 +1814,56 @@ describe('Game', () => {
       expect(uniqueHints).not.toContain(randomNotFound.id);
     });
 
+    test('All other objects found after given hint, but not hinted object', async () => {
+
+      const objects = bunchOfObjects.slice(0, 3);
+      const { container } = await renderGame({
+        objects,
+        groups: [
+          new FindableObjectGroup('jhu', 'JHU'),
+          new FindableObjectGroup('fun', 'Fun')
+        ]
+      });
+
+      const objectIds = objects.map(object => object.id);
+
+      const canvas = container.querySelector('canvas.findable');
+      const context = canvas.getContext('2d');
+
+      const hintButton = screen.getByRole('button', { name: 'Give me a hint' });
+
+      // ask for a hint
+      await user.click(hintButton);
+      const hintGiven = container.querySelector('canvas.hint').dataset.id;
+      await user.click(hintButton); // turn off hint
+
+      // find the other objects
+      objectIds.filter(id => id !== hintGiven).forEach(id => {
+        context.isPointInPath.mockImplementation(path => path.name === id);
+        fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 450, offsetY: 250 }, true));
+        fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 450, offsetY: 250 }));
+      });
+
+      // ask for another hint -- originally, this caused a bug, but no longer :)
+      // now we check if the hintsGiven start var needs to be updated BEFORE fetching another hint
+      await user.click(hintButton);
+      expect(container.querySelector('canvas.hint').dataset.id).toEqual(hintGiven)
+      await user.click(hintButton); // turn off hint
+
+      await user.click(hintButton);
+      expect(container.querySelector('canvas.hint').dataset.id).toEqual(hintGiven)
+      await user.click(hintButton); // turn off hint
+
+
+      // find the last lingering object
+      context.isPointInPath.mockImplementation(path => path.name === hintGiven);
+      fireEvent(canvas, getMouseEvent('mousedown', { offsetX: 450, offsetY: 250 }, true));
+      fireEvent(canvas, getMouseEvent('mouseup', { offsetX: 450, offsetY: 250 }));
+
+      expect(hintButton).not.toBeInTheDocument();
+
+    });
+
   });
 
   describe('Legend', () => {

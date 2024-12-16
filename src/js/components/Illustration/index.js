@@ -844,11 +844,11 @@ class Illustration extends Component {
    * before any duplicates can occur
    * @returns Findable  object
    */
-  getRandomHint(objects) {
+  getRandomHint(objects, hintsGiven) {
 
     const availableObjects = objects.filter(object => {
       // not found and not already given as a hint (until all objects are given as a hint)
-      return !this.props.found.includes(object.id) && !this.state.hintsGiven.includes(object.id);
+      return !this.props.found.includes(object.id) && !hintsGiven.includes(object.id);
     });
 
     const random = Math.floor(Math.random() * availableObjects.length);
@@ -868,7 +868,17 @@ class Illustration extends Component {
       }
     })
 
-    const hint = this.getRandomHint(objects);
+    // check if hints need to be reset before fetching another one
+    // when this can happen: all the items that were not given
+    // as hints were found after the original hint was given.
+    let hintsGiven = [...this.state.hintsGiven];
+    const notFound = objects.length - this.props.found.length;
+
+    if (hintsGiven.length === notFound) {
+      hintsGiven = [];
+    }
+
+    const hint = this.getRandomHint(objects, hintsGiven);
 
     // const hint = notFound[random];
     const coords = hint.hintCoords;
@@ -878,33 +888,20 @@ class Illustration extends Component {
     const newX = coords.x * this.props.scale;
     const newY = coords.y * this.props.scale;
 
-    this.setState(state => {
+    hintsGiven.push(hint.id);
 
-      const newState = {
-        // set the center anchor to be the center of the hint
-        // on componentDidUpdate, the new canvas position will be based on that
-        anchorX: -Math.abs(newX + hintOffset),
-        anchorY: -Math.abs(newY + hintOffset),
+    this.setState({
+      // set the center anchor to be the center of the hint
+      // on componentDidUpdate, the new canvas position will be based on that
+      anchorX: -Math.abs(newX + hintOffset),
+      anchorY: -Math.abs(newY + hintOffset),
 
-        // get the hint in the DOM
-        hint,
-      }
+      // get the hint in the DOM
+      hint,
 
-      let hintsGiven = [...state.hintsGiven]; // handle immutably to prevent bugs
-      hintsGiven.push(hint.id);
-
-      // reset hintsGiven, if all objects have been hinted
-      const notFound = objects.length - this.props.found.length;
-      if (hintsGiven.length === notFound) {
-        hintsGiven = [];
-      }
-
-      newState.hintsGiven = hintsGiven;
-
-      return newState;
-
+      // update the hints that were given
+      hintsGiven
     }, () => {
-
       this.props.scaleToFit(hint.hintSize, hint.hintSize, (scale) => {
         this.sightsRef.current.moveSightsTo(coords.x * scale, coords.y * scale);
         this.setState({ hintActive: true }, () => {
@@ -913,8 +910,7 @@ class Illustration extends Component {
       });
       
       this.hintTimeout = setTimeout(() => this.removeHint(), 15000);
-
-    });
+    })
   }
 
   removeHint() {
