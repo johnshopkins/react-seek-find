@@ -283,6 +283,11 @@ class Game extends Component {
       if (!gameAlreadyComplete && this.state.gameComplete) {
 
         setTimeout(() => {
+
+          if (this.state.isFullscreen) {
+            this.toggleFullscreen();
+          }
+
           this.props.onGameComplete();
           this.playBonusRound();
         }, 1000)
@@ -295,6 +300,11 @@ class Game extends Component {
       } else if (this.state.bonusComplete) {
 
         setTimeout(() => {
+
+          if (this.state.isFullscreen) {
+            this.toggleFullscreen();
+          }
+
           this.props.onBonusComplete();
         }, 1000)
 
