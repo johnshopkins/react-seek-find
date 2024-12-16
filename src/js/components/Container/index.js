@@ -56,7 +56,7 @@ class Game extends Component {
       browserWidth: document.documentElement.clientWidth,
       openInstructions: userData.seenInstructions === false,
       objects: objects,
-      toFind: Object.values(objects).reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0),
+      toFind: this.calculateToFind(objects),
       ...this.getViewState(true),
       ...userData,
     };
@@ -356,11 +356,9 @@ class Game extends Component {
         objects[object.id] = object;
       });
 
-      const toFind = Object.values(objects).reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0);
-
       return {
         objects,
-        toFind
+        toFind: this.calculateToFind(objects),
       }
     }, () => {
       if (this.props.bonusScrollTo) {
@@ -463,6 +461,11 @@ class Game extends Component {
     const newZoom = this.roundDown(Math.min(zoomOutHeight, zoomOutWidth));
 
     this.zoomTo(newZoom, callback);
+  }
+
+  calculateToFind(objects)
+  {
+    return Object.values(objects).reduce((accumulator, object) => accumulator + (object.getType() === '1:1' ? 1 : object.objects.length), 0);
   }
 
   handleBlur (e) {
