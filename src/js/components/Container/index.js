@@ -335,6 +335,7 @@ class Game extends Component {
       found: [],
       gameComplete: false,
       bonusComplete: false,
+      toFind: this.calculateToFind(objects),
       objects
     })
 
