@@ -25,6 +25,7 @@ class Game extends Component {
     // the DOM element the game is contained in. helps determine view
     this.container = props.container;
     this.containerRef = createRef();
+    this.legendRef = createRef();
 
     // // for testing
     // clearGameState(this.props.storageKey);
@@ -361,6 +362,10 @@ class Game extends Component {
         objects,
         toFind
       }
+    }, () => {
+      if (this.props.bonusScrollTo) {
+        this.legendRef.current.scrollToGroup(this.props.bonusScrollTo);
+      }
     });
   }
   
@@ -564,6 +569,7 @@ class Game extends Component {
             found={this.state.found}
             groups={this.props.groups}
             objects={Object.values(this.state.objects)}
+            ref={this.legendRef}
             width={this.state.illustrationContainerWidth}
           />
         </div>
@@ -587,6 +593,7 @@ Game.defaultProps = {
 
 Game.propTypes = {
   bonusObjects: PropTypes.array,
+  bonusScrollTo: PropTypes.string,
   containerHeight: PropTypes.number, // for testing convenience
   containerWidth: PropTypes.number, // for testing convenience
   foundKeepAlive: PropTypes.number,

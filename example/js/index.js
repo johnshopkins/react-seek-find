@@ -57,6 +57,7 @@ if (testing) {
 } else {
   component = (
     <Game
+      bonusScrollTo={'fun'}
       container={elem} // image should always be wider than this element
       image={image}
       imageWidth={3750}

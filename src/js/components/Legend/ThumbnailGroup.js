@@ -12,7 +12,7 @@ export default memo(function Thumbnails({ found, group }) {
   }
 
   return (
-    <div className="legend-group" style={style}>
+    <div className={`legend-group ${group.id}`} style={style}>
       <div className="label">{group.name} finds {group.found}/{toFind}</div>
       {group.objects.map((object, i) => {
 

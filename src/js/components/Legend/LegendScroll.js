@@ -27,7 +27,7 @@ class LegendScrollComponent extends Component {
       maxPositionX,
       direction: null,
       isPointerDown: false,
-      positionX: 0,
+      positionX: this.props.positionX,
       prevTouchMoveEvent: null,
     }
 
@@ -53,10 +53,19 @@ class LegendScrollComponent extends Component {
 
   componentDidUpdate(prevProps) {
 
+    const newState = {};
+
+    if (prevProps.positionX !== this.props.positionX) {
+      newState.positionX = this.props.positionX;
+    }
+
     if (prevProps.legendWidth !== this.props.legendWidth || prevProps.width !== this.props.width) {
 
       const { availableSpace, minPositionX, maxPositionX } = this.getSpacingStates();
-      const newState = { availableSpace, minPositionX, maxPositionX };
+      
+      newState.availableSpace = availableSpace;
+      newState.minPositionX = minPositionX;
+      newState.maxPositionX = maxPositionX;
 
       if (this.state.positionX < maxPositionX) {
         // on screen resize, enter/exit fullscreen
@@ -64,6 +73,10 @@ class LegendScrollComponent extends Component {
       }
 
       this.setState(newState)
+    }
+
+    if (Object.keys(newState).length > 0) {
+      this.setState(newState);
     }
   }
 
@@ -201,7 +214,9 @@ class LegendScrollComponent extends Component {
 
 }
 
-LegendScrollComponent.defaultProps = {};
+LegendScrollComponent.defaultProps = {
+  positionX: 0,
+};
 
 LegendScrollComponent.propTypes = {
   breakpoint: PropTypes.string.isRequired,
@@ -210,6 +225,7 @@ LegendScrollComponent.propTypes = {
   width: PropTypes.number.isRequired,
   legendWidth: PropTypes.number.isRequired,
   thumbnailSize: PropTypes.number.isRequired,
+  positionX: PropTypes.number.isRequired,
 };
 
 export default LegendScrollComponent;
