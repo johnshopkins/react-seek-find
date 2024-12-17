@@ -27,7 +27,6 @@ const create = () => {
   ctx.bezierCurveTo(3259.7, 749.4, 3259.6, 750.6, 3259.6, 750.6);
   ctx.bezierCurveTo(3256.4, 751.5, 3257.0, 759.2, 3257.0, 759.2);
   ctx.closePath();
-
   return ctx;
 }
 
