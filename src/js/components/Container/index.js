@@ -80,6 +80,18 @@ class Game extends Component {
     this.zoomTo = this.zoomTo.bind(this);
   }
 
+  getScreenOrientation() {
+    let orientation = null;
+
+    if (typeof screen !== 'undefined' && typeof screen.orientation !== 'undefined' && typeof screen.type !== 'undefined') {
+      orientation = screen.orientation.type;
+    } else if (typeof window.screen !== 'undefined' && typeof window.screen.orientation !== 'undefined' && typeof window.screen.orientation.type !== 'undefined') {
+      orientation = window.screen.orientation.type;
+    }
+
+    return orientation;
+  }
+
   componentDidMount() {
 
     this.setViewState(false, () => {
@@ -95,18 +107,10 @@ class Game extends Component {
 
     window.addEventListener('jhu:winresize:done', e => {
 
-      let orientation = null;
-
-      if (typeof screen !== 'undefined' && typeof screen.orientation !== 'undefined' && typeof screen.type !== 'undefined') {
-        orientation = screen.orientation.type;
-      } else if (typeof window.screen !== 'undefined' && typeof window.screen.orientation !== 'undefined' && typeof window.screen.orientation.type !== 'undefined') {
-        orientation = window.screen.orientation.type;
-      }
-
       const newState = {
         browserHeight: document.documentElement.clientHeight,
         browserWidth: document.documentElement.clientWidth,
-        orientation: orientation,
+        orientation: this.getScreenOrientation(),
       };
 
       // make sure the size actually changed (iOS triggers the resize event too much)
@@ -221,7 +225,7 @@ class Game extends Component {
       illustrationContainerHeight,
       illustrationContainerWidth,
       maxZoomOut,
-      orientation: window.screen.orientation.type, // helps with detecting resize on mobile
+      orientation: this.getScreenOrientation(), // helps with detecting resize on mobile
       scale,
       width,
       zoomInLimitReached: scale === 100, // the farthest IN you can zoom
