@@ -21,6 +21,7 @@ class MiniMap extends Component {
     this.miniMapSize = parseInt(settings.miniMap) - 8;
     this.mapWidth = this.miniMapSize;
 
+    this.handlePointerCancel = this.handlePointerCancel.bind(this);
     this.handlePointerDown = this.handlePointerDown.bind(this);
     this.handlePointerMove = throttle(this.handlePointerMove.bind(this), 15);
     this.handlePointerUp = this.handlePointerUp.bind(this);
