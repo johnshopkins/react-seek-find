@@ -95,10 +95,18 @@ class Game extends Component {
 
     window.addEventListener('jhu:winresize:done', e => {
 
+      let orientation = null;
+
+      if (typeof screen !== 'undefined' && typeof screen.orientation !== 'undefined' && typeof screen.type !== 'undefined') {
+        orientation = screen.orientation.type;
+      } else if (typeof window.screen !== 'undefined' && typeof window.screen.orientation !== 'undefined' && typeof window.screen.orientation.type !== 'undefined') {
+        orientation = window.screen.orientation.type;
+      }
+
       const newState = {
         browserHeight: document.documentElement.clientHeight,
         browserWidth: document.documentElement.clientWidth,
-        orientation: screen.orientation.type || window.screen.orientation.type,
+        orientation: orientation,
       };
 
       // make sure the size actually changed (iOS triggers the resize event too much)
