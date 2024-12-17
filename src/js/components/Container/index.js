@@ -98,7 +98,7 @@ class Game extends Component {
       const newState = {
         browserHeight: document.documentElement.clientHeight,
         browserWidth: document.documentElement.clientWidth,
-        orientation: window.screen.orientation.type,
+        orientation: screen.orientation.type || window.screen.orientation.type,
       };
 
       // make sure the size actually changed (iOS triggers the resize event too much)
