@@ -34,7 +34,9 @@ html.fullscreen {
 
     button {
       border: solid var(--jhu-grayscale-100) 4px;
-      outline: solid var(--jhu-grayscale-0) 2px;
+      border-collapse: separate;
+      box-shadow: 0 0 0 2px var(--jhu-grayscale-0);
+      // outline: solid var(--jhu-grayscale-0) 2px;
     }
 
     .instructions-and-hint,
